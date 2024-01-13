@@ -40,7 +40,7 @@ public class Drivetrain extends SubsystemBase {
 
   // final Pigeon2 mPigeon = new Pigeon2(0);
 
-  final PigeonIMU mPigeon = new PigeonIMU(0);
+  final PigeonIMU mPigeon = new PigeonIMU(1);
 
   // Slew rate filter variables for controlling lateral acceleration
   double mCurrentRotation = 0.0;
@@ -62,6 +62,11 @@ public class Drivetrain extends SubsystemBase {
           mRearRight.getPosition()
       });
 
+  public Drivetrain() {
+    resetEncoders();
+    zeroHeading();
+  }
+
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
@@ -74,10 +79,10 @@ public class Drivetrain extends SubsystemBase {
             mRearRight.getPosition()
         });
 
-    mFrontLeft.updateShuffleboardPID("FrontLeft");
-    mRearLeft.updateShuffleboardPID("RearLeft");
-    mFrontRight.updateShuffleboardPID("FrontRight");
-    mRearRight.updateShuffleboardPID("RearRight");
+    // mFrontLeft.updateShuffleboardPID("FrontLeft");
+    // mRearLeft.updateShuffleboardPID("RearLeft");
+    // mFrontRight.updateShuffleboardPID("FrontRight");
+    // mRearRight.updateShuffleboardPID("RearRight");
   }
 
   /**
@@ -206,7 +211,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Rotation2d getRotation2d() {
-    return Rotation2d.fromDegrees(Math.IEEEremainder(mPigeon.getYaw(), 360.0d));
+    return Rotation2d.fromDegrees(-Math.IEEEremainder(mPigeon.getYaw(), 360.0d));
   }
 
   /** Resets the drive encoders to currently read a position of 0. */

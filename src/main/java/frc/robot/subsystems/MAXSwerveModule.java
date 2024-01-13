@@ -46,8 +46,8 @@ public class MAXSwerveModule {
 
     // Factory reset, so we get the SPARKS MAX to a known state before configuring
     // them. This is useful in case a SPARK MAX is swapped out.
-    mDrivingSparkMax.restoreFactoryDefaults();
-    mTurningSparkMax.restoreFactoryDefaults();
+    // mDrivingSparkMax.restoreFactoryDefaults();
+    // mTurningSparkMax.restoreFactoryDefaults();
 
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
     mDrivingEncoder = mDrivingSparkMax.getEncoder();
@@ -56,6 +56,20 @@ public class MAXSwerveModule {
     mTurningPIDController = mTurningSparkMax.getPIDController();
     mDrivingPIDController.setFeedbackDevice(mDrivingEncoder);
     mTurningPIDController.setFeedbackDevice(mTurningEncoder);
+
+    // PID constant defaults
+
+    mDrivingPIDController.setP(SwerveConstants.kDrivingP);
+    mDrivingPIDController.setI(SwerveConstants.kDrivingI);
+    mDrivingPIDController.setD(SwerveConstants.kDrivingD);
+    mDrivingPIDController.setFF(SwerveConstants.kDrivingFF);
+    mDrivingPIDController.setOutputRange(SwerveConstants.kDrivingMinOutput, SwerveConstants.kDrivingMaxOutput);
+    
+    mTurningPIDController.setP(SwerveConstants.kTurningP);
+    mTurningPIDController.setI(SwerveConstants.kTurningI);
+    mTurningPIDController.setD(SwerveConstants.kTurningD);
+    mTurningPIDController.setFF(SwerveConstants.kTurningFF);
+    mTurningPIDController.setOutputRange(SwerveConstants.kTurningMinOutput, SwerveConstants.kTurningMaxOutput);
 
     // Apply position and velocity conversion factors for the driving encoder. The
     // native units for position and velocity are rotations and RPM, respectively,
@@ -94,6 +108,13 @@ public class MAXSwerveModule {
     mChassisAngularOffset = chassisAngularOffset;
     mDesiredState.angle = new Rotation2d(mTurningEncoder.getPosition());
     mDrivingEncoder.setPosition(0);
+  }
+
+  public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset, boolean inverted) {
+    this(drivingCANId, turningCANId, chassisAngularOffset);
+
+    mDrivingSparkMax.setInverted(inverted);
+    mDrivingSparkMax.burnFlash();
   }
 
   /**
