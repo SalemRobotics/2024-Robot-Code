@@ -36,15 +36,15 @@ public final class Constants {
         public static final double kBackRightChassisAngularOffset = Math.PI / 2;
         
         // SPARK MAX IDs
-        public static final int kFrontLeftDrivingCanID = 0;
-        public static final int kFrontRightDrivingCanID = 0;
-        public static final int kRearLeftDrivingCanID = 0;
-        public static final int kRearRightDrivingCanID = 0;
+        public static final int kFrontLeftDrivingCanID = 7;
+        public static final int kFrontRightDrivingCanID = 2;
+        public static final int kRearLeftDrivingCanID = 6;
+        public static final int kRearRightDrivingCanID = 3;
 
-        public static final int kFrontLeftTurningCanID = 0;
-        public static final int kFrontRightTurningCanID = 0;
-        public static final int kRearLeftTurningCanID = 0;
-        public static final int kRearRightTurningCanID = 0;
+        public static final int kFrontLeftTurningCanID = 8;
+        public static final int kFrontRightTurningCanID = 1;
+        public static final int kRearLeftTurningCanID = 5;
+        public static final int kRearRightTurningCanID = 4;
     }
 
     public static final class SwerveConstants {

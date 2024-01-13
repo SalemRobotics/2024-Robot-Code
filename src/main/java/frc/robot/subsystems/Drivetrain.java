@@ -214,23 +214,4 @@ public class Drivetrain extends SubsystemBase {
   public void zeroHeading() {
     mPigeon.setYaw(0.0);
   }
-
-  /**
-   * Returns the heading of the robot.
-   *
-   * @return the robot's heading in degrees, from -180 to 180
-   */
-  public double getHeading() {
-    return mPigeon.getRotation2d().getDegrees();
-  }
-
-  /**
-   * Returns the turn rate of the robot.
-   *
-   * @return The turn rate of the robot, in degrees per second
-   */
-  public double getTurnRate() {
-    double[] xyz = new double[3];
-    return xyz[1];
-  }
 }
