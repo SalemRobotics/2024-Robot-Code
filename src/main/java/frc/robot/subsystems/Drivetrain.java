@@ -51,7 +51,7 @@ public class Drivetrain extends SubsystemBase {
   // Odometry class for tracking robot pose
   SwerveDriveOdometry mOdometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
-      getRotation2d(),
+      mPigeon.getRotation2d(),
       new SwerveModulePosition[] {
           mFrontLeft.getPosition(),
           mFrontRight.getPosition(),
@@ -63,7 +63,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     mOdometry.update(
-        getRotation2d(),
+        mPigeon.getRotation2d(),
         new SwerveModulePosition[] {
             mFrontLeft.getPosition(),
             mFrontRight.getPosition(),
@@ -91,7 +91,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     mOdometry.resetPosition(
-        getRotation2d(),
+        mPigeon.getRotation2d(),
         new SwerveModulePosition[] {
             mFrontLeft.getPosition(),
             mFrontRight.getPosition(),
@@ -168,7 +168,7 @@ public class Drivetrain extends SubsystemBase {
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, getRotation2d())
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, mPigeon.getRotation2d())
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -210,10 +210,6 @@ public class Drivetrain extends SubsystemBase {
     mRearRight.resetEncoders();
   }
 
-  public Rotation2d getRotation2d() {
-    return Rotation2d.fromDegrees(Math.IEEEremainder(mPigeon.getYaw().getValueAsDouble(), 360.0d));
-  }
-
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     mPigeon.setYaw(0.0);
@@ -225,7 +221,7 @@ public class Drivetrain extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return getRotation2d().getDegrees();
+    return mPigeon.getRotation2d().getDegrees();
   }
 
   /**
