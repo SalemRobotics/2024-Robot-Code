@@ -99,4 +99,9 @@ public final class Constants {
         public static final int kDriverPort = 0;
         public static final double kDriveDeadband = 0.05;
     }
+
+    public static final class AutoConstants{
+        public static final String kTestAuto = "Test Auto";
+    }
+
 }

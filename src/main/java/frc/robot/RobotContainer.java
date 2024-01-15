@@ -4,13 +4,16 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Drivetrain;
 
@@ -19,9 +22,13 @@ public class RobotContainer {
   final XboxController mDriveController = new XboxController(ControllerConstants.kDriverPort); 
 
   final Drivetrain mDrivetrain = new Drivetrain();
+
+  final SendableChooser<Command> mAutoChooser = new SendableChooser<>();
   
   public RobotContainer() {
     configureBindings();
+
+    setAutonomousOptions();
 
     mDrivetrain.setDefaultCommand(
       new RunCommand(
@@ -40,7 +47,11 @@ public class RobotContainer {
     );
   }
 
+  private void setAutonomousOptions() {
+    mAutoChooser.setDefaultOption(AutoConstants.kTestAuto, AutoBuilder.buildAuto(AutoConstants.kTestAuto));
+  }
+
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return mAutoChooser.getSelected();
   }
 }
