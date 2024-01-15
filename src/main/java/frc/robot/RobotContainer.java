@@ -10,7 +10,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -24,12 +23,10 @@ public class RobotContainer {
 
   final Drivetrain mDrivetrain = new Drivetrain();
 
-  final SendableChooser<Command> mAutoChooser = new SendableChooser<>();
+  final SendableChooser<Command> mAutoChooser = AutoBuilder.buildAutoChooser(AutoConstants.kTestAuto);
   
   public RobotContainer() {
     configureBindings();
-
-    setAutonomousOptions();
 
     // Set default Drivetrain command to a RunCommand containing Drivetrain::drive.
     mDrivetrain.setDefaultCommand(
@@ -50,12 +47,6 @@ public class RobotContainer {
     new JoystickButton(mDriveController, Button.kR1.value).whileTrue(
       new RunCommand(() -> mDrivetrain.setX(), mDrivetrain)
     );
-  }
-
-  // Default for now, will need to build auto segments based off of inquiries.
-  private void setAutonomousOptions() {
-    mAutoChooser.setDefaultOption(AutoConstants.kTestAuto, AutoBuilder.buildAuto(AutoConstants.kTestAuto));
-    SmartDashboard.putData(mAutoChooser);
   }
 
   public Command getAutonomousCommand() {
