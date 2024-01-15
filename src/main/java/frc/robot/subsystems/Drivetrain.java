@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.pathplanner.lib.auto.AutoBuilder;
 // import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -12,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.util.SwerveUtils;
@@ -65,6 +67,22 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
     resetEncoders();
     zeroHeading();
+
+    AutoBuilder.configureHolonomic(
+      this::getPose, 
+      this::resetOdometry, 
+      this::getSpeeds, 
+      this::setRobotRelativeStates, 
+      DriveConstants.kPathConfig, 
+      () -> {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      }, 
+      this
+    );
   }
 
   @Override
@@ -91,6 +109,21 @@ public class Drivetrain extends SubsystemBase {
    */
   public Pose2d getPose() {
     return mOdometry.getPoseMeters();
+  }
+
+  public ChassisSpeeds getSpeeds() {
+    return DriveConstants.kDriveKinematics.toChassisSpeeds(
+      new SwerveModuleState[] {
+        mFrontLeft.getState(),
+        mFrontRight.getState(),
+        mRearLeft.getState(),
+        mRearRight.getState()
+      });
+  }
+
+  public void setRobotRelativeStates(ChassisSpeeds robotRelativeSpeeds) {
+    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+    setModuleStates(DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds));
   }
 
   /**
@@ -178,12 +211,7 @@ public class Drivetrain extends SubsystemBase {
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, getRotation2d())
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    mFrontLeft.setDesiredState(swerveModuleStates[0]);
-    mFrontRight.setDesiredState(swerveModuleStates[1]);
-    mRearLeft.setDesiredState(swerveModuleStates[2]);
-    mRearRight.setDesiredState(swerveModuleStates[3]);
+    setModuleStates(swerveModuleStates);
   }
 
   /**

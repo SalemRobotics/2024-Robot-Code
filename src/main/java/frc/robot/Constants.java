@@ -1,5 +1,8 @@
 package frc.robot;
 
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -28,6 +31,24 @@ public final class Constants {
             new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
             new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
             new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+
+        public static final HolonomicPathFollowerConfig kPathConfig = new HolonomicPathFollowerConfig(
+            new PIDConstants(
+                SwerveConstants.kDrivingP,
+                SwerveConstants.kDrivingI,
+                SwerveConstants.kDrivingD,
+                SwerveConstants.kDrivingFF
+            ), 
+            new PIDConstants(
+                SwerveConstants.kTurningP,
+                SwerveConstants.kTurningI,
+                SwerveConstants.kTurningD,
+                SwerveConstants.kTurningFF
+            ), 
+            kMaxSpeedMetersPerSecond, 
+            kWheelBase, 
+            new ReplanningConfig(true, true)
+        );
 
         // Angular offsets of the modules relative to the chassis in radians
         public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;

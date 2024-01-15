@@ -110,13 +110,6 @@ public class MAXSwerveModule {
     mDrivingEncoder.setPosition(0);
   }
 
-  public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset, boolean inverted) {
-    this(drivingCANId, turningCANId, chassisAngularOffset);
-
-    mDrivingSparkMax.setInverted(inverted);
-    mDrivingSparkMax.burnFlash();
-  }
-
   /**
    * Sends PID entries to Shuffleboard
    * @param key String identifier to differentiate module groups

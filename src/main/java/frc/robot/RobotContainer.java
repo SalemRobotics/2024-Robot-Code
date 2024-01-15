@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -30,8 +31,11 @@ public class RobotContainer {
 
     setAutonomousOptions();
 
+    // Set default Drivetrain command to a RunCommand containing Drivetrain::drive.
     mDrivetrain.setDefaultCommand(
       new RunCommand(
+        // Controllers should have a deadband so that there is no drifting. 
+        // Field relativity and rate limiting should always be true.
         () -> mDrivetrain.drive(
           -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
           -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
@@ -42,13 +46,16 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    // Set wheels to X configuration when R trigger is being pressed.
     new JoystickButton(mDriveController, Button.kR1.value).whileTrue(
       new RunCommand(() -> mDrivetrain.setX(), mDrivetrain)
     );
   }
 
+  // Default for now, will need to build auto segments based off of inquiries.
   private void setAutonomousOptions() {
     mAutoChooser.setDefaultOption(AutoConstants.kTestAuto, AutoBuilder.buildAuto(AutoConstants.kTestAuto));
+    SmartDashboard.putData(mAutoChooser);
   }
 
   public Command getAutonomousCommand() {
