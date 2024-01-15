@@ -46,7 +46,7 @@ public final class Constants {
                 SwerveConstants.kTurningFF
             ), 
             kMaxSpeedMetersPerSecond, 
-            kWheelBase, 
+            kWheelBase / 2, 
             new ReplanningConfig(true, true)
         );
 
