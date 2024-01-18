@@ -123,6 +123,7 @@ public final class Constants {
 
     public static final class AutoConstants{
         public static final String kTestAuto = "Test Auto";
+        public static final String kTestAuto2 = "Test Auto 2";
     }
 
 }
