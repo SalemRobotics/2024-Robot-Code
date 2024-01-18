@@ -6,20 +6,24 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.IntakeConstant;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 
 public class RobotContainer {
   
   final XboxController mDriveController = new XboxController(ControllerConstants.kDriverPort); 
+  final XboxController mOperatorController = new XboxController(ControllerConstants.kOperatorPort);
 
   final Drivetrain mDrivetrain = new Drivetrain();
-  
+  final Intake mIntake = new Intake();
+
   public RobotContainer() {
     configureBindings();
 
@@ -35,8 +39,14 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    new JoystickButton(mDriveController, Button.kR1.value).whileTrue(
+    new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
       new RunCommand(() -> mDrivetrain.setX(), mDrivetrain)
+    );
+    new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
+      mIntake.intakeRing(IntakeConstant.kIntakeSpeedIn)
+    );
+    new JoystickButton(mOperatorController, Button.kRightBumper.value).whileTrue(
+      mIntake.intakeRing(IntakeConstant.kIntakeSpeedOut)
     );
   }
 

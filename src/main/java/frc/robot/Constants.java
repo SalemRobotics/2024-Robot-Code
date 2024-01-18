@@ -7,6 +7,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
+    public static final class IntakeConstant {
+        public static final double kIntakeSpeedIn = 0.75;
+        public static final double kIntakeSpeedOut = -0.5;
+    }
+
     public static final class DriveConstants {
         // Driving Parameters - Note that these are not the maximum capable speeds of
         // the robot, rather the allowed maximum speeds
@@ -98,5 +103,8 @@ public final class Constants {
     public static final class ControllerConstants {
         public static final int kDriverPort = 0;
         public static final double kDriveDeadband = 0.05;
+        public static final int kOperatorPort = 1;
     }
+
+    public double kIntakeSpeed;
 }
