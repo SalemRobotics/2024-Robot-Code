@@ -36,7 +36,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     new JoystickButton(mDriveController, Button.kR1.value).whileTrue(
-      new RunCommand(() -> mDrivetrain.setX(), mDrivetrain)
+      mDrivetrain.setX()
     );
   }
 
