@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
-
-import com.ctre.phoenix.sensors.PigeonIMU;
 // import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -38,9 +37,9 @@ public class Drivetrain extends SubsystemBase {
       DriveConstants.kRearRightTurningCanID,
       DriveConstants.kBackRightChassisAngularOffset);
 
-  // final Pigeon2 mPigeon = new Pigeon2(0);
+  final Pigeon2 mPigeon = new Pigeon2(0);
 
-  final PigeonIMU mPigeon = new PigeonIMU(1);
+  //final PigeonIMU mPigeon = new PigeonIMU(1);
 
   // Slew rate filter variables for controlling lateral acceleration
   double mCurrentRotation = 0.0;
@@ -54,7 +53,7 @@ public class Drivetrain extends SubsystemBase {
   // Odometry class for tracking robot pose
   SwerveDriveOdometry mOdometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
-      getRotation2d(),
+      mPigeon.getRotation2d(),
       new SwerveModulePosition[] {
           mFrontLeft.getPosition(),
           mFrontRight.getPosition(),
@@ -71,7 +70,7 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     mOdometry.update(
-        getRotation2d(),
+        mPigeon.getRotation2d(),
         new SwerveModulePosition[] {
             mFrontLeft.getPosition(),
             mFrontRight.getPosition(),
@@ -99,7 +98,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     mOdometry.resetPosition(
-        getRotation2d(),
+        mPigeon.getRotation2d(),
         new SwerveModulePosition[] {
             mFrontLeft.getPosition(),
             mFrontRight.getPosition(),
@@ -176,7 +175,7 @@ public class Drivetrain extends SubsystemBase {
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, getRotation2d())
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, mPigeon.getRotation2d())
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -208,10 +207,6 @@ public class Drivetrain extends SubsystemBase {
     mFrontRight.setDesiredState(desiredStates[1]);
     mRearLeft.setDesiredState(desiredStates[2]);
     mRearRight.setDesiredState(desiredStates[3]);
-  }
-
-  public Rotation2d getRotation2d() {
-    return Rotation2d.fromDegrees(-Math.IEEEremainder(mPigeon.getYaw(), 360.0d));
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
