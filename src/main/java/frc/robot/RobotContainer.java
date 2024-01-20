@@ -24,7 +24,7 @@ public class RobotContainer {
 
   final Drivetrain mDrivetrain = new Drivetrain();
 
-  final SendableChooser<Command> mAutoChooser = AutoBuilder.buildAutoChooser(AutoConstants.kTestAuto);
+  final SendableChooser<Command> mAutoChooser = AutoBuilder.buildAutoChooser(AutoConstants.kTestAuto2);
   
   public RobotContainer() {
     configureBindings();

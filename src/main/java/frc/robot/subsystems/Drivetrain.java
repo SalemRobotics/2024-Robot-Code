@@ -39,7 +39,7 @@ public class Drivetrain extends SubsystemBase {
       DriveConstants.kRearRightTurningCanID,
       DriveConstants.kBackRightChassisAngularOffset);
 
-  final Pigeon2 mPigeon = new Pigeon2(0);
+  final Pigeon2 mPigeon = new Pigeon2(DriveConstants.kPigeonID);
 
   //final PigeonIMU mPigeon = new PigeonIMU(1);
 
@@ -57,15 +57,15 @@ public class Drivetrain extends SubsystemBase {
       DriveConstants.kDriveKinematics,
       mPigeon.getRotation2d(),
       new SwerveModulePosition[] {
-          mFrontLeft.getPosition(),
-          mFrontRight.getPosition(),
-          mRearLeft.getPosition(),
-          mRearRight.getPosition()
+        mFrontLeft.getPosition(),
+        mFrontRight.getPosition(),
+        mRearLeft.getPosition(),
+        mRearRight.getPosition()
       });
 
   public Drivetrain() {
     resetEncoders();
-    zeroHeading();
+    mPigeon.reset();
 
     AutoBuilder.configureHolonomic(
       this::getPose, 
@@ -95,11 +95,6 @@ public class Drivetrain extends SubsystemBase {
             mRearLeft.getPosition(),
             mRearRight.getPosition()
         });
-
-    // mFrontLeft.updateShuffleboardPID("FrontLeft");
-    // mRearLeft.updateShuffleboardPID("RearLeft");
-    // mFrontRight.updateShuffleboardPID("FrontRight");
-    // mRearRight.updateShuffleboardPID("RearRight");
   }
 
   /**
@@ -112,12 +107,11 @@ public class Drivetrain extends SubsystemBase {
 
   public ChassisSpeeds getSpeeds() {
     return DriveConstants.kDriveKinematics.toChassisSpeeds(
-      new SwerveModuleState[] {
-        mFrontLeft.getState(),
-        mFrontRight.getState(),
-        mRearLeft.getState(),
-        mRearRight.getState()
-      });
+      mFrontLeft.getState(),
+      mFrontRight.getState(),
+      mRearLeft.getState(),
+      mRearRight.getState()
+    );
   }
 
   public void setRobotRelativeStates(ChassisSpeeds robotRelativeSpeeds) {
@@ -243,10 +237,5 @@ public class Drivetrain extends SubsystemBase {
     mRearLeft.resetEncoders();
     mFrontRight.resetEncoders();
     mRearRight.resetEncoders();
-  }
-
-  /** Zeroes the heading of the robot. */
-  public void zeroHeading() {
-    mPigeon.setYaw(0.0);
   }
 }

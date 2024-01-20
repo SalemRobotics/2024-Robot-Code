@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2,
-      "y": 6.0
+      "x": 1.27,
+      "y": 5.54
     },
     "rotation": 0
   },
@@ -14,7 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Tumble"
+            "pathName": "Test Turn"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Test Turn 2"
           }
         }
       ]
