@@ -13,12 +13,15 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
   
   final XboxController mDriveController = new XboxController(ControllerConstants.kDriverPort); 
 
   final Drivetrain mDrivetrain = new Drivetrain();
+
+  final Shooter mShooter = new Shooter();
   
   public RobotContainer() {
     configureBindings();
@@ -37,6 +40,10 @@ public class RobotContainer {
   private void configureBindings() {
     new JoystickButton(mDriveController, Button.kR1.value).whileTrue(
       new RunCommand(() -> mDrivetrain.setX(), mDrivetrain)
+    );
+    
+    new JoystickButton(mDriveController, Button.kCross.value).whileTrue(
+      mShooter.shootRing()
     );
   }
 

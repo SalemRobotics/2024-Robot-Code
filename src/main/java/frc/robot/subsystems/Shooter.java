@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterContants;
 
 public class Shooter extends SubsystemBase {
     CANSparkMax shooterSparkMaxOne = new CANSparkMax(0,MotorType.kBrushless);
@@ -13,10 +14,10 @@ public class Shooter extends SubsystemBase {
         shooterSparkMaxTwo.follow(shooterSparkMaxOne);
     }
 
-    public Command shootRing(double speed) {
+    public Command shootRing() {
         return run(
             () -> {
-                shooterSparkMaxOne.set(speed);
+                shooterSparkMaxOne.set(ShooterContants.kShooterSpeed);
             }
         );
     }
