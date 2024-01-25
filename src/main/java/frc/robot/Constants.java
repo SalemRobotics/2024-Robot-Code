@@ -39,13 +39,14 @@ public final class Constants {
                 AutoConstants.kAutoDrivingP,
                 AutoConstants.kAutoDrivingI,
                 AutoConstants.kAutoDrivingD,
-                AutoConstants.kAutoDrivingFF
+                AutoConstants.kAutoDrivingIZone
+                
             ), 
             new PIDConstants(
                 AutoConstants.kAutoTurningP,
                 AutoConstants.kAutoTurningI,
                 AutoConstants.kAutoTurningD,
-                AutoConstants.kAutoTurningFF
+                AutoConstants.kAutoTurningIZone
             ), 
             kMaxSpeedMetersPerSecond, 
             kDriveBaseRadius, 
@@ -132,12 +133,12 @@ public final class Constants {
         public static final double kAutoDrivingP = 0.04;
         public static final double kAutoDrivingI = 0;
         public static final double kAutoDrivingD = 0;
-        public static final double kAutoDrivingFF = 1 / SwerveConstants.kDriveWheelFreeSpeedRps;
+        public static final double kAutoDrivingIZone = 1;
 
         public static final double kAutoTurningP = 1;
         public static final double kAutoTurningI = 0;
         public static final double kAutoTurningD = 0;
-        public static final double kAutoTurningFF = 0;
+        public static final double kAutoTurningIZone = 1;
 
         public static final String[] kStartOptions = {
 
