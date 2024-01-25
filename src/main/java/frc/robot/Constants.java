@@ -36,16 +36,16 @@ public final class Constants {
 
         public static final HolonomicPathFollowerConfig kPathConfig = new HolonomicPathFollowerConfig(
             new PIDConstants(
-                SwerveConstants.kDrivingP,
-                SwerveConstants.kDrivingI,
-                SwerveConstants.kDrivingD,
-                SwerveConstants.kDrivingFF
+                AutoConstants.kAutoDrivingP,
+                AutoConstants.kAutoDrivingI,
+                AutoConstants.kAutoDrivingD,
+                AutoConstants.kAutoDrivingFF
             ), 
             new PIDConstants(
-                SwerveConstants.kTurningP,
-                SwerveConstants.kTurningI,
-                SwerveConstants.kTurningD,
-                SwerveConstants.kTurningFF
+                AutoConstants.kAutoTurningP,
+                AutoConstants.kAutoTurningI,
+                AutoConstants.kAutoTurningD,
+                AutoConstants.kAutoTurningFF
             ), 
             kMaxSpeedMetersPerSecond, 
             kDriveBaseRadius, 
@@ -128,6 +128,16 @@ public final class Constants {
     public static final class AutoConstants{
         public static final String kTestAuto = "Test Auto";
         public static final String kTestAuto2 = "Test Auto 2";
+        
+        public static final double kAutoDrivingP = 0.04;
+        public static final double kAutoDrivingI = 0;
+        public static final double kAutoDrivingD = 0;
+        public static final double kAutoDrivingFF = 1 / SwerveConstants.kDriveWheelFreeSpeedRps;
+
+        public static final double kAutoTurningP = 1;
+        public static final double kAutoTurningI = 0;
+        public static final double kAutoTurningD = 0;
+        public static final double kAutoTurningFF = 0;
 
         public static final String[] kStartOptions = {
 
