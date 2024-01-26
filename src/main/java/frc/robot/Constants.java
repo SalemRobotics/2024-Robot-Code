@@ -2,11 +2,22 @@ package frc.robot;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
+    public static final class VisionConstants {
+        // Camera position in meters relative to where it is mounted on the robot
+        public static final Transform3d kCameraPosition = new Transform3d(
+            new Translation3d(0, 0, 0), 
+            new Rotation3d(0, 0, 0)
+        );
+    }
+
     public static final class DriveConstants {
         // Driving Parameters - Note that these are not the maximum capable speeds of
         // the robot, rather the allowed maximum speeds
