@@ -12,19 +12,24 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Intake;
 
 public class RobotContainer {
   
   final XboxController mDriveController = new XboxController(ControllerConstants.kDriverPort); 
+  final XboxController mOperatorController = new XboxController(ControllerConstants.kOperatorPort);
 
   final Drivetrain mDrivetrain = new Drivetrain();
 
   final Shooter mShooter = new Shooter();
   
   final Indexer mIndexer = new Indexer();
+  
+  final Intake mIntake = new Intake();
 
   public RobotContainer() {
     configureBindings();
@@ -45,12 +50,20 @@ public class RobotContainer {
       new RunCommand(() -> mDrivetrain.setX(), mDrivetrain)
     );
     
-    new JoystickButton(mDriveController, Button.kX.value).whileTrue(
+    new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
       mShooter.shootRing()
     );
 
-    new JoystickButton(mDriveController, Button.kB.value).whileTrue(
+    new JoystickButton(mOperatorController, Button.kB.value).whileTrue(
        mIndexer.runIndexer()
+    );
+    
+    new JoystickButton(mOperatorController, Button.kRightBumper.value).whileTrue(
+      mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn)
+    );
+    
+    new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
+      mIntake.intakeRing(IntakeConstants.kIntakeSpeedOut)
     );
   }
 
