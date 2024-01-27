@@ -7,9 +7,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
-    public static final class IntakeConstant {
-        public static final double kIntakeSpeedIn = 0.75;
+    public static final class IntakeConstants {
+        public static final double kIntakeSpeedIn = 1.0;
         public static final double kIntakeSpeedOut = -0.5;
+
+        public static final int kSparkMaxID = 9;
     }
 
     public static final class DriveConstants {

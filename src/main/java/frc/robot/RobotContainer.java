@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.Constants.IntakeConstant;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 
@@ -42,11 +42,13 @@ public class RobotContainer {
     new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
       new RunCommand(() -> mDrivetrain.setX(), mDrivetrain)
     );
-    new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
-      mIntake.intakeRing(IntakeConstant.kIntakeSpeedIn)
-    );
+    
     new JoystickButton(mOperatorController, Button.kRightBumper.value).whileTrue(
-      mIntake.intakeRing(IntakeConstant.kIntakeSpeedOut)
+      mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn)
+    );
+    
+    new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
+      mIntake.intakeRing(IntakeConstants.kIntakeSpeedOut)
     );
   }
 
