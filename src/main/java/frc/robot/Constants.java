@@ -9,6 +9,9 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
     public static final class ShooterContants {
         public static final double kShooterSpeed = 1.0;
+
+        public static final int kLeftMotorID = 10;
+        public static final int kRightMotorID = 13;
     }
     
     public static final class DriveConstants {

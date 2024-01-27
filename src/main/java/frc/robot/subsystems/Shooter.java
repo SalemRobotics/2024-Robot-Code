@@ -7,17 +7,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterContants;
 
 public class Shooter extends SubsystemBase {
-    CANSparkMax shooterSparkMaxOne = new CANSparkMax(0,MotorType.kBrushless);
-    CANSparkMax shooterSparkMaxTwo = new CANSparkMax(0,MotorType.kBrushless);
+    final CANSparkMax mLeftMotor = new CANSparkMax(ShooterContants.kLeftMotorID, MotorType.kBrushless);
+    final CANSparkMax mRightMotor = new CANSparkMax(ShooterContants.kRightMotorID, MotorType.kBrushless);
 
     public Shooter() {
-        shooterSparkMaxTwo.follow(shooterSparkMaxOne);
+        mRightMotor.follow(mLeftMotor, true);
     }
 
     public Command shootRing() {
-        return run(
+        return runEnd(
             () -> {
-                shooterSparkMaxOne.set(ShooterContants.kShooterSpeed);
+                mLeftMotor.set(ShooterContants.kShooterSpeed);
+            },
+            () -> {
+                mLeftMotor.stopMotor();
             }
         );
     }
