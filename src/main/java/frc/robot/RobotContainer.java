@@ -41,13 +41,8 @@ public class RobotContainer {
       mDrivetrain.setX()
     );
 
-    new JoystickButton(mDriveController, Button.kA.value).whileTrue(
-        mIndexer.primeIndexer()
-        
-    );
-
     new JoystickButton(mDriveController, Button.kB.value).whileTrue(
-       mIndexer.runIndexer(.5)
+       mIndexer.runIndexer()
     );
   }
 

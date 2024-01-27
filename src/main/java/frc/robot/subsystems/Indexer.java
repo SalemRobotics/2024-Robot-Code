@@ -4,24 +4,29 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IndexerConstants;
 
 public class Indexer extends SubsystemBase {
-    final CANSparkMax mIndexShooterMotor = new CANSparkMax(0,MotorType.kBrushless);
-    final CANSparkMax mIndexIntakeMotor = new CANSparkMax(0,MotorType.kBrushless);
+    final CANSparkMax mIndexIntakeMotor = new CANSparkMax(IndexerConstants.kIndexerIntakeID, MotorType.kBrushless);
+    final CANSparkMax mIndexShooterMotor = new CANSparkMax(IndexerConstants.kIndexerShooterID, MotorType.kBrushless);
 
-    public Command primeIndexer(){
-        return run(
-            () -> {
-                mIndexIntakeMotor.set(0.5);
-                mIndexShooterMotor.set(-0.5);
-            }
-        );
+    public Indexer() {
+        mIndexIntakeMotor.setInverted(true);
+        mIndexIntakeMotor.burnFlash();
+
+        mIndexShooterMotor.setInverted(true);
+        mIndexShooterMotor.burnFlash();
     }
 
-    public Command runIndexer(double speed){
-        return run(
+    public Command runIndexer(){
+        return runEnd(
             () -> {
-                mIndexShooterMotor.set(speed);
+                mIndexIntakeMotor.set(IndexerConstants.kIndexerSpeed);
+                mIndexShooterMotor.set(IndexerConstants.kIndexerSpeed);
+            },
+            () -> {
+                mIndexIntakeMotor.stopMotor();
+                mIndexShooterMotor.stopMotor();
             }
         );
 
