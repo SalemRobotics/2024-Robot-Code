@@ -13,6 +13,7 @@ public class Indexer extends SubsystemBase {
         return run(
             () -> {
                 mIndexIntakeMotor.set(0.5);
+                mIndexShooterMotor.set(-0.5);
             }
         );
     }
