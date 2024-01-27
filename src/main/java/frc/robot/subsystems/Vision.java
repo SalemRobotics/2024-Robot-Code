@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.photonvision.PhotonCamera;
@@ -26,9 +27,13 @@ public class Vision {
 
     final PhotonPoseEstimator poseEstimator;
 
+    final Pose2d mOdometryRobotPose;
+
     AprilTagFieldLayout mFieldLayout;
 
-    public Vision() {
+    public Vision(Pose2d robotPose) {
+        mOdometryRobotPose = robotPose;
+        
         try {
             mFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
         } catch (IOException e) {
@@ -46,8 +51,8 @@ public class Vision {
     /**
      * Gets the Multitag target from the camera.
      * @return The Multitag target, should it exist.
-     * @see {@link Optional}
-     * @see {@link MultiTargetPNPResult}
+     * @see Optional
+     * @see MultiTargetPNPResult
      */
     public Optional<MultiTargetPNPResult> getMultiTagTarget() {
         var currentResult = mCamera.getLatestResult();
@@ -59,11 +64,18 @@ public class Vision {
     /**
      * Gets the transform of the Multitag target.
      * @return transform of the Multitag target, should it exist.
-     * @see {@link Optional}
-     * @see {@link Transform3d}
+     * @see Optional
+     * @see Transform3d
      */
     public Optional<Transform3d> getMultiTagTransform() {
-        var multiTag = getMultiTagTarget().get();
+        MultiTargetPNPResult multiTag;
+        try {
+            multiTag = getMultiTagTarget().orElseThrow();
+        } catch (NoSuchElementException e) {
+            System.err.println(e);
+            return null;
+        }
+        
         if (multiTag.estimatedPose.isPresent)
             return Optional.of(multiTag.estimatedPose.best);
         return null;
@@ -72,8 +84,8 @@ public class Vision {
     /**
      * Gets the best result of individual Apriltags.
      * @return The best Apriltag target, should it exist.
-     * @see {@link Optional}
-     * @see {@link PhotonTrackedTarget}
+     * @see Optional
+     * @see PhotonTrackedTarget
      */
     public Optional<PhotonTrackedTarget> getBestTarget() {
         var currentResult = mCamera.getLatestResult();
@@ -84,42 +96,81 @@ public class Vision {
 
     /**
      * Gets the distance from the robot to the target Multitag.
-     * @return Distance, in meters. (I think)
+     * @return Distance, in meters, should the target exist. (I think)
+     * @see Optional
      */
-    public double getTargetDistance() {
-        var targetTransform = getMultiTagTransform().get();
+    public Optional<Double> getTargetDistance() {
+        Transform3d targetTransform;
+        try {
+            targetTransform = getMultiTagTransform().orElseThrow();
+        } catch (NoSuchElementException e) {
+            System.err.println(e);
+            return null;
+        }
 
         var targetPose = new Pose2d(
             targetTransform.getTranslation().toTranslation2d(),
             targetTransform.getRotation().toRotation2d()
         );
 
-        return PhotonUtils.getDistanceToPose(getRobotPose().toPose2d(), targetPose);
+        Pose2d robotPose;
+        try {
+            robotPose = getRobotPose().orElseThrow().toPose2d();
+        } catch (Exception e) {
+            System.err.println(e);
+            return null;
+        }
+
+        return Optional.of(PhotonUtils.getDistanceToPose(robotPose, targetPose));
     }
 
     /**
      * Gets the yaw between the robot and target Multitag.
-     * @return Yaw rotation.
-     * @see {@link Rotation2d}
+     * @return Yaw rotation, should it exist.
+     * @see Rotation2d
+     * @see Optional
      */
-    public Rotation2d getTargetYaw() {
-        var targetTransform = getMultiTagTransform().get();
+    public Optional<Rotation2d> getTargetYaw() {
+        Transform3d targetTransform;
+        try {
+            targetTransform = getMultiTagTransform().orElseThrow();
+        } catch (NoSuchElementException e) {
+            System.err.println(e);
+            return null;
+        }
 
         var targetPose = new Pose2d(
             targetTransform.getTranslation().toTranslation2d(),
             targetTransform.getRotation().toRotation2d()
         );
 
-        return PhotonUtils.getYawToPose(getRobotPose().toPose2d(), targetPose);
+        Pose2d robotPose;
+        try {
+            robotPose = getRobotPose().orElseThrow().toPose2d();
+        } catch (NoSuchElementException e) {
+            System.err.println(e);
+            return null;
+        }
+
+        return Optional.of(PhotonUtils.getYawToPose(robotPose, targetPose));
     }
 
     /**
      * Gets the field relative robot pose. 
      * TODO: try and implement a system to calculate error between odometry pose and apriltag pose and pick whichever has least error, or lerp between them
      * @return Robot pose.
-     * @see {@link Pose3d}
+     * @see Pose3d
+     * @see Optional
      */
-    public Pose3d getRobotPose() {
-        return poseEstimator.update().get().estimatedPose;
+    public Optional<Pose3d> getRobotPose() {
+        Pose3d estimatedPose;
+        try {
+            estimatedPose = poseEstimator.update().orElseThrow().estimatedPose;
+        } catch (NoSuchElementException e) {
+            System.err.println(e);
+            return null;
+        }
+
+        return Optional.of(estimatedPose);
     }
 }
