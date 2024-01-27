@@ -156,8 +156,7 @@ public class Vision {
     }
 
     /**
-     * Gets the field relative robot pose. 
-     * TODO: try and implement a system to calculate error between odometry pose and apriltag pose and pick whichever has least error, or lerp between them
+     * Gets the robot pose relative to tracked Multitag targets.
      * @return Robot pose.
      * @see Pose3d
      * @see Optional
