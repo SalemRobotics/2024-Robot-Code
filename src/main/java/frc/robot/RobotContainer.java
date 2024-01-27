@@ -6,20 +6,22 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Indexer;
 
 public class RobotContainer {
   
   final XboxController mDriveController = new XboxController(ControllerConstants.kDriverPort); 
 
   final Drivetrain mDrivetrain = new Drivetrain();
-  
+  final Indexer mIndexer = new Indexer();
+
   public RobotContainer() {
     configureBindings();
 
@@ -35,12 +37,22 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    new JoystickButton(mDriveController, Button.kR1.value).whileTrue(
+    new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
       mDrivetrain.setX()
+    );
+
+    new JoystickButton(mDriveController, Button.kA.value).whileTrue(
+        mIndexer.primeIndexer()
+        
+    );
+
+    new JoystickButton(mDriveController, Button.kB.value).whileTrue(
+       mIndexer.runIndexer(.5)
     );
   }
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
+
 }
