@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Indexer;
 
 public class RobotContainer {
   
@@ -23,6 +24,8 @@ public class RobotContainer {
 
   final Shooter mShooter = new Shooter();
   
+  final Indexer mIndexer = new Indexer();
+
   public RobotContainer() {
     configureBindings();
 
@@ -45,9 +48,14 @@ public class RobotContainer {
     new JoystickButton(mDriveController, Button.kX.value).whileTrue(
       mShooter.shootRing()
     );
+
+    new JoystickButton(mDriveController, Button.kB.value).whileTrue(
+       mIndexer.runIndexer()
+    );
   }
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
+
 }
