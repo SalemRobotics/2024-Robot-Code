@@ -16,21 +16,17 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
-public class Vision extends SubsystemBase {
+/**
+ * Class containing a number of useful methods for working with PhotonLib. 
+ */
+public class Vision {
     final PhotonCamera mCamera = new PhotonCamera("placeholder");
 
     final PhotonPoseEstimator poseEstimator;
 
     AprilTagFieldLayout mFieldLayout;
-
-    // distance between calculated robot pose and target april tag pose
-    public double targetDistance;
-
-    // yaw between calculated robot pose and target april tag pose
-    public Rotation2d targetYaw;
 
     public Vision() {
         try {
@@ -47,6 +43,12 @@ public class Vision extends SubsystemBase {
         );
     }
 
+    /**
+     * Gets the Multitag target from the camera.
+     * @return The Multitag target, should it exist.
+     * @see {@link Optional}
+     * @see {@link MultiTargetPNPResult}
+     */
     public Optional<MultiTargetPNPResult> getMultiTagTarget() {
         var currentResult = mCamera.getLatestResult();
         if (currentResult.hasTargets())
@@ -54,6 +56,12 @@ public class Vision extends SubsystemBase {
         return null;
     }
 
+    /**
+     * Gets the transform of the Multitag target.
+     * @return transform of the Multitag target, should it exist.
+     * @see {@link Optional}
+     * @see {@link Transform3d}
+     */
     public Optional<Transform3d> getMultiTagTransform() {
         var multiTag = getMultiTagTarget().get();
         if (multiTag.estimatedPose.isPresent)
@@ -61,6 +69,12 @@ public class Vision extends SubsystemBase {
         return null;
     }
 
+    /**
+     * Gets the best result of individual Apriltags.
+     * @return The best Apriltag target, should it exist.
+     * @see {@link Optional}
+     * @see {@link PhotonTrackedTarget}
+     */
     public Optional<PhotonTrackedTarget> getBestTarget() {
         var currentResult = mCamera.getLatestResult();
         if (currentResult.hasTargets())
@@ -68,6 +82,10 @@ public class Vision extends SubsystemBase {
         return null;
     }
 
+    /**
+     * Gets the distance from the robot to the target Multitag.
+     * @return Distance, in meters. (I think)
+     */
     public double getTargetDistance() {
         var targetTransform = getMultiTagTransform().get();
 
@@ -80,9 +98,26 @@ public class Vision extends SubsystemBase {
     }
 
     /**
+     * Gets the yaw between the robot and target Multitag.
+     * @return Yaw rotation.
+     * @see {@link Rotation2d}
+     */
+    public Rotation2d getTargetYaw() {
+        var targetTransform = getMultiTagTransform().get();
+
+        var targetPose = new Pose2d(
+            targetTransform.getTranslation().toTranslation2d(),
+            targetTransform.getRotation().toRotation2d()
+        );
+
+        return PhotonUtils.getYawToPose(getRobotPose().toPose2d(), targetPose);
+    }
+
+    /**
      * Gets the field relative robot pose. 
      * TODO: try and implement a system to calculate error between odometry pose and apriltag pose and pick whichever has least error, or lerp between them
-     * @return Pose3d representing robot pose 
+     * @return Robot pose.
+     * @see {@link Pose3d}
      */
     public Pose3d getRobotPose() {
         return poseEstimator.update().get().estimatedPose;
