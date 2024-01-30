@@ -9,26 +9,26 @@ import frc.robot.Constants.IndexerConstants;
 public class Indexer extends SubsystemBase {
     final CANSparkMax mIndexIntakeMotor = new CANSparkMax(IndexerConstants.kIndexerIntakeID, MotorType.kBrushless);
     final CANSparkMax mIndexShooterMotor = new CANSparkMax(IndexerConstants.kIndexerShooterID, MotorType.kBrushless);
-
-    public Indexer() {
-        mIndexIntakeMotor.setInverted(true);
-        mIndexIntakeMotor.burnFlash();
-
-        mIndexShooterMotor.setInverted(true);
-        mIndexShooterMotor.burnFlash();
-    }
-
-    public Command runIndexer(){
+    
+    public Command runMiddleIndexer(double speed) {
         return runEnd(
             () -> {
-                mIndexIntakeMotor.set(IndexerConstants.kIndexerSpeed);
-                mIndexShooterMotor.set(IndexerConstants.kIndexerSpeed);
+                mIndexIntakeMotor.set(speed);
             },
             () -> {
                 mIndexIntakeMotor.stopMotor();
+            }
+        );
+    }
+
+    public Command runShooterIndexer(double speed) {
+        return runEnd(
+            () -> {
+                mIndexShooterMotor.set(speed);
+            }, 
+            () -> {
                 mIndexShooterMotor.stopMotor();
             }
         );
-
     }
 }

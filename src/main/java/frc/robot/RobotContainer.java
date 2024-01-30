@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.Constants.IntakeConstants;
+import frc.robot.command.IntakeInAndIndex;
+import frc.robot.command.IntakeOutAndIndex;
+import frc.robot.command.SpinUpShooterAndIndex;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Indexer;
@@ -51,19 +53,15 @@ public class RobotContainer {
     );
     
     new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
-      mShooter.shootRing()
-    );
-
-    new JoystickButton(mOperatorController, Button.kB.value).whileTrue(
-       mIndexer.runIndexer()
+      new SpinUpShooterAndIndex(mIndexer, mShooter)
     );
     
     new JoystickButton(mOperatorController, Button.kRightBumper.value).whileTrue(
-      mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn)
+      new IntakeInAndIndex(mIntake, mIndexer)
     );
     
     new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
-      mIntake.intakeRing(IntakeConstants.kIntakeSpeedOut)
+      new IntakeOutAndIndex(mIntake, mIndexer)
     );
   }
 

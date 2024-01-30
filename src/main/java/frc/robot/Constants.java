@@ -15,7 +15,8 @@ public final class Constants {
     }
     
     public static final class IndexerConstants {
-        public static final double kIndexerSpeed = 1.0;
+        public static final double kIndexerSpeedIn = 1.0;
+        public static final double kIndexerSpeedOut = -1.0;
 
         public static final int kIndexerIntakeID = 11;
         public static final int kIndexerShooterID = 12;
