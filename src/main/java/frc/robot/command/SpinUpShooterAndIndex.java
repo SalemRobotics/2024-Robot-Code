@@ -14,14 +14,15 @@ public class SpinUpShooterAndIndex extends ParallelCommandGroup {
     public SpinUpShooterAndIndex(Indexer indexer, Shooter shooter) {
         mIndexer = indexer;
         mShooter = shooter;
-        addRequirements(mIndexer,mShooter);
-
+        
         addCommands(
             mShooter.shootRing(),
             new SequentialCommandGroup(
                 new WaitCommand(2),
-                mIndexer.runMiddleIndexer(IndexerConstants.kIndexerSpeedIn)
+                mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn)
             )
         );
+
+        addRequirements(mIndexer, mShooter);
     }
 }

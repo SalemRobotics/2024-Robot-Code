@@ -13,11 +13,12 @@ public class IntakeInAndIndex extends ParallelCommandGroup {
     public IntakeInAndIndex(Intake intake, Indexer indexer) {
         mIntake = intake;
         mIndexer = indexer;
-        addRequirements(mIntake, mIndexer);
 
         addCommands(
             mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn),
             mIndexer.runMiddleIndexer(IndexerConstants.kIndexerSpeedIn)
         );
+
+        addRequirements(mIntake, mIndexer);
     }
 }
