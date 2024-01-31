@@ -21,12 +21,14 @@ public class Indexer extends SubsystemBase {
         );
     }
 
-    public Command runShooterIndexer(double speed) {
+    public Command runAllIndexer(double speed) {
         return runEnd(
             () -> {
+                mIndexIntakeMotor.set(speed);
                 mIndexShooterMotor.set(speed);
             }, 
             () -> {
+                mIndexIntakeMotor.stopMotor();
                 mIndexShooterMotor.stopMotor();
             }
         );
