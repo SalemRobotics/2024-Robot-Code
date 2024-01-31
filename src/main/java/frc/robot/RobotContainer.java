@@ -5,10 +5,12 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,6 +22,8 @@ import frc.robot.subsystems.Drivetrain;
 
 public class RobotContainer {
   
+  public static final Field2d m_field = new Field2d();
+
   final XboxController mDriveController = new XboxController(ControllerConstants.kDriverPort); 
 
   final Drivetrain mDrivetrain = new Drivetrain();
@@ -28,6 +32,8 @@ public class RobotContainer {
   
   public RobotContainer() {
     configureBindings();
+
+    SmartDashboard.putData("Field", m_field);
 
     SmartDashboard.putData(mAutoChooser);
 
