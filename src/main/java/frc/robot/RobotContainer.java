@@ -46,6 +46,8 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
 
+    configureNamedCommands();
+
     SmartDashboard.putData("Field", m_field);
 
     SmartDashboard.putData(mAutoChooser);
@@ -80,6 +82,11 @@ public class RobotContainer {
     new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
       new IntakeOutAndIndex(mIntake, mIndexer)
     );
+  }
+
+  public void configureNamedCommands(){
+    NamedCommands.registerCommand("intake", new IntakeInAndIndex(mIntake, mIndexer));
+    NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter));
   }
 
   public Command getAutonomousCommand() {
