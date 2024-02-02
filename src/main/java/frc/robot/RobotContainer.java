@@ -41,12 +41,14 @@ public class RobotContainer {
   
   final Intake mIntake = new Intake();
   
-  final SendableChooser<Command> mAutoChooser = AutoBuilder.buildAutoChooser(AutoConstants.kTestAuto2);
+  final SendableChooser<Command> mAutoChooser;
 
   public RobotContainer() {
     configureBindings();
 
     configureNamedCommands();
+
+    mAutoChooser = AutoBuilder.buildAutoChooser(AutoConstants.kTestAuto2);
 
     SmartDashboard.putData("Field", m_field);
 

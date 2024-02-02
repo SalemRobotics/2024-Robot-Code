@@ -153,15 +153,16 @@ public final class Constants {
         public static final String kTestAuto = "Test Auto";
         public static final String kTestAuto2 = "Test Auto 2";
         
-        public static final double kAutoDrivingP = 0.04;
-        public static final double kAutoDrivingI = 0;
-        public static final double kAutoDrivingD = 0;
-        public static final double kAutoDrivingIZone = 1;
-
-        public static final double kAutoTurningP = 1;
-        public static final double kAutoTurningI = 0;
-        public static final double kAutoTurningD = 0;
-        public static final double kAutoTurningIZone = 1;
+        public static final double kAutoDrivingP = 12;
+        public static final double kAutoDrivingI = 1;
+        public static final double kAutoDrivingD = 0.3;
+        public static final double kAutoDrivingIZone = 1000;
+        
+        //oscillation in turning
+        public static final double kAutoTurningP = 3.5;
+        public static final double kAutoTurningI = 0.1;
+        public static final double kAutoTurningD = 0.1;
+        public static final double kAutoTurningIZone = 1000;
 
         public static final String[] kStartOptions = {
 
