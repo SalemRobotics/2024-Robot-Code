@@ -45,34 +45,57 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureBindings();
-
     configureNamedCommands();
-
-    mAutoChooser = AutoBuilder.buildAutoChooser(AutoConstants.kTestAuto2);
 
     SmartDashboard.putData("Field", m_field);
 
+    mAutoChooser = AutoBuilder.buildAutoChooser(AutoConstants.kTestAuto2);
     SmartDashboard.putData(mAutoChooser);
 
     // Set default Drivetrain command to a RunCommand containing Drivetrain::drive.
     mDrivetrain.setDefaultCommand(
-      new RunCommand(
-        // Controllers should have a deadband so that there is no drifting. 
-        // Field relativity and rate limiting should always be true.
-        () -> mDrivetrain.drive(
-          -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
-          -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
-          -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband),
-          true, true), 
-        mDrivetrain)
+      getDriveCommand()
+    );
+  }
+
+  private Command getDriveCommand() {
+    return new RunCommand(
+      () -> mDrivetrain.drive(
+            -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband),
+            true, true),
+      mDrivetrain
     );
   }
 
   private void configureBindings() {
     new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
-      new RunCommand(() -> mDrivetrain.setX(), mDrivetrain)
+      mDrivetrain.setX()
+    );
+
+    // #region Cardinal Direction Commands
+
+    new JoystickButton(mDriveController, Button.kY.value).whileTrue(
+      mDrivetrain.setRobotHeading(Direction.North.value)
+    );
+
+    new JoystickButton(mDriveController, Button.kB.value).whileTrue(
+      mDrivetrain.setRobotHeading(Direction.East.value)
+    );
+
+    new JoystickButton(mDriveController, Button.kA.value).whileTrue(
+      mDrivetrain.setRobotHeading(Direction.South.value)
+    );
+
+    new JoystickButton(mDriveController, Button.kX.value).whileTrue(
+      mDrivetrain.setRobotHeading(Direction.West.value)
     );
     
+    // #endregion
+    
+    // #region Operator Controls
+
     new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
       new SpinUpShooterAndIndex(mIndexer, mShooter)
     );
@@ -84,6 +107,8 @@ public class RobotContainer {
     new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
       new IntakeOutAndIndex(mIntake, mIndexer)
     );
+    
+    // #endregion
   }
 
   public void configureNamedCommands(){

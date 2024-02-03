@@ -4,6 +4,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
@@ -203,8 +205,6 @@ public class Drivetrain extends SubsystemBase {
       mCurrentRotation = rot;
     }
 
-    SmartDashboard.putNumber("Right Joystick X", mCurrentRotation);
-
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
@@ -217,18 +217,58 @@ public class Drivetrain extends SubsystemBase {
     setModuleStates(swerveModuleStates);
   }
 
+  void setModuleHeading(double receivedOutput) {
+    setModuleStates(DriveConstants.kDriveKinematics.toSwerveModuleStates(
+        new ChassisSpeeds(0, 0, -receivedOutput * DriveConstants.kMaxAngularSpeed)
+      ));
+  }
+
+  /**
+   * Wraps the gyro angle betwen -180 and 180 degrees
+   * @return New gyro angle
+   */
+  double getWrappedGyroAngle() {
+    double angle = mPigeon.getAngle();
+
+    // reduce the gyro angle
+    angle %= 360;
+    
+    // force it into the positive remainder, 0 <= angle < 360
+    angle = (angle + 360) % 360;
+
+    // force into the minimum absolute value, -180 < angle <= 180
+    if (angle > 180)
+      angle -= 360;
+    
+    return angle;
+  }
+
+  public Command setRobotHeading(double degrees) {
+    return new PIDCommand(
+      new PIDController(
+        DriveConstants.kHeadingP, 
+        DriveConstants.kHeadingI, 
+        DriveConstants.kHeadingD
+      ), 
+      this::getWrappedGyroAngle, 
+      degrees,
+      this::setModuleHeading,
+      this
+    );
+  }
+
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
   public Command setX() {
     return run(
-      () -> {
-        mFrontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-        mFrontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-        mRearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-        mRearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-      }
-    );
+      () -> setModuleStates(
+        new SwerveModuleState[] {
+          new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+          new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+          new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+          new SwerveModuleState(0, Rotation2d.fromDegrees(45))
+        }));
   }
 
   /**

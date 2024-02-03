@@ -83,6 +83,11 @@ public final class Constants {
         public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
         public static final int kPigeonID = 0;
+
+        // misc PID controls
+        public static final double kHeadingP = 0.015;
+        public static final double kHeadingI = 0.0;
+        public static final double kHeadingD = 0.0;
         
         // SPARK MAX IDs
         public static final int kFrontLeftDrivingCanID = 7;
