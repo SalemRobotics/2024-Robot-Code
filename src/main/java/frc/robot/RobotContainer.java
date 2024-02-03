@@ -21,7 +21,6 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 
 public class RobotContainer {
-  
   final XboxController mDriveController = new XboxController(ControllerConstants.kDriverPort); 
   final XboxController mOperatorController = new XboxController(ControllerConstants.kOperatorPort);
 

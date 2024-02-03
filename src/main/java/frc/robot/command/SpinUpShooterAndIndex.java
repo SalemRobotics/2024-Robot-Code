@@ -1,26 +1,32 @@
 package frc.robot.command;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
 
+/**
+ * Runs the shooter and indexer together, 
+ * intending to speed the shooter up to an allowed threshold before running the indexer to fire gamepieces. 
+ */
 public class SpinUpShooterAndIndex extends ParallelCommandGroup {
     final Indexer mIndexer;
     final Shooter mShooter;
 
+    /**
+     * Creates a new {@link SpinUpShooterAndIndex} command group with required subsystems
+     * @param indexer Indexer subsystem
+     * @param shooter Shooter subsystem
+     * @see Indexer
+     * @see Shooter
+     */
     public SpinUpShooterAndIndex(Indexer indexer, Shooter shooter) {
         mIndexer = indexer;
         mShooter = shooter;
         
         addCommands(
             mShooter.shootRing(),
-            new SequentialCommandGroup(
-                new WaitCommand(2),
-                mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn)
-            )
+            mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn, mShooter::isAllowedShootSpeed)
         );
 
         addRequirements(mIndexer, mShooter);
