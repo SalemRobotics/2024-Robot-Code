@@ -188,8 +188,7 @@ public class Drivetrain extends SubsystemBase {
         mFrontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
         mRearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
         mRearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-      }
-    );
+      });
   }
 
   /**
