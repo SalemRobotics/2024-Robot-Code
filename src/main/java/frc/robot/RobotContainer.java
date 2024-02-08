@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.util.SwerveUtils;
 
 public class RobotContainer {
   
@@ -26,8 +27,8 @@ public class RobotContainer {
     mDrivetrain.setDefaultCommand(
       new RunCommand(
         () -> mDrivetrain.drive(
-          -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
-          -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
+          -SwerveUtils.SquareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+          -SwerveUtils.SquareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
           -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband),
           true, true), 
         mDrivetrain)
