@@ -99,4 +99,9 @@ public final class Constants {
         public static final int kDriverPort = 0;
         public static final double kDriveDeadband = 0.05;
     }
+
+    public static final class ClimberConstants {
+        public static final int kClimberMoter1CanID = 0;
+        public static final int kClimberMoter2CanID = 0;
+    }
 }

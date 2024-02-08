@@ -3,12 +3,14 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
+import frc.robot.Constants.ClimberConstants;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
-    CANSparkMax climberMoter1 = new CANSparkMax(0,MotorType.kBrushless);
-    CANSparkMax climberMoter2 = new CANSparkMax(0,MotorType.kBrushless);
+    CANSparkMax climberMoter1 = new CANSparkMax(kClimberMoter1CanID,MotorType.kBrushless);
+    CANSparkMax climberMoter2 = new CANSparkMax(kClimberMoter2CanID,MotorType.kBrushless);
 
     public Climber() {
         climberMoter2.follow(climberMoter1);
