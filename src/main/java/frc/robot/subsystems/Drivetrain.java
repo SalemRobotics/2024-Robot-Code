@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -145,15 +144,7 @@ public class Drivetrain extends SubsystemBase {
         pose);
   }
 
-  /**
-   * Method to drive the robot using joystick info.
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
-   * @param rateLimit     Whether to enable rate limiting for smoother control.
-   */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+  SwerveModuleState[] getDriveSwerveStates(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
 
     double xSpeedCommanded;
     double ySpeedCommanded;
@@ -210,11 +201,22 @@ public class Drivetrain extends SubsystemBase {
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = mCurrentRotation * DriveConstants.kMaxAngularSpeed;
 
-    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-        fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, mPigeon.getRotation2d())
-            : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
-    setModuleStates(swerveModuleStates);
+    return DriveConstants.kDriveKinematics.toSwerveModuleStates(
+            fieldRelative
+              ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, mPigeon.getRotation2d())
+              : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
+  }
+
+  /**
+   * Method to drive the robot using joystick info.
+   * @param xSpeed        Speed of the robot in the x direction (forward).
+   * @param ySpeed        Speed of the robot in the y direction (sideways).
+   * @param rot           Angular rate of the robot.
+   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
+   * @param rateLimit     Whether to enable rate limiting for smoother control.
+   */
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+    setModuleStates(getDriveSwerveStates(xSpeed, ySpeed, rot, fieldRelative, rateLimit));
   }
 
   void setModuleHeading(double receivedOutput) {
@@ -243,7 +245,7 @@ public class Drivetrain extends SubsystemBase {
     return angle;
   }
 
-  public Command setRobotHeading(double degrees) {
+  public Command setRobotHeading(double degrees, double xSpeed, double ySpeed, boolean fieldRelative, boolean rateLimit) {
     return new PIDCommand(
       new PIDController(
         DriveConstants.kHeadingP, 
@@ -252,7 +254,11 @@ public class Drivetrain extends SubsystemBase {
       ), 
       this::getWrappedGyroAngle, 
       degrees,
-      this::setModuleHeading,
+      (receivedOutput) -> {
+        setModuleStates(
+          getDriveSwerveStates(xSpeed, ySpeed, receivedOutput, fieldRelative, rateLimit)
+        );
+      },
       this
     );
   }
