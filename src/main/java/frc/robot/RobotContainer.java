@@ -77,31 +77,27 @@ public class RobotContainer {
       mDrivetrain.setRobotHeading(Direction.North.value, 
               -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
               -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband),
               true, true)
     );
 
     new JoystickButton(mDriveController, Button.kB.value).whileTrue(
-      mDrivetrain.setRobotHeading(Direction.East.value
+      mDrivetrain.setRobotHeading(Direction.East.value,
               -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
               -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband),
               true, true)
     );
 
     new JoystickButton(mDriveController, Button.kA.value).whileTrue(
-      mDrivetrain.setRobotHeading(Direction.South.value
+      mDrivetrain.setRobotHeading(Direction.South.value,
               -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
               -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband),
               true, true)
     );
 
     new JoystickButton(mDriveController, Button.kX.value).whileTrue(
-      mDrivetrain.setRobotHeading(Direction.West.value
+      mDrivetrain.setRobotHeading(Direction.West.value,
               -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
               -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband),
               true, true)
     );
     
