@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
-    CANSparkMax climberMoter1 = new CANSparkMax(kClimberMoter1CanID,MotorType.kBrushless);
-    CANSparkMax climberMoter2 = new CANSparkMax(kClimberMoter2CanID,MotorType.kBrushless);
+    CANSparkMax climberMoter1 = new CANSparkMax(ClimberConstants.kClimberMoter1CanID, MotorType.kBrushless);
+    CANSparkMax climberMoter2 = new CANSparkMax(ClimberConstants.kClimberMoter2CanID, MotorType.kBrushless);
 
     public Climber() {
         climberMoter2.follow(climberMoter1);
@@ -22,7 +22,7 @@ public class Climber extends SubsystemBase {
                 climberMoter1.set(speed);
             }, 
             () -> {
-                climberMoter1.set(0);
+                climberMoter1.stopMotor();
             }
         );
     }
