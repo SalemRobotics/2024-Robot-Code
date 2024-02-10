@@ -1,52 +1,25 @@
 package frc.robot.subsystems;
 
-import java.io.IOException;
-import java.util.NoSuchElementException;
+import java.util.Collections;
+ import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.VisionConstants;
 
 /**
  * Class containing a number of useful methods for working with PhotonLib. 
  */
 public class Vision {
-    final PhotonCamera mCamera = new PhotonCamera("placeholder");
-
-    final PhotonPoseEstimator poseEstimator;
-
-    final Pose2d mOdometryRobotPose;
-
-    AprilTagFieldLayout mFieldLayout;
-
-    public Vision(Pose2d robotPose) {
-        mOdometryRobotPose = robotPose;
-        
-        try {
-            mFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-        } catch (IOException e) {
-            System.err.println(e);
-        }
-
-        poseEstimator = new PhotonPoseEstimator(
-            mFieldLayout, 
-            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, 
-            mCamera, 
-            VisionConstants.kCameraPosition
-        );
-    }
+    final PhotonCamera mCamera = new PhotonCamera("USB_Camera");
 
     /**
      * Gets the Multitag target from the camera.
@@ -56,9 +29,27 @@ public class Vision {
      */
     public Optional<MultiTargetPNPResult> getMultiTagTarget() {
         var currentResult = mCamera.getLatestResult();
-        if (currentResult.hasTargets())
-            return Optional.of(currentResult.getMultiTagResult());
-        return null;
+        if (!currentResult.hasTargets()) 
+            return null;
+
+        Alliance allianceColor;
+        try {
+            allianceColor = DriverStation.getAlliance().orElseThrow();
+        } catch (Exception e) {
+            return null;
+        }
+
+        var target = currentResult.getMultiTagResult();
+
+        // copy and sort the fiducial ID list
+        var fiducialIDsCopy = List.copyOf(target.fiducialIDsUsed);
+        Collections.sort(fiducialIDsCopy);
+
+        // if they don't match, discard the result
+        if (!fiducialIDsCopy.equals(VisionConstants.kValidFiducialIDs.get(allianceColor))) 
+            return null;
+
+        return Optional.of(target);
     }
 
     /**
@@ -71,8 +62,7 @@ public class Vision {
         MultiTargetPNPResult multiTag;
         try {
             multiTag = getMultiTagTarget().orElseThrow();
-        } catch (NoSuchElementException e) {
-            System.err.println(e);
+        } catch (Exception e) {
             return null;
         }
         
@@ -89,9 +79,22 @@ public class Vision {
      */
     public Optional<PhotonTrackedTarget> getBestTarget() {
         var currentResult = mCamera.getLatestResult();
-        if (currentResult.hasTargets())
-            return Optional.of(currentResult.getBestTarget());
-        return null;
+        if (!currentResult.hasTargets())
+            return null;
+
+        Alliance allianceColor;
+        try {
+            allianceColor = DriverStation.getAlliance().orElseThrow();
+        } catch (Exception e) {
+            return null;
+        }
+
+        var target = currentResult.getBestTarget();
+        // target fiducial ID does not match any of the valid IDs, discard result
+        if (!VisionConstants.kValidFiducialIDs.get(allianceColor).contains(target.getFiducialId()))
+            return null;
+        
+        return Optional.of(target);
     }
 
     /**
@@ -100,76 +103,50 @@ public class Vision {
      * @see Optional
      */
     public Optional<Double> getTargetDistance() {
-        Transform3d targetTransform;
+        double targetPitch;
         try {
-            targetTransform = getMultiTagTransform().orElseThrow();
-        } catch (NoSuchElementException e) {
-            System.err.println(e);
-            return null;
-        }
-
-        var targetPose = new Pose2d(
-            targetTransform.getTranslation().toTranslation2d(),
-            targetTransform.getRotation().toRotation2d()
-        );
-
-        Pose2d robotPose;
-        try {
-            robotPose = getRobotPose().orElseThrow().toPose2d();
+            targetPitch = getTargetPitch().orElseThrow();
         } catch (Exception e) {
-            System.err.println(e);
             return null;
         }
 
-        return Optional.of(PhotonUtils.getDistanceToPose(robotPose, targetPose));
+        return Optional.of(
+            PhotonUtils.calculateDistanceToTargetMeters(
+                VisionConstants.kCameraHeight, 
+                Units.inchesToMeters(66), 
+                VisionConstants.kCameraPitch, 
+                targetPitch));
     }
 
     /**
-     * Gets the yaw between the robot and target Multitag.
+     * Gets the pitch between the camera and target, in radians.
+     * @return Pitch rotation, should it exist.
+     * @see Optional
+     */
+    public Optional<Double> getTargetPitch() {
+        double targetPitch;
+        try {
+            targetPitch = Units.degreesToRadians(getBestTarget().orElseThrow().getYaw());
+        } catch (Exception e) {
+            return null;
+        }
+
+        return Optional.of(targetPitch);
+    }
+
+    /**
+     * Gets the yaw between the camera and target, in radians.
      * @return Yaw rotation, should it exist.
-     * @see Rotation2d
      * @see Optional
      */
-    public Optional<Rotation2d> getTargetYaw() {
-        Transform3d targetTransform;
+    public Optional<Double> getTargetYaw() {
+        double targetYaw;
         try {
-            targetTransform = getMultiTagTransform().orElseThrow();
-        } catch (NoSuchElementException e) {
-            System.err.println(e);
+            targetYaw = Units.degreesToRadians(getBestTarget().orElseThrow().getYaw());
+        } catch (Exception e) {
             return null;
         }
 
-        var targetPose = new Pose2d(
-            targetTransform.getTranslation().toTranslation2d(),
-            targetTransform.getRotation().toRotation2d()
-        );
-
-        Pose2d robotPose;
-        try {
-            robotPose = getRobotPose().orElseThrow().toPose2d();
-        } catch (NoSuchElementException e) {
-            System.err.println(e);
-            return null;
-        }
-
-        return Optional.of(PhotonUtils.getYawToPose(robotPose, targetPose));
-    }
-
-    /**
-     * Gets the robot pose relative to tracked Multitag targets.
-     * @return Robot pose.
-     * @see Pose3d
-     * @see Optional
-     */
-    public Optional<Pose3d> getRobotPose() {
-        Pose3d estimatedPose;
-        try {
-            estimatedPose = poseEstimator.update().orElseThrow().estimatedPose;
-        } catch (NoSuchElementException e) {
-            System.err.println(e);
-            return null;
-        }
-
-        return Optional.of(estimatedPose);
+        return Optional.of(targetYaw);
     }
 }

@@ -1,0 +1,22 @@
+{
+  "NetworkTables": {
+    "transitory": {
+      "photonvision": {
+        "USB_Camera": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo"
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "10.99.98.2"
+  }
+}
