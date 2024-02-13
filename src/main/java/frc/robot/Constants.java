@@ -99,4 +99,11 @@ public final class Constants {
         public static final int kDriverPort = 0;
         public static final double kDriveDeadband = 0.05;
     }
+
+    public static final class SAMConstants {
+        public static final double kA = 0;
+        public static final double kS = 0;
+        public static final double kG = 0;
+        public static final double kV = 0;
+    }
 }
