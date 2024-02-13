@@ -254,18 +254,14 @@ public class Drivetrain extends SubsystemBase {
       ), 
       this::getWrappedGyroAngle, 
       degrees,
-      (receivedOutput) -> {
-        setModuleStates(
-          getDriveSwerveStates(xSpeed, ySpeed, receivedOutput, fieldRelative, rateLimit)
-        );
-      },
+      (receivedOutput) -> setModuleStates(
+        getDriveSwerveStates(xSpeed, ySpeed, receivedOutput, fieldRelative, rateLimit)
+      ),
       this
     );
   }
 
-  /**
-   * Sets the wheels into an X formation to prevent movement.
-   */
+  /** Sets the wheels into an X formation to prevent movement. */
   public Command setX() {
     return run(
       () -> setModuleStates(
@@ -279,7 +275,6 @@ public class Drivetrain extends SubsystemBase {
 
   /**
    * Sets the swerve ModuleStates.
-   *
    * @param desiredStates The desired SwerveModule states.
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
