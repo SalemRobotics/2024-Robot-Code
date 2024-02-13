@@ -1,4 +1,4 @@
-package frc.robot.command;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.IndexerConstants;
@@ -7,26 +7,26 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 
 /**
- * Runs the intake and indexer in parallel,intending to fully eject gamepieces from the robot.
+ * Runs the Intake and Indexer together in parallel, intending to fully intake gamepieces into the robot.
  */
-public class IntakeOutAndIndex extends ParallelCommandGroup {
+public class IntakeInAndIndex extends ParallelCommandGroup {
     final Intake mIntake;
     final Indexer mIndexer;
 
     /**
-     * Creates a new {@link IntakeOutAndIndex} command group with required subsystems.
+     * Creates a new {@link IntakeInAndIndex} command group with required subsystems.
      * @param intake Intake subsystem 
      * @param indexer Indexer subsystem
      * @see Intake
      * @see Indexer
      */
-    public IntakeOutAndIndex(Intake intake, Indexer indexer) {
+    public IntakeInAndIndex(Intake intake, Indexer indexer) {
         mIntake = intake;
         mIndexer = indexer;
 
         addCommands(
-            mIntake.intakeRing(IntakeConstants.kIntakeSpeedOut),
-            mIndexer.runMiddleIndexer(IndexerConstants.kIndexerSpeedOut)
+            mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn),
+            mIndexer.runMiddleIndexer(IndexerConstants.kIndexerSpeedIn)
         );
 
         addRequirements(mIntake, mIndexer);
