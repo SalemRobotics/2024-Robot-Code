@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.StrongArmMachine;
 import frc.util.SwerveUtils;
 
 public class RobotContainer {
@@ -20,6 +21,8 @@ public class RobotContainer {
   final XboxController mDriveController = new XboxController(ControllerConstants.kDriverPort); 
 
   final Drivetrain mDrivetrain = new Drivetrain();
+
+  final StrongArmMachine mStrongArmMachine = new StrongArmMachine();
   
   public RobotContainer() {
     configureBindings();
@@ -38,6 +41,22 @@ public class RobotContainer {
   private void configureBindings() {
     new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
       mDrivetrain.setX()
+    );
+
+    new JoystickButton(mDriveController, Button.kA.value).whileTrue(
+      mStrongArmMachine.runIntake()
+    );
+
+    new JoystickButton(mDriveController, Button.kB.value).whileTrue(
+      mStrongArmMachine.pivotUp()
+    );
+
+    new JoystickButton(mDriveController, Button.kX.value).whileTrue(
+      mStrongArmMachine.pivotDown()
+    );
+
+    new JoystickButton(mDriveController, Button.kY.value).whileTrue(
+      mStrongArmMachine.runAmp()
     );
   }
 
