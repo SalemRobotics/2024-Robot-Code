@@ -14,10 +14,13 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.util.SwerveUtils;
 
@@ -292,5 +295,51 @@ public class Drivetrain extends SubsystemBase {
     mRearLeft.resetEncoders();
     mFrontRight.resetEncoders();
     mRearRight.resetEncoders();
+  }
+
+  /**
+   * Chris's messy suggestion for how to test pid quickly
+   * Essentially we reset all of drivetrain just like the constructor
+   * @return
+   */
+  public Command setPIDAndReset() {
+    return run(() -> {
+      HolonomicPathFollowerConfig pathConfig = new HolonomicPathFollowerConfig(
+            new PIDConstants(
+              // TODO: Get from smart dashboard
+                SmartDashboard.getNumber("Driving P", AutoConstants.kAutoDrivingP),
+                SmartDashboard.getNumber("Driving I", AutoConstants.kAutoDrivingI),
+                SmartDashboard.getNumber("Driving D", AutoConstants.kAutoDrivingD),
+                SmartDashboard.getNumber("Driving IZone", AutoConstants.kAutoDrivingIZone)
+            ), 
+            new PIDConstants(
+                SmartDashboard.getNumber("Turning P", AutoConstants.kAutoTurningP),
+                SmartDashboard.getNumber("Turning I", AutoConstants.kAutoTurningI),
+                SmartDashboard.getNumber("Turning D", AutoConstants.kAutoTurningD),
+                SmartDashboard.getNumber("Turning IZone", AutoConstants.kAutoTurningIZone)
+            ), 
+            DriveConstants.kMaxSpeedMetersPerSecond, 
+            DriveConstants.kDriveBaseRadius, 
+            new ReplanningConfig(true, true)
+        );
+      resetEncoders();
+      mPigeon.reset();
+
+      AutoBuilder.configureHolonomic(
+        this::getPose, 
+        this::resetOdometry, 
+        this::getSpeeds, 
+        this::setRobotRelativeStates, 
+        pathConfig, 
+        () -> {
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        }, 
+        this
+      );
+    });
   }
 }
