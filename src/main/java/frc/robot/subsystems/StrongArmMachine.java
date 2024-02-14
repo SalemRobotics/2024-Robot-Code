@@ -16,10 +16,10 @@ public class StrongArmMachine extends SubsystemBase {
     public Command runIntake() {
         return runEnd(
             () -> {
-                mIntakeMotor.set(SAMConstants.speed);
+                mIntakeMotor.set(SAMConstants.SAMspeed);
             },
             () -> {
-                mIntakeMotor.stop();
+                mIntakeMotor.stopMotor();
             }
         );
     }
@@ -27,10 +27,10 @@ public class StrongArmMachine extends SubsystemBase {
     public Command pivotUp() {
         return runEnd(
             () -> {
-                mPivotMotor.set(-SAMConstants.speed);
+                mPivotMotor.set(-SAMConstants.SAMspeed);
             },
             () -> {
-                mPivotMotor.stop();
+                mPivotMotor.stopMotor();
             }
         );
     }
@@ -38,10 +38,10 @@ public class StrongArmMachine extends SubsystemBase {
     public Command pivotDown() {
         return runEnd(
             () -> {
-                mPivotMotor.set(SAMConstants.speed);
+                mPivotMotor.set(SAMConstants.SAMspeed);
             },
             () -> {
-                mPivotMotor.stop();
+                mPivotMotor.stopMotor();
             }
         );
     }
@@ -49,10 +49,10 @@ public class StrongArmMachine extends SubsystemBase {
     public Command runAmp() {
         return runEnd(
             () -> {
-                mIntakeMotor.set(-SAMConstants.speed);
+                mIntakeMotor.set(-SAMConstants.SAMspeed);
             },
             () -> {
-                mIntakeMotor.stop();
+                mIntakeMotor.stopMotor();
             }
         );
     }
