@@ -3,6 +3,7 @@ package frc.robot;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
@@ -12,6 +13,21 @@ public final class Constants {
 
         public static final int kLeftMotorID = 10;
         public static final int kRightMotorID = 13;
+        public static final int kPivotMotorID = 0; // TODO: set this field
+
+        public static final double kPivotPositionConversionFactor = 0.0; // TODO: set this field
+
+        // TODO: tune constants
+        public static final double kPivotP = 0.0;
+        public static final double kPivotI = 0.0;
+        public static final double kPivotD = 0.0;
+        public static final double kPivotFF = 0.0;
+        public static final double kPivotMaxOutput = 1.0;
+        public static final double kPivotMinOutput = -1.0;
+
+        public static final InterpolatingDoubleTreeMap kPivotAngleMap = new InterpolatingDoubleTreeMap() {{
+            put(0.0, 0.0);
+        }};
     }
     
     public static final class DriveConstants {
