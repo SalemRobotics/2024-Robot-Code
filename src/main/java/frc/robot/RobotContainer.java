@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Indexer;
 import frc.util.SwerveUtils;
@@ -43,7 +44,7 @@ public class RobotContainer {
     );
 
     new JoystickButton(mDriveController, Button.kB.value).whileTrue(
-       mIndexer.runIndexer()
+       mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeed)
     );
   }
 
