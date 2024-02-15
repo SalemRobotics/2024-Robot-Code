@@ -101,10 +101,10 @@ public final class Constants {
     }
 
     public static final class SAMConstants {
-        public static final double kA = 0;
-        public static final double kS = 0;
-        public static final double kG = 0;
-        public static final double kV = 0;
-        public static final double SAMspeed = 0;
+        public static final double kA = 0.03;
+        public static final double kS = 0.01;
+        public static final double kG = 0.45;
+        public static final double kV = 2.34;
+        public static final double SAMspeed = 0.5;
     }
 }
