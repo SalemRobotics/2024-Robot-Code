@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.AbsoluteEncoder;
@@ -27,9 +26,6 @@ public class MAXSwerveModule {
 
   final SparkPIDController mDrivingPIDController;
   final SparkPIDController mTurningPIDController;
-
-  double drivingP=0.04, drivingI=0, drivingD=0, drivingFF=1 / SwerveConstants.kDriveWheelFreeSpeedRps, drivingMin=-1, drivingMax=1;
-  double turningP=1, turningI=0, turningD=0, turningFF=0, turningMin=-1, turningMax=1;
 
   double mChassisAngularOffset = 0;
   SwerveModuleState mDesiredState = new SwerveModuleState(0.0, new Rotation2d());
@@ -109,69 +105,7 @@ public class MAXSwerveModule {
     mDesiredState.angle = new Rotation2d(mTurningEncoder.getPosition());
     mDrivingEncoder.setPosition(0);
   }
-
-  public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset, boolean inverted) {
-    this(drivingCANId, turningCANId, chassisAngularOffset);
-
-    mDrivingSparkMax.setInverted(inverted);
-    mDrivingSparkMax.burnFlash();
-  }
-
-  /**
-   * Sends PID entries to Shuffleboard
-   * @param key String identifier to differentiate module groups
-   */
-  public void updateShuffleboardPID(String key) {
-    updateDrivingShuffleboardPID(key);
-    updateTurningShuffleboardPID(key);
-  }
-
-  /**
-   * Sends Driving PID entries to Shuffleboard
-   * @param key String identifier to differentiate module groups
-   */
-  void updateDrivingShuffleboardPID(String key) {
-    double tempP = SmartDashboard.getNumber("%s Driving Proportional Gain".formatted(key), drivingP);
-    double tempI = SmartDashboard.getNumber("%s Driving Integral Gain".formatted(key), drivingI);
-    double tempD = SmartDashboard.getNumber("%s Driving Derivative Gain".formatted(key), drivingD);
-    double tempFF = SmartDashboard.getNumber("%s Driving Feed Forward Gain".formatted(key), drivingFF);
-    double tempMin = SmartDashboard.getNumber("%s Driving Minimum Output".formatted(key), drivingMin);
-    double tempMax = SmartDashboard.getNumber("%s Driving Maximum Output".formatted(key), drivingMax);
-
-    if (tempP != drivingP) { mDrivingPIDController.setP(tempP); drivingP = tempP; }
-    if (tempI != drivingI) { mDrivingPIDController.setI(tempI); drivingI = tempI; }
-    if (tempD != drivingD) { mDrivingPIDController.setD(tempD); drivingD = tempD; }
-    if (tempFF != drivingFF) { mDrivingPIDController.setFF(drivingFF); drivingFF = tempFF; }
-    if ((tempMin != drivingMin) || (tempMax != drivingMax)) {
-      mDrivingPIDController.setOutputRange(tempMin, tempMax);
-      drivingMin = tempMin;
-      drivingMax = tempMax;
-    }
-  }
-
-  /**
-   * Sends Turning PID entries to Shuffleboard
-   * @param key String identifier to differentiate module groups
-   */
-  void updateTurningShuffleboardPID(String key) {
-    double tempP = SmartDashboard.getNumber("%s Turning Proportional Gain".formatted(key), turningP);
-    double tempI = SmartDashboard.getNumber("%s Turning Integral Gain".formatted(key), turningI);
-    double tempD = SmartDashboard.getNumber("%s Turning Derivative Gain".formatted(key), turningD);
-    double tempFF = SmartDashboard.getNumber("%s Turning Feed Forward Gain".formatted(key), turningFF);
-    double tempMin = SmartDashboard.getNumber("%s Turning Minimum Output".formatted(key), turningMin);
-    double tempMax = SmartDashboard.getNumber("%s Turning Maximum Output".formatted(key), turningMax);
-
-    if (tempP != turningP) { mTurningPIDController.setP(tempP); turningP = tempP; }
-    if (tempI != turningI) { mTurningPIDController.setI(tempI); turningI = tempI; }
-    if (tempD != turningD) { mTurningPIDController.setD(tempD); turningD = tempD; }
-    if (tempFF != turningFF) { mTurningPIDController.setFF(turningFF); turningFF = tempFF; }
-    if ((tempMin != turningMin) || (tempMax != turningMax)) {
-      mTurningPIDController.setOutputRange(tempMin, tempMax);
-      turningMin = tempMin;
-      turningMax = tempMax;
-    }
-  }
-
+  
   /**
    * Returns the current state of the module.
    *

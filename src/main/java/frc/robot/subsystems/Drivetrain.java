@@ -1,5 +1,4 @@
 package frc.robot.subsystems;
-// import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -40,8 +39,6 @@ public class Drivetrain extends SubsystemBase {
 
   final Pigeon2 mPigeon = new Pigeon2(0);
 
-  //final PigeonIMU mPigeon = new PigeonIMU(1);
-
   // Slew rate filter variables for controlling lateral acceleration
   double mCurrentRotation = 0.0;
   double mCurrentTranslationDir = 0.0;
@@ -78,11 +75,6 @@ public class Drivetrain extends SubsystemBase {
             mRearLeft.getPosition(),
             mRearRight.getPosition()
         });
-
-    // mFrontLeft.updateShuffleboardPID("FrontLeft");
-    // mRearLeft.updateShuffleboardPID("RearLeft");
-    // mFrontRight.updateShuffleboardPID("FrontRight");
-    // mRearRight.updateShuffleboardPID("RearRight");
   }
 
   /**
@@ -196,8 +188,7 @@ public class Drivetrain extends SubsystemBase {
         mFrontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
         mRearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
         mRearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-      }
-    );
+      });
   }
 
   /**
