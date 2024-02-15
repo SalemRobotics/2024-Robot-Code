@@ -1,25 +1,21 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkBase.IdleMode;
-
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import frc.robot.Constants.ClimberConstants;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
-    final CANSparkMax climberMotor1 = new CANSparkMax(ClimberConstants.kClimberMotor1CanID, MotorType.kBrushless);
-    final CANSparkMax climberMotor2 = new CANSparkMax(ClimberConstants.kClimberMotor2CanID, MotorType.kBrushless);
+    final TalonFX climberMotor1 = new TalonFX(ClimberConstants.kClimberMotor1CanID);
+    final TalonFX climberMotor2 = new TalonFX(ClimberConstants.kClimberMotor2CanID);
 
     public Climber() {
-        climberMotor1.setIdleMode(IdleMode.kBrake);
-        climberMotor1.burnFlash();
+        climberMotor1.setNeutralMode(NeutralModeValue.Brake);
 
-        climberMotor2.follow(climberMotor1);
-        climberMotor2.setIdleMode(IdleMode.kBrake);
-        climberMotor2.burnFlash();
+        climberMotor2.setControl(new Follower(ClimberConstants.kClimberMotor1CanID, false));
+        climberMotor2.setNeutralMode(NeutralModeValue.Brake);
     }
 
     public Command climbTime(double speed) {
