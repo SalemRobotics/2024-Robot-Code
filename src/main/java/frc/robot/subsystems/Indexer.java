@@ -1,34 +1,56 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IndexerConstants;
 
 public class Indexer extends SubsystemBase {
-    final CANSparkMax mIndexIntakeMotor = new CANSparkMax(IndexerConstants.kIndexerIntakeID, MotorType.kBrushless);
-    final CANSparkMax mIndexShooterMotor = new CANSparkMax(IndexerConstants.kIndexerShooterID, MotorType.kBrushless);
+    final TalonFX mUpperMotor = new TalonFX(IndexerConstants.kIndexerUpperID);
+    final TalonFX mLowerMotor = new TalonFX(IndexerConstants.kIndexerLowerID);
 
     public Indexer() {
-        mIndexIntakeMotor.setInverted(true);
-        mIndexIntakeMotor.burnFlash();
-
-        mIndexShooterMotor.setInverted(true);
-        mIndexShooterMotor.burnFlash();
+        mUpperMotor.setInverted(true);
+        mUpperMotor.setNeutralMode(NeutralModeValue.Coast);
+        
+        mLowerMotor.setInverted(true);
+        mLowerMotor.setNeutralMode(NeutralModeValue.Coast);
     }
 
-    public Command runIndexer(){
+    public Command runLowerIndexer(double speed) {
         return runEnd(
             () -> {
-                mIndexIntakeMotor.set(IndexerConstants.kIndexerSpeed);
-                mIndexShooterMotor.set(IndexerConstants.kIndexerSpeed);
-            },
+                mLowerMotor.set(speed);
+            }, 
             () -> {
-                mIndexIntakeMotor.stopMotor();
-                mIndexShooterMotor.stopMotor();
+                mLowerMotor.stopMotor();
             }
         );
+    }
 
+    public Command runUpperIndexer(double speed) {
+        return runEnd(
+            () -> {
+                mUpperMotor.set(speed);
+            }, 
+            () -> {
+                mUpperMotor.stopMotor();
+            }
+        );
+    }
+
+    public Command runAllIndexer(double speed) {
+        return runEnd(
+            () -> {
+                mLowerMotor.set(speed);
+                mUpperMotor.set(speed);
+            }, 
+            () -> {
+                mLowerMotor.stopMotor();
+                mUpperMotor.stopMotor();
+            }
+        );
     }
 }

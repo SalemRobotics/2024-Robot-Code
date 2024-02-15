@@ -10,8 +10,8 @@ public final class Constants {
     public static final class IndexerConstants {
         public static final double kIndexerSpeed = 1.0;
 
-        public static final int kIndexerIntakeID = 11;
-        public static final int kIndexerShooterID = 12;
+        public static final int kIndexerLowerID = 11;
+        public static final int kIndexerUpperID = 12;
     }
 
     public static final class DriveConstants {
