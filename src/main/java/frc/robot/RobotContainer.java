@@ -48,7 +48,7 @@ public class RobotContainer {
     );
 
     new JoystickButton(mDriveController, Button.kB.value).whileTrue(
-      mStrongArmMachine.pivotUp()
+      mStrongArmMachine.runAmp()
     );
 
     new JoystickButton(mDriveController, Button.kX.value).whileTrue(
@@ -56,7 +56,7 @@ public class RobotContainer {
     );
 
     new JoystickButton(mDriveController, Button.kY.value).whileTrue(
-      mStrongArmMachine.runAmp()
+      mStrongArmMachine.pivotUp()
     );
   }
 
