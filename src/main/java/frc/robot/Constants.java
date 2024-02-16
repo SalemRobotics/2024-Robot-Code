@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.util.HashMap;
+import java.util.List;
+
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -167,19 +170,25 @@ public final class Constants {
         public static final double kAutoTurningP = 3.5;
         public static final double kAutoTurningI = 1;
         public static final double kAutoTurningD = 0.3;
-        public static final double kAutoTurningIZone = 1000;
+        public static final double kAutoTurningIZone = 1000.0;
 
-        public static final String[] kStartOptions = {
+        public HashMap<String, List<String>> kAutoFolders = new HashMap<>() {{
+            put("Test Autos", List.of(
 
-        };
+            ));
+            put("Simple Autos", List.of(
 
-        public static final String[] kPieceOptions = {
+            ));
+            put("Ampside Autos", List.of(
 
-        };
+            ));
+            put("Non-Ampside Autos", List.of(
 
-        public static final String[] kEndOptions = {
+            ));
+            put("Race Autos", List.of(
 
-        };
+            ));
+        }};
     }
 
 }

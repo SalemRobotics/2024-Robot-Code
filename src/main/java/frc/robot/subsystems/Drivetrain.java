@@ -149,7 +149,7 @@ public class Drivetrain extends SubsystemBase {
         pose);
   }
 
-  SwerveModuleState[] getDriveSwerveStates(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+  SwerveModuleState[] getSwerveDriveStates(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
 
     double xSpeedCommanded;
     double ySpeedCommanded;
@@ -221,7 +221,7 @@ public class Drivetrain extends SubsystemBase {
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
-    setModuleStates(getDriveSwerveStates(xSpeed, ySpeed, rot, fieldRelative, rateLimit));
+    setModuleStates(getSwerveDriveStates(xSpeed, ySpeed, rot, fieldRelative, rateLimit));
   }
 
   void setModuleHeading(double receivedOutput) {
@@ -253,14 +253,14 @@ public class Drivetrain extends SubsystemBase {
   public Command setRobotHeading(double degrees, double xSpeed, double ySpeed, boolean fieldRelative, boolean rateLimit) {
     return new PIDCommand(
       new PIDController(
-        DriveConstants.kHeadingP, 
-        DriveConstants.kHeadingI, 
+        DriveConstants.kHeadingP,
+        DriveConstants.kHeadingI,
         DriveConstants.kHeadingD
       ), 
       this::getWrappedGyroAngle, 
       degrees,
       (receivedOutput) -> setModuleStates(
-        getDriveSwerveStates(xSpeed, ySpeed, receivedOutput, fieldRelative, rateLimit)
+        getSwerveDriveStates(xSpeed, ySpeed, receivedOutput, fieldRelative, rateLimit)
       ),
       this
     );
