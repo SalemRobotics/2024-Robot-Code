@@ -7,7 +7,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -49,6 +48,18 @@ public class RobotContainer {
     configureNamedCommands();
 
     SmartDashboard.putData("Field", m_field);
+
+    SmartDashboard.putNumber("Driving P", AutoConstants.kAutoDrivingP);
+    SmartDashboard.putNumber("Driving I", AutoConstants.kAutoDrivingI);
+    SmartDashboard.putNumber("Driving D", AutoConstants.kAutoDrivingD);
+    SmartDashboard.putNumber("Driving IZone", AutoConstants.kAutoDrivingIZone);
+
+    SmartDashboard.putNumber("Turning P", AutoConstants.kAutoTurningP);
+    SmartDashboard.putNumber("Turning I", AutoConstants.kAutoTurningI);
+    SmartDashboard.putNumber("Turning D", AutoConstants.kAutoTurningD);
+    SmartDashboard.putNumber("Turning IZone", AutoConstants.kAutoTurningIZone);
+
+    SmartDashboard.putData("Reset PID and Odometry", mDrivetrain.setPIDAndReset());
 
     mAutoChooser = AutoBuilder.buildAutoChooser(AutoConstants.kTestAuto2);
     SmartDashboard.putData(mAutoChooser);
