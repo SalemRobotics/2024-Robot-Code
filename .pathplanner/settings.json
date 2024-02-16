@@ -4,10 +4,15 @@
   "holonomicMode": true,
   "pathFolders": [
     "Amp Side",
+    "Race Paths",
     "Non-Amp Side",
     "Test Paths"
   ],
   "autoFolders": [
+    "Amp Side",
+    "Basic Autos",
+    "Race Autos",
+    "Non-Amp Side",
     "Test Autos"
   ],
   "defaultMaxVel": 4.267,

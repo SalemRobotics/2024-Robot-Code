@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.38,
-      "y": 7.0
+      "x": 1.56,
+      "y": 1.25
     },
     "rotation": 0
   },
@@ -14,37 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot + 1 Path"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Non-Amp 5 Note Path 2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Non-Amp 5 Note Path 3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Non-Amp 5 Note Path 4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Non-Amp 5 Note Path 5"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Non-Amp 6 Note Path 6"
+            "pathName": "Non-Amp Counterrace Path 1"
           }
         },
         {
@@ -52,10 +22,34 @@
           "data": {
             "pathName": "Non-Amp 6 Note Path 7"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Partner Path 5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Partner Path 6"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Non-Amp Counterrace Path 5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Non-Amp Counterrace Path 6"
+          }
         }
       ]
     }
   },
-  "folder": "Non-Amp Side",
+  "folder": "Race Autos",
   "choreoAuto": false
 }

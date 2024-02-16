@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.5865978911445,
-        "y": 1.7541231663659906
+        "x": 4.399491420065461,
+        "y": 4.9934039469218545
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.095143814219252,
-        "y": 2.058171181869431
+        "x": 2.353014392638472,
+        "y": 5.55472336015897
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.0,
-        "y": 2.4323841240275086
+        "x": 1.4291761916857164,
+        "y": 1.391604378650354
       },
       "prevControl": {
-        "x": 6.808487235208089,
-        "y": 2.2101951896211496
+        "x": 1.5461177361101157,
+        "y": 3.8590709660051816
       },
       "nextControl": null,
       "isLocked": false,
@@ -57,11 +57,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
-    "rotateFast": true
+    "rotation": -90.0,
+    "rotateFast": false
   },
   "reversed": false,
-  "folder": "Non-Amp Side",
+  "folder": "Race Paths",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }
