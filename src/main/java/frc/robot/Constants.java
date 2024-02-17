@@ -105,6 +105,7 @@ public final class Constants {
         public static final double kS = 0;
         public static final double kG = 0;
         public static final double kV = 0;
-        public static final double SAMspeed = 0;
+        public static final double SAMPivotSpeed = 0.5;
+        public static final double SAMIntakeSpeed = 1;
     }
 }
