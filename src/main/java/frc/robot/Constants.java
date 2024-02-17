@@ -105,6 +105,8 @@ public final class Constants {
         public static final double kS = 0;
         public static final double kG = 0;
         public static final double kV = 0;
+        public static final int SAMPivotMoterId = 10;
+        public static final int SAMIntakeMoterId = 13;
         public static final double SAMPivotSpeed = 0.5;
         public static final double SAMIntakeSpeed = 1;
     }

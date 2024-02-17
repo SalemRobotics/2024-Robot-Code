@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 import frc.robot.Constants.SAMConstants;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkAbsoluteEncoder;
+import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -9,9 +11,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class StrongArmMachine extends SubsystemBase {
-    final CANSparkMax mPivotMotor = new CANSparkMax(10, MotorType.kBrushless);
-    final CANSparkMax mIntakeMotor = new CANSparkMax(13, MotorType.kBrushless);
+    final CANSparkMax mPivotMotor = new CANSparkMax(SAMConstants.SAMPivotMoterId, MotorType.kBrushless);
+    final CANSparkMax mIntakeMotor = new CANSparkMax(SAMConstants.SAMIntakeMoterId, MotorType.kBrushless);
     final ArmFeedforward feedForward = new ArmFeedforward(SAMConstants.kS, SAMConstants.kG, SAMConstants.kV, SAMConstants.kA);
+    
+    final SparkAbsoluteEncoder mPivotEncoder;
+    final SparkPIDController mPivotPID;
 
     public Command runIntake() {
         return runEnd(
