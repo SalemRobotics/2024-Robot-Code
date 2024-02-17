@@ -4,6 +4,7 @@ import frc.robot.Constants.SAMConstants;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -17,6 +18,11 @@ public class StrongArmMachine extends SubsystemBase {
     
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
+
+    public StrongArmMachine() {
+        mPivotMotor.setIdleMode(IdleMode.kBrake);
+        
+    }
 
     public Command runIntake() {
         return runEnd(
