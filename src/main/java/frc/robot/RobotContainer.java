@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.commands.IntakeInAndIndex;
 import frc.robot.commands.IntakeOutAndIndex;
 import frc.robot.commands.SpinUpShooterAndIndex;
@@ -134,8 +135,8 @@ public class RobotContainer {
   public void configureNamedCommands(){
     NamedCommands.registerCommand("intake", new IntakeInAndIndex(mIntake, mIndexer));
     NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter));
-    NamedCommands.registerCommand("index to shoot", new RunShooterIndex(mIndexer, mShooter));
-    NamedCommands.registerCommand("run shooter", new SpinUpShooter(mShooter));
+    NamedCommands.registerCommand("index to shoot", mIndexer.runShooterIndexer(IndexerConstants.kIndexerSpeedIn));
+    NamedCommands.registerCommand("run shooter", mShooter.shootRing());
     //NamedCommands.registerCommand("angle45", new setShooterAngle(mShooter, 45.0));
   }
 
