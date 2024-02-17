@@ -4,24 +4,61 @@ import frc.robot.Constants.SAMConstants;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class StrongArmMachine extends SubsystemBase {
     final CANSparkMax mPivotMotor = new CANSparkMax(SAMConstants.SAMPivotMoterId, MotorType.kBrushless);
     final CANSparkMax mIntakeMotor = new CANSparkMax(SAMConstants.SAMIntakeMoterId, MotorType.kBrushless);
-    final ArmFeedforward feedForward = new ArmFeedforward(SAMConstants.kS, SAMConstants.kG, SAMConstants.kV, SAMConstants.kA);
+    final ArmFeedforward mFeedForward = new ArmFeedforward(SAMConstants.kS, SAMConstants.kG, SAMConstants.kV, SAMConstants.kA);
     
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
 
     public StrongArmMachine() {
+
         mPivotMotor.setIdleMode(IdleMode.kBrake);
+
+        mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
+        mPivotEncoder.setPositionConversionFactor(SAMConstants.kPivotPositionConversionFactor);
+
+        mPivotPID = mPivotMotor.getPIDController();
+        mPivotPID.setFeedbackDevice(mPivotEncoder);
+        mPivotPID.setP(SAMConstants.kPivotP);
+        mPivotPID.setI(SAMConstants.kPivotI);
+        mPivotPID.setD(SAMConstants.kPivotD);
+        mPivotPID.setFF(SAMConstants.kPivotFF);
         
+        mPivotMotor.burnFlash();
+        
+    }
+
+    public Command snapshotPosition() {
+        return runOnce(() -> {
+            SmartDashboard.putNumber("New Position", mPivotEncoder.getPosition());
+        });
+    }
+
+    public Command movePivotManual(double axisOutput) {
+        return run(() -> {
+            mPivotMotor.set(axisOutput);
+        });
+    }
+
+    public Command setPivotAngle(double degrees) {
+        return runOnce(() -> {
+            mPivotPID.setReference(
+                mFeedForward.calculate(Units.degreesToRadians(degrees), 0), 
+                ControlType.kPosition);
+        });
     }
 
     public Command runIntake() {
