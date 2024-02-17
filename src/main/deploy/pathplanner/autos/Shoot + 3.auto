@@ -24,24 +24,6 @@
                       "data": {
                         "pathName": "Shoot + 3 Path"
                       }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Amp 5 Note Path 2"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Amp 5 Note Path 3"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Amp 5 Note Path 4"
-                      }
                     }
                   ]
                 }
@@ -49,13 +31,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "intake"
+                  "name": "run shooter"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "run shooter"
+                  "name": "intake"
                 }
               }
             ]
@@ -64,6 +46,6 @@
       ]
     }
   },
-  "folder": "Amp Side",
+  "folder": "Basic Autos",
   "choreoAuto": false
 }

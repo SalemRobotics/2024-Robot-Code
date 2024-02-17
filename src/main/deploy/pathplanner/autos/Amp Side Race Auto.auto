@@ -12,45 +12,65 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Amp Side Counterrace Path 1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Amp 6 Note Path 5"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Amp 6 Note Path 6"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Amp 7 Note Path 7"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Amp 7 Note Path 8"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Amp Side Race Path 5"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Amp Side Race Path 6"
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp Side Race Path 1"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp 5 Note Path 4"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp 6 Note Path 5"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp 6 Note Path 6"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp Side Race Path 5"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp Side Race Path 6"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "run shooter"
+                }
+              }
+            ]
           }
         }
       ]

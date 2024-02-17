@@ -134,6 +134,9 @@ public class RobotContainer {
   public void configureNamedCommands(){
     NamedCommands.registerCommand("intake", new IntakeInAndIndex(mIntake, mIndexer));
     NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter));
+    NamedCommands.registerCommand("index to shoot", new RunShooterIndex(mIndexer, mShooter));
+    NamedCommands.registerCommand("run shooter", new SpinUpShooter(mShooter));
+    //NamedCommands.registerCommand("angle45", new setShooterAngle(mShooter, 45.0));
   }
 
   public Command getAutonomousCommand() {
