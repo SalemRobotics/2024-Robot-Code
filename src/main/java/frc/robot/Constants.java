@@ -1,8 +1,8 @@
 package frc.robot;
 
 import java.util.HashMap;
-import java.util.List;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -11,6 +11,8 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public final class Constants {
     public static final class ShooterContants {
@@ -172,23 +174,28 @@ public final class Constants {
         public static final double kAutoTurningD = 0.3;
         public static final double kAutoTurningIZone = 1000.0;
 
-        public HashMap<String, List<String>> kAutoFolders = new HashMap<>() {{
-            put("Test Autos", List.of(
+        // TODO: fill in auto names
+        public static final HashMap<String, SendableChooser<Command>> kAutoFolders = new HashMap<>() {{
+            put("Test Autos", new SendableChooser<>() {{
+                addOption("Test Auto", AutoBuilder.buildAuto("Test Auto"));
+                addOption("Test Auto 2", AutoBuilder.buildAuto("Test Auto 2"));
+            }});
+            
+            put("Simple Autos", new SendableChooser<>() {{
 
-            ));
-            put("Simple Autos", List.of(
+            }});
 
-            ));
-            put("Ampside Autos", List.of(
+            put("Ampside Autos", new SendableChooser<>() {{
 
-            ));
-            put("Non-Ampside Autos", List.of(
+            }});
 
-            ));
-            put("Race Autos", List.of(
+            put("Non-Ampside Autos", new SendableChooser<>() {{
 
-            ));
+            }});
+
+            put("Race Autos", new SendableChooser<>() {{
+
+            }});
         }};
     }
-
 }
