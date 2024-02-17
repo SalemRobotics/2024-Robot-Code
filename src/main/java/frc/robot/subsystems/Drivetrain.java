@@ -149,7 +149,15 @@ public class Drivetrain extends SubsystemBase {
         pose);
   }
 
-  SwerveModuleState[] getSwerveDriveStates(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+  /**
+   * Method to drive the robot using joystick info.
+   * @param xSpeed        Speed of the robot in the x direction (forward).
+   * @param ySpeed        Speed of the robot in the y direction (sideways).
+   * @param rot           Angular rate of the robot.
+   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
+   * @param rateLimit     Whether to enable rate limiting for smoother control.
+   */
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
 
     double xSpeedCommanded;
     double ySpeedCommanded;
@@ -206,22 +214,12 @@ public class Drivetrain extends SubsystemBase {
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = mCurrentRotation * DriveConstants.kMaxAngularSpeed;
 
-    return DriveConstants.kDriveKinematics.toSwerveModuleStates(
+    var swerveStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
             fieldRelative
               ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, mPigeon.getRotation2d())
               : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
-  }
 
-  /**
-   * Method to drive the robot using joystick info.
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
-   * @param rateLimit     Whether to enable rate limiting for smoother control.
-   */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
-    setModuleStates(getSwerveDriveStates(xSpeed, ySpeed, rot, fieldRelative, rateLimit));
+    setModuleStates(swerveStates);
   }
 
   void setModuleHeading(double receivedOutput) {
@@ -259,9 +257,7 @@ public class Drivetrain extends SubsystemBase {
       ), 
       this::getWrappedGyroAngle, 
       degrees,
-      (receivedOutput) -> setModuleStates(
-        getSwerveDriveStates(xSpeed, ySpeed, receivedOutput, fieldRelative, rateLimit)
-      ),
+      (receivedOutput) -> drive(xSpeed, ySpeed, receivedOutput, fieldRelative, rateLimit),
       this
     );
   }
