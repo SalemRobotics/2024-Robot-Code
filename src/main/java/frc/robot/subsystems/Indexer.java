@@ -51,6 +51,17 @@ public class Indexer extends SubsystemBase {
         );
     }
 
+    public Command runShooterIndexer(double speed) {
+        return runEnd(
+            () -> {
+                mIndexShooterMotor.set(speed);
+            }, 
+            () -> {
+                mIndexShooterMotor.stopMotor();
+            }
+        );
+    }
+
     /**
      * Runs both indexer motors conditionally.
      * @param speed Speed to run indexer at.
