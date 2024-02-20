@@ -195,7 +195,7 @@ public final class Constants {
                 addOption("Shoot + 1", AutoBuilder.buildAuto("Shoot + 1"));
                 addOption("Shoot + 2", AutoBuilder.buildAuto("Shoot + 2"));
                 addOption("Shoot + 3", AutoBuilder.buildAuto("Shoot + 3"));
-                addOption("Do Nothing", AutoBuilder.buildAuto("Shoot and Do Nothing"));
+                addOption("Shoot and Do Nothing", AutoBuilder.buildAuto("Shoot and Do Nothing"));
 
             }});
 
