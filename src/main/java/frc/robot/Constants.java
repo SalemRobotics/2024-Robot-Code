@@ -51,9 +51,9 @@ public final class Constants {
         // Chassis configuration
         public static final boolean kGyroReversed = false;
         // Distance between centers of right and left wheels on robot
-        public static final double kTrackWidth = Units.inchesToMeters(24);
+        public static final double kTrackWidth = Units.inchesToMeters(23.5);
         // Distance between front and back wheels on robot
-        public static final double kWheelBase = Units.inchesToMeters(24);
+        public static final double kWheelBase = Units.inchesToMeters(23.5);
         // Radius of drive base. Equal to distance from center of robot to center of module.
         public static final double kDriveBaseRadius = Units.inchesToMeters(16.6);
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
