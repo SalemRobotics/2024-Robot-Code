@@ -181,20 +181,26 @@ public final class Constants {
                 addOption("Test Auto 2", AutoBuilder.buildAuto("Test Auto 2"));
             }});
             
-            put("Simple Autos", new SendableChooser<>() {{
+            put("Basic Autos", new SendableChooser<>() {{
 
             }});
 
             put("Ampside Autos", new SendableChooser<>() {{
-
+                addOption("Amp 5 Note Auto", AutoBuilder.buildAuto("Amp 5 Note Auto"));
+                addOption("Amp 6 Note Auto", AutoBuilder.buildAuto("Amp 6 Note Auto"));
+                addOption("Amp 7 Note Auto", AutoBuilder.buildAuto("Amp 7 Note Auto"));
             }});
 
             put("Non-Ampside Autos", new SendableChooser<>() {{
-
+                addOption("Non-Amp 5 Note", AutoBuilder.buildAuto("Non-Amp 5 Note"));
+                addOption("Non-Amp 6 Note Auto", AutoBuilder.buildAuto("Non-Amp 6 Note Auto"));
             }});
 
             put("Race Autos", new SendableChooser<>() {{
-
+                addOption("Amp Side Counterrace Auto", AutoBuilder.buildAuto("Amp Side Counterrace Auto"));
+                addOption("Non-Amp Counterrace Auto", AutoBuilder.buildAuto("Non-Amp Counterrace Auto"));
+                addOption("Amp Side Race Auto", AutoBuilder.buildAuto("Amp Side Race Auto"));
+                addOption("Non-Amp Race Auto", AutoBuilder.buildAuto("Non-Amp Race Auto"));
             }});
         }};
     }
