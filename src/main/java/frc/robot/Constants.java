@@ -179,9 +179,23 @@ public final class Constants {
             put("Test Autos", new SendableChooser<>() {{
                 addOption("Test Auto", AutoBuilder.buildAuto("Test Auto"));
                 addOption("Test Auto 2", AutoBuilder.buildAuto("Test Auto 2"));
+                addOption("Speed Test Auto", AutoBuilder.buildAuto("Speed Test Auto"));
+                addOption("Test 2 piece auto", AutoBuilder.buildAuto("Test 2 piece auto"));
+                addOption("Test Auto 3", AutoBuilder.buildAuto("Test Auto 3"));
+                addOption("Test Error Auto", AutoBuilder.buildAuto("Test Error Auto"));
+                addOption("Test Error Auto 2", AutoBuilder.buildAuto("Test Error Auto 2"));
+                addOption("Test Error Auto 3", AutoBuilder.buildAuto("Test Error Auto 3"));
+                addOption("Test Pickup Auto", AutoBuilder.buildAuto("Test Pickup Auto"));
+                addOption("Test Tumble Auto", AutoBuilder.buildAuto("Test Tumble Auto"));
+                addOption("Test Turn Auto", AutoBuilder.buildAuto("Test Turn Auto"));
             }});
             
-            put("Simple Autos", new SendableChooser<>() {{
+            put("Basic Autos", new SendableChooser<>() {{
+                addOption("Do Nothing", AutoBuilder.buildAuto("Do Nothing"));
+                addOption("Shoot + 1", AutoBuilder.buildAuto("Shoot + 1"));
+                addOption("Shoot + 2", AutoBuilder.buildAuto("Shoot + 2"));
+                addOption("Shoot + 3", AutoBuilder.buildAuto("Shoot + 3"));
+                addOption("Do Nothing", AutoBuilder.buildAuto("Shoot and Do Nothing"));
 
             }});
 
@@ -195,6 +209,10 @@ public final class Constants {
 
             put("Race Autos", new SendableChooser<>() {{
 
+            }});
+
+            put("Partner Autos", new SendableChooser<>() {{
+                addOption("Partner Auto", AutoBuilder.buildAuto("Partner Auto"));
             }});
         }};
     }
