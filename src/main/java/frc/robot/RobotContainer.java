@@ -4,13 +4,11 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,7 +40,7 @@ public class RobotContainer {
   
   final Intake mIntake = new Intake();
   
-  final SendableChooser<Command> mAutoChooser;
+  final AutoPicker mAutoPicker = new AutoPicker();
 
   public RobotContainer() {
     configureBindings();
@@ -62,8 +60,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("Reset PID and Odometry", mDrivetrain.setPIDAndReset());
 
-    mAutoChooser = AutoBuilder.buildAutoChooser(AutoConstants.kTestAuto2);
-    SmartDashboard.putData(mAutoChooser);
+    // mAutoChooser = AutoBuilder.buildAutoChooser(AutoConstants.kTestAuto2);
+    // SmartDashboard.putData(mAutoChooser);
 
     // Set default Drivetrain command to a RunCommand containing Drivetrain::drive.
     mDrivetrain.setDefaultCommand(
@@ -141,7 +139,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return AutoPicker.getSelected();
+    return mAutoPicker.getSelected();
   }
 
 }

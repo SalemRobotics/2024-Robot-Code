@@ -1,8 +1,8 @@
 package frc.robot;
 
 import java.util.HashMap;
+import java.util.List;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -11,8 +11,6 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj2.command.Command;
 
 public final class Constants {
     public static final class ShooterContants {
@@ -175,51 +173,48 @@ public final class Constants {
         public static final double kAutoTurningIZone = 1000.0;
 
         // TODO: fill in auto names
-        public static final HashMap<String, SendableChooser<Command>> kAutoFolders = new HashMap<>() {{
-            put("Test Autos", new SendableChooser<>() {{
-                addOption("Test Auto", AutoBuilder.buildAuto("Test Auto"));
-                addOption("Test Auto 2", AutoBuilder.buildAuto("Test Auto 2"));
-                addOption("Speed Test Auto", AutoBuilder.buildAuto("Speed Test Auto"));
-                addOption("Test 2 piece auto", AutoBuilder.buildAuto("Test 2 piece auto"));
-                addOption("Test Auto 3", AutoBuilder.buildAuto("Test Auto 3"));
-                addOption("Test Error Auto", AutoBuilder.buildAuto("Test Error Auto"));
-                addOption("Test Error Auto 2", AutoBuilder.buildAuto("Test Error Auto 2"));
-                addOption("Test Error Auto 3", AutoBuilder.buildAuto("Test Error Auto 3"));
-                addOption("Test Pickup Auto", AutoBuilder.buildAuto("Test Pickup Auto"));
-                addOption("Test Tumble Auto", AutoBuilder.buildAuto("Test Tumble Auto"));
-                addOption("Test Turn Auto", AutoBuilder.buildAuto("Test Turn Auto"));
-            }});
-            
-            put("Basic Autos", new SendableChooser<>() {{
-                addOption("Do Nothing", AutoBuilder.buildAuto("Do Nothing"));
-                addOption("Shoot + 1", AutoBuilder.buildAuto("Shoot + 1"));
-                addOption("Shoot + 2", AutoBuilder.buildAuto("Shoot + 2"));
-                addOption("Shoot + 3", AutoBuilder.buildAuto("Shoot + 3"));
-                addOption("Shoot and Do Nothing", AutoBuilder.buildAuto("Shoot and Do Nothing"));
+        public static final HashMap<String, List<String>> kAutoFolders = new HashMap<>() {{
+            put("Test Autos", List.of(
+                "Test Auto",
+                "Test Auto 2",       
+                "Speed Test Auto",   
+                "Test 2 piece auto",
+                "Test Auto 3",       
+                "Test Error Auto",   
+                "Test Error Auto 2",
+                "Test Error Auto 3",
+                "Test Pickup Auto",  
+                "Test Tumble Auto",  
+                "Test Turn Auto" 
+            ));
+            put("Basic Autos", List.of(
+                "Do Nothing",
+                "Shoot + 1",            
+                "Shoot + 2",            
+                "Shoot + 3",            
+                "Shoot and Do Nothing"
+            ));
+            put("Ampside Autos", List.of(
+                "Amp 5 Note Auto",
+                "Amp 6 Note Auto",
+                "Amp 7 Note Auto"
+            ));
 
-            }});
+            put("Non-Ampside Autos", List.of(
+                "Non-Amp 5 Note",     
+                "Non-Amp 6 Note Auto"
+            ));
 
-            put("Ampside Autos", new SendableChooser<>() {{
-                addOption("Amp 5 Note Auto", AutoBuilder.buildAuto("Amp 5 Note Auto"));
-                addOption("Amp 6 Note Auto", AutoBuilder.buildAuto("Amp 6 Note Auto"));
-                addOption("Amp 7 Note Auto", AutoBuilder.buildAuto("Amp 7 Note Auto"));
-            }});
+            put("Race Autos", List.of(
+                "Amp Side Counterrace Auto",
+                "Non-Amp Counterrace Auto",  
+                "Amp Side Race Auto",        
+                "Non-Amp Race Auto"
+            ));
 
-            put("Non-Ampside Autos", new SendableChooser<>() {{
-                addOption("Non-Amp 5 Note", AutoBuilder.buildAuto("Non-Amp 5 Note"));
-                addOption("Non-Amp 6 Note Auto", AutoBuilder.buildAuto("Non-Amp 6 Note Auto"));
-            }});
-
-            put("Race Autos", new SendableChooser<>() {{
-                addOption("Amp Side Counterrace Auto", AutoBuilder.buildAuto("Amp Side Counterrace Auto"));
-                addOption("Non-Amp Counterrace Auto", AutoBuilder.buildAuto("Non-Amp Counterrace Auto"));
-                addOption("Amp Side Race Auto", AutoBuilder.buildAuto("Amp Side Race Auto"));
-                addOption("Non-Amp Race Auto", AutoBuilder.buildAuto("Non-Amp Race Auto"));
-            }});
-
-            put("Partner Autos", new SendableChooser<>() {{
-                addOption("Partner Auto", AutoBuilder.buildAuto("Partner Auto"));
-            }});
+            put("Partner Autos", List.of(
+                "Partner Auto"
+            ));
         }};
     }
 }
