@@ -1,6 +1,6 @@
-# this is a heading
+# LED Cheat sheet
 
-gthis is normal text
+By J.R.
 
 | What the Robot does | What Should Happen |
 |:--------|:--------:|
