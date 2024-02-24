@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot;
 
 import java.util.Collections;
  import java.util.List;
@@ -18,8 +18,12 @@ import frc.robot.Constants.VisionConstants;
 /**
  * Class containing a number of useful methods for working with PhotonLib. 
  */
-public class Vision {
-    final PhotonCamera mCamera = new PhotonCamera("USB_Camera");
+public class VisionCamera {
+    final PhotonCamera mCamera;
+
+    public VisionCamera(String cameraName) {
+        mCamera = new PhotonCamera(cameraName);
+    }
 
     /**
      * Gets the Multitag target from the camera.
