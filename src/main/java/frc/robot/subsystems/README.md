@@ -15,4 +15,4 @@ By J.R.
 |6. Tell Human Player to CO-OP|Blink Yellow|
 |7. Fun Climb Status|Racing White on Blue|
 |8. Dissabled and Connecter|Breath Alliance Color|
-|9. Dissabled and Not Connected|Stutter Red|
+|9. Dissabled and Not Connected|Staggered Blink Red|

@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDconstants;
-import frc.robot.LEDColor;;
+import frc.robot.LEDColor;
 
 public class StatusLED extends SubsystemBase {
     final AddressableLED led = new AddressableLED(LEDconstants.ledPort);
@@ -24,8 +24,8 @@ public class StatusLED extends SubsystemBase {
         led.setData(ledBuffer);
         led.start();
     }
-
-    Command interpolateStripColor(LEDColor a, LEDColor b) {
+    // It doesnt work
+    public Command interpolateStripColor(LEDColor a, LEDColor b) {
         return new FunctionalCommand(
             () -> { // init
                 setStripColorHSV(a);
@@ -58,8 +58,30 @@ public class StatusLED extends SubsystemBase {
             this
         );
     }
+    /*
+     * Accepts two colors 
+     * Color A is bottom
+     * Color B is top
+     */
+    public Command halfSolidColor(LEDColor colorA, LEDColor colorB) {
+        LEDColor[]ledColors = {colorA,colorB};
+        return run(
+            () -> {
+                setPartsOfStripColors(ledColors);
+            }
+        );
 
-    Command slowBlinkStripColor(LEDColor color, double speed) {
+    }
+
+    public Command solidColor(LEDColor color) {
+        return run(
+            () -> {
+                setStripColorHSV(color);
+            }
+        );
+    }
+
+    public Command breathStripColor(LEDColor color, double speed) {
         return new FunctionalCommand(
             () -> { // init
                 setStripColorHSV(color);
@@ -85,7 +107,42 @@ public class StatusLED extends SubsystemBase {
         );
     }
 
-    Command blinkStripColor(LEDColor color1, LEDColor color2, double interval) {
+    public Command staggeredBlinkStripColor(LEDColor color1, LEDColor color2, double blinkInterval, double delay, int blinkNum) {
+        var counterWrapper = new Object() { int counter = 0; };
+        return new FunctionalCommand(
+            () -> {
+                setStripColorHSV(color1);
+                timer.reset();
+                timer.start();
+                isOn = false;
+            },
+            () -> {
+                if (counterWrapper.counter % blinkNum == 0) {
+                    isOn = false;
+                    timer.restart();
+                }
+
+                isOn = timer.hasElapsed(blinkInterval);
+                if (isOn && timer.hasElapsed(blinkInterval*2)) {
+                    timer.restart();
+                    counterWrapper.counter++;
+                }
+
+                if (isOn)
+                    setStripColorHSV(color2);
+                else 
+                    setStripColorHSV(color1);
+            },
+            isFinished -> {
+                timer.stop();
+            },
+            () -> { return false; }, 
+            this
+            )   ;
+
+    }
+
+    public Command blinkStripColor(LEDColor color1, LEDColor color2, double interval) {
         return new FunctionalCommand(
             () -> { // init
                 setStripColorHSV(color1);
@@ -110,6 +167,33 @@ public class StatusLED extends SubsystemBase {
             () -> { return false; },
             this
         );
+    }
+
+    void setPartsOfStripColors(LEDColor... colors) {
+        for (int i = 0; i < colors.length; i++) {
+            setPartOfStripColor(colors[i], i, colors.length);
+        }
+    }
+
+    void setPartOfStripColor(LEDColor color, int part, int length){
+        for (int i = (int)((ledBuffer.getLength() / length) * part); i < (int)((ledBuffer.getLength() / length) * (part + 1)); i++) {
+            setHSV(i, color);
+        }
+        led.setData(ledBuffer);
+    }
+
+    void setBottemHalfStripColorHSV(LEDColor color) {
+        for (int i = 0; i < ledBuffer.getLength() / 2; i++) {
+            setHSV(i, color);
+        }
+        led.setData(ledBuffer);
+    }
+
+    void setTopHalfStripColorHSV(LEDColor color) {
+        for (int i = ledBuffer.getLength() / 2; i < ledBuffer.getLength(); i++) {
+            setHSV(i, color);
+        }
+        led.setData(ledBuffer);
     }
 
     void setStripColorHSV(LEDColor color) {
