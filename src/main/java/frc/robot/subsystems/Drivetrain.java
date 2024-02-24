@@ -94,8 +94,6 @@ public class Drivetrain extends SubsystemBase {
       }, 
       this
     );
-
-    SmartDashboard.putNumber("templol", 0.0);
   }
 
   @Override
@@ -109,9 +107,6 @@ public class Drivetrain extends SubsystemBase {
             mRearLeft.getPosition(),
             mRearRight.getPosition()
         });
-
-    var thing = getRelativeAngle(90);
-    SmartDashboard.putNumber("templol2", thing);
 
     RobotContainer.m_field.setRobotPose(mOdometry.getPoseMeters());
   }
@@ -233,16 +228,22 @@ public class Drivetrain extends SubsystemBase {
       ));
   }
 
+  /**
+   * Gets the difference in angle so that the setpoint is within 180 degrees of the gyro 
+   * @param setpoint Angle setpoint, in degrees
+   * @return Relative angle
+   */
   double getRelativeAngle(double setpoint) {
-    double angle = SmartDashboard.getNumber("templol", setpoint);
+    double angle = mPigeon.getAngle();
     double target = (int)(angle / 180) * 180.0 - Math.copySign(setpoint, angle);
     if (angle < setpoint && angle > -360) {
       target = Math.abs(target);
     }
+    
     return target;
   }
 
-  public Command setRobotHeading(double degrees, double xSpeed, double ySpeed, boolean fieldRelative, boolean rateLimit) {
+  public Command trackAngle(double degrees, double xSpeed, double ySpeed, boolean fieldRelative, boolean rateLimit) {
     return new PIDCommand(
       new PIDController(
         DriveConstants.kHeadingP,
@@ -295,7 +296,7 @@ public class Drivetrain extends SubsystemBase {
    * @return
    */
   public Command setPIDAndReset() {
-    return run(() -> {
+    return runOnce(() -> {
       HolonomicPathFollowerConfig pathConfig = new HolonomicPathFollowerConfig(
             new PIDConstants(
               // TODO: Get from smart dashboard

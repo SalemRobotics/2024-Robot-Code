@@ -57,8 +57,6 @@ public class RobotContainer {
 
     SmartDashboard.putData("Reset PID and Odometry", mDrivetrain.setPIDAndReset());
 
-    SmartDashboard.putNumber("templol", 0);
-
     // Set default Drivetrain command to a RunCommand containing Drivetrain::drive.
     mDrivetrain.setDefaultCommand(
       new RunCommand(
@@ -80,28 +78,28 @@ public class RobotContainer {
     // #region Cardinal Direction Commands
 
     new JoystickButton(mDriveController, Button.kY.value).whileTrue(
-      mDrivetrain.setRobotHeading(Direction.North.value, 
+      mDrivetrain.trackAngle(Direction.North.value, 
               -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
               -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
               true, true)
     );
 
     new JoystickButton(mDriveController, Button.kB.value).whileTrue(
-      mDrivetrain.setRobotHeading(Direction.East.value,
+      mDrivetrain.trackAngle(Direction.East.value,
               -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
               -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
               true, true)
     );
 
     new JoystickButton(mDriveController, Button.kA.value).whileTrue(
-      mDrivetrain.setRobotHeading(Direction.South.value,
+      mDrivetrain.trackAngle(Direction.South.value,
               -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
               -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
               true, true)
     );
 
     new JoystickButton(mDriveController, Button.kX.value).whileTrue(
-      mDrivetrain.setRobotHeading(Direction.West.value,
+      mDrivetrain.trackAngle(Direction.West.value,
               -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
               -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
               true, true)
