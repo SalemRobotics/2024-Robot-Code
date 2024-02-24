@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -18,6 +20,11 @@ public final class Constants {
         public static final double kCameraPitch = Units.degreesToRadians(10);
         /** Height of the target in meters, in this case the Speaker */
         public static final double kTargetHeight = 0.0; // TODO: measure this value
+
+        public static final Transform3d kCameraOffset = new Transform3d(
+            0.0, 0.0, 0.0, 
+            new Rotation3d(0.0, 0.0, 0.0)
+        );
 
         public static final HashMap<Alliance, List<Integer>> kValidFiducialIDs = new HashMap<>() {{
             put(Alliance.Red, List.of(3, 4));
