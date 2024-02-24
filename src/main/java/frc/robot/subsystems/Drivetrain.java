@@ -94,6 +94,8 @@ public class Drivetrain extends SubsystemBase {
       }, 
       this
     );
+
+    SmartDashboard.putNumber("templol", 0.0);
   }
 
   @Override
@@ -107,6 +109,9 @@ public class Drivetrain extends SubsystemBase {
             mRearLeft.getPosition(),
             mRearRight.getPosition()
         });
+
+    var thing = getRelativeAngle(90);
+    SmartDashboard.putNumber("templol2", thing);
 
     RobotContainer.m_field.setRobotPose(mOdometry.getPoseMeters());
   }
@@ -228,24 +233,13 @@ public class Drivetrain extends SubsystemBase {
       ));
   }
 
-  /**
-   * Wraps the gyro angle betwen -180 and 180 degrees
-   * @return New gyro angle
-   */
-  double getWrappedGyroAngle() {
-    double angle = mPigeon.getAngle();
-
-    // reduce the gyro angle
-    angle %= 360;
-    
-    // force it into the positive remainder, 0 <= angle < 360
-    angle = (angle + 360) % 360;
-
-    // force into the minimum absolute value, -180 < angle <= 180
-    if (angle > 180)
-      angle -= 360;
-    
-    return angle;
+  double getRelativeAngle(double setpoint) {
+    double angle = SmartDashboard.getNumber("templol", setpoint);
+    double target = (int)(angle / 180) * 180.0 - Math.copySign(setpoint, angle);
+    if (angle < setpoint && angle > -360) {
+      target = Math.abs(target);
+    }
+    return target;
   }
 
   public Command setRobotHeading(double degrees, double xSpeed, double ySpeed, boolean fieldRelative, boolean rateLimit) {
@@ -255,8 +249,8 @@ public class Drivetrain extends SubsystemBase {
         DriveConstants.kHeadingI,
         DriveConstants.kHeadingD
       ), 
-      this::getWrappedGyroAngle, 
-      degrees,
+      () -> mPigeon.getAngle(), 
+      () -> getRelativeAngle(degrees),
       (receivedOutput) -> drive(xSpeed, ySpeed, receivedOutput, fieldRelative, rateLimit),
       this
     );

@@ -33,11 +33,8 @@ public class RobotContainer {
   final XboxController mOperatorController = new XboxController(ControllerConstants.kOperatorPort);
 
   final Drivetrain mDrivetrain = new Drivetrain();
-
   final Shooter mShooter = new Shooter();
-  
   final Indexer mIndexer = new Indexer();
-  
   final Intake mIntake = new Intake();
   
   final AutoPicker mAutoPicker = new AutoPicker();
@@ -60,8 +57,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Reset PID and Odometry", mDrivetrain.setPIDAndReset());
 
-    // mAutoChooser = AutoBuilder.buildAutoChooser(AutoConstants.kTestAuto2);
-    // SmartDashboard.putData(mAutoChooser);
+    SmartDashboard.putNumber("templol", 0);
 
     // Set default Drivetrain command to a RunCommand containing Drivetrain::drive.
     mDrivetrain.setDefaultCommand(
