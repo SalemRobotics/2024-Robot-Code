@@ -47,18 +47,16 @@ public class Shooter extends SubsystemBase {
      * Intended for testing/data collection use only.
      */
     public Command snapshotPosition() {
-        return runOnce(() -> {
-            SmartDashboard.putNumber("New Position", mPivotEncoder.getPosition());
-        });
+        return runOnce(() -> 
+            SmartDashboard.putNumber("New Position", mPivotEncoder.getPosition())
+        );
     }
 
     /**
      * Intended for testing/data collection use only.
      */
     public Command movePivotManual(double axisOutput) {
-        return run(() -> {
-            mPivotPID.setReference(axisOutput, ControlType.kPosition);
-        });
+        return run(() -> mPivotMotor.set(axisOutput));
     }
 
     /**
@@ -69,9 +67,9 @@ public class Shooter extends SubsystemBase {
      */
     public Command setPivotAngle(double degrees) {
         // TODO: use our interpolating tree map instead
-        return runOnce(() -> {
-            mPivotPID.setReference(Units.degreesToRadians(degrees), ControlType.kPosition);
-        });
+        return runOnce(() -> 
+            mPivotPID.setReference(Units.degreesToRadians(degrees), ControlType.kPosition)
+        );
     }
 
     /**
