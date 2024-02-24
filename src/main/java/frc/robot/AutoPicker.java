@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -12,6 +13,7 @@ import frc.robot.Constants.AutoConstants;
 public class AutoPicker {
     Command mCurrentCommand;
     String mCurrentName;
+    final HashMap<Command, String> mCommandNameLookup = new HashMap<>();
 
     public AutoPicker() {
         AutoConstants.kAutoFolders.forEach(this::setupChooser);
@@ -19,18 +21,25 @@ public class AutoPicker {
 
     void setupChooser(String folderName, List<String> names) {
         var chooser = new SendableChooser<Command>();
+
+        chooser.setDefaultOption("None", null);
+        mCommandNameLookup.putIfAbsent(null, "None");
+        
         names.forEach((name) -> createChooserOptions(chooser, name));
         chooser.onChange((command) -> setCurrentCommand(chooser, folderName));
+        
         SmartDashboard.putData(folderName, chooser);
     }
 
     void createChooserOptions(SendableChooser<Command> chooser, String name) {
-        chooser.addOption(name, AutoBuilder.buildAuto(name));
+        var command = AutoBuilder.buildAuto(name);
+        mCommandNameLookup.putIfAbsent(command, name);
+        chooser.addOption(name, command);
     }
 
     void setCurrentCommand(SendableChooser<Command> chooser, String name) {
         mCurrentCommand = chooser.getSelected();
-        SmartDashboard.putString("Current Auto", name);
+        SmartDashboard.putString("Current Auto", mCommandNameLookup.get(mCurrentCommand));
     }
 
     public Command getSelected() {
