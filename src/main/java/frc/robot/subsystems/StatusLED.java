@@ -70,7 +70,6 @@ public class StatusLED extends SubsystemBase {
                 setPartsOfStripColors(ledColors);
             }
         );
-
     }
 
     public Command solidColor(LEDColor color) {
@@ -105,6 +104,10 @@ public class StatusLED extends SubsystemBase {
             () -> { return false; },
             this
         );
+    }
+
+    public Command raceColorsUpStrip(LEDColor raceColor, LEDColor backColor){
+
     }
 
     public Command staggeredBlinkStripColor(LEDColor color1, LEDColor color2, double blinkInterval, double delay, int blinkNum) {
