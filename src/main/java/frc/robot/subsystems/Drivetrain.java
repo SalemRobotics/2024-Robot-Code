@@ -1,5 +1,4 @@
 package frc.robot.subsystems;
-// import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -11,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.util.SwerveUtils;
@@ -38,8 +38,6 @@ public class Drivetrain extends SubsystemBase {
       DriveConstants.kBackRightChassisAngularOffset);
 
   final Pigeon2 mPigeon = new Pigeon2(0);
-
-  //final PigeonIMU mPigeon = new PigeonIMU(1);
 
   // Slew rate filter variables for controlling lateral acceleration
   double mCurrentRotation = 0.0;
@@ -77,11 +75,6 @@ public class Drivetrain extends SubsystemBase {
             mRearLeft.getPosition(),
             mRearRight.getPosition()
         });
-
-    // mFrontLeft.updateShuffleboardPID("FrontLeft");
-    // mRearLeft.updateShuffleboardPID("RearLeft");
-    // mFrontRight.updateShuffleboardPID("FrontRight");
-    // mRearRight.updateShuffleboardPID("RearRight");
   }
 
   /**
@@ -188,11 +181,14 @@ public class Drivetrain extends SubsystemBase {
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
-  public void setX() {
-    mFrontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-    mFrontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    mRearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-    mRearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+  public Command setX() {
+    return run(
+      () -> {
+        mFrontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+        mFrontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+        mRearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+        mRearRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+      });
   }
 
   /**
