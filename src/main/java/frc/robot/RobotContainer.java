@@ -12,8 +12,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Indexer;
 import frc.util.SwerveUtils;
 
 public class RobotContainer {
@@ -24,6 +26,8 @@ public class RobotContainer {
 
   final Shooter mShooter = new Shooter();
   
+  final Indexer mIndexer = new Indexer();
+
   public RobotContainer() {
     configureBindings();
 
@@ -39,16 +43,29 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
-      mDrivetrain.setX()
-    );
-    
-    // new JoystickButton(mDriveController, Button.kX.value).whileTrue(
-    //   mShooter.shootRing()
+    // new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
+    //   mDrivetrain.setX()
     // );
+    
+    new JoystickButton(mDriveController, Button.kX.value).whileTrue(
+      mShooter.shootRing()
+    );
+
+    new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
+       mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeed)
+    );
+
+    new JoystickButton(mDriveController, Button.kB.value).whileTrue(
+      mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeed)
+    );
+
+    new JoystickButton(mDriveController, Button.kA.value).whileTrue(
+      mIndexer.runUpperIndexer(IndexerConstants.kIndexerSpeed)
+    );
   }
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
+
 }
