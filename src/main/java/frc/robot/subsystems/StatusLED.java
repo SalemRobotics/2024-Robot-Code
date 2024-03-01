@@ -57,6 +57,7 @@ public class StatusLED extends SubsystemBase {
             this
         );
     }
+ 
     /*
      * Accepts two colors 
      * Color A is bottom
@@ -96,13 +97,24 @@ public class StatusLED extends SubsystemBase {
         );
     }
 
-    public Command raceColorsUpStrip(LEDColor raceColor, LEDColor backColor){
+    public Command raceColorsUpStrip(LEDColor raceColor, LEDColor backColor, double interval){
         LEDColor[] colorArray = makeRaceArray(backColor, raceColor);
         return new FunctionalCommand(
-            () -> {}, 
-            null, 
-            isFinished -> {}, 
-            () -> false, 
+            () -> { // init
+                setStripColorHSV(backColor);
+                timer.reset();
+                timer.start();
+            }, 
+            () -> { // exec
+                for (int i = 0; i < colorArray.length;) {
+                    if (timer.advanceIfElapsed(interval))
+                        i++;
+
+                    setHSV(i, colorArray[i]);
+                }
+            }, 
+            isFinished -> timer.stop(), // end 
+            () -> false, // isFinished
             this
         );
     }
@@ -123,10 +135,8 @@ public class StatusLED extends SubsystemBase {
                 }
 
                 isOn = timer.hasElapsed(blinkInterval);
-                if (isOn && timer.hasElapsed(blinkInterval*2)) {
-                    timer.restart();
+                if (isOn && timer.advanceIfElapsed(blinkInterval*2))
                     counterWrapper.counter++;
-                }
 
                 if (isOn) {
                     setStripColorHSV(color2);
@@ -168,13 +178,11 @@ public class StatusLED extends SubsystemBase {
 
     LEDColor[] makeRaceArray(LEDColor backColor, LEDColor raceColor) {
         LEDColor[] colorArray = new LEDColor[ledBuffer.getLength()];
-        for(var i = LEDconstants.ledChaserLength; i < (ledBuffer.getLength() - LEDconstants.ledChaserLength); i++) {
+        for(int i = LEDconstants.ledChaserLength; i < (ledBuffer.getLength() - LEDconstants.ledChaserLength); i++)
             colorArray[i] = backColor;
-        }
 
-        for(var i = 0; i < LEDconstants.ledChaserLength; i++) {
+        for(int i = 0; i < LEDconstants.ledChaserLength; i++)
             colorArray[i] = raceColor;
-        }
         
         return colorArray;
     }
