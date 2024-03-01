@@ -107,7 +107,14 @@ public class StatusLED extends SubsystemBase {
     }
 
     public Command raceColorsUpStrip(LEDColor raceColor, LEDColor backColor){
+        LEDColor[] colorArray = makeRaceArray(backColor, raceColor);
+        return run(
+            () -> {
+                for (int i = 0; i < LEDconstants.ledLength; i++) {
 
+                }
+            }
+        );
     }
 
     public Command staggeredBlinkStripColor(LEDColor color1, LEDColor color2, double blinkInterval, double delay, int blinkNum) {
@@ -170,6 +177,16 @@ public class StatusLED extends SubsystemBase {
             () -> { return false; },
             this
         );
+    }
+
+    void makeRaceArray(LEDColor backColor, LEDColor raceColor) {
+        LEDColor[] colorArray = new LEDColor[LEDconstants.ledLength];
+        for(var i = LEDconstants.ledChaserLength; i < (LEDconstants.ledLength - LEDconstants.ledChaserLength); i++) {
+            colorArray[i] = backColor;
+        }
+        for(var i = 0; i < LEDconstants.ledChaserLength; i++) {
+            colorArray[i] = raceColor;
+        }
     }
 
     void setPartsOfStripColors(LEDColor... colors) {
