@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterContants;
 
+/**
+ * Shooter subsystem with two motors. Responsible for firing game pieces from the robot to the speaker goal.
+ */
 public class Shooter extends SubsystemBase {
     final CANSparkMax mLeftMotor = new CANSparkMax(ShooterContants.kLeftMotorID, MotorType.kBrushless);
     final CANSparkMax mRightMotor = new CANSparkMax(ShooterContants.kRightMotorID, MotorType.kBrushless);

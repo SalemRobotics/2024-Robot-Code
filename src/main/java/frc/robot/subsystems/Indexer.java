@@ -2,11 +2,13 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IndexerConstants;
 
+/**
+ * Indexer subsystem with two motors. Manipulates gamepiece when it is inside the robot.
+ */
 public class Indexer extends SubsystemBase {
     final TalonFX mUpperMotor = new TalonFX(IndexerConstants.kIndexerUpperID);
     final TalonFX mLowerMotor = new TalonFX(IndexerConstants.kIndexerLowerID);

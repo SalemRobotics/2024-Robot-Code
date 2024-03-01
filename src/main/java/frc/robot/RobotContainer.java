@@ -17,16 +17,22 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Indexer;
 import frc.util.SwerveUtils;
+import frc.robot.command.IntakeInAndIndex;
+import frc.robot.command.IntakeOutAndIndex;
+import frc.robot.command.SpinUpShooterAndIndex;
+import frc.robot.subsystems.Intake;
 
 public class RobotContainer {
-  
   final XboxController mDriveController = new XboxController(ControllerConstants.kDriverPort); 
+  final XboxController mOperatorController = new XboxController(ControllerConstants.kOperatorPort);
 
   final Drivetrain mDrivetrain = new Drivetrain();
 
   final Shooter mShooter = new Shooter();
   
   final Indexer mIndexer = new Indexer();
+  
+  final Intake mIntake = new Intake();
 
   public RobotContainer() {
     configureBindings();
@@ -43,12 +49,20 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
-    //   mDrivetrain.setX()
-    // );
+    new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
+      new RunCommand(() -> mDrivetrain.setX(), mDrivetrain)
+    );
     
-    new JoystickButton(mDriveController, Button.kX.value).whileTrue(
-      mShooter.shootRing()
+    new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
+      new SpinUpShooterAndIndex(mIndexer, mShooter)
+    );
+    
+    new JoystickButton(mOperatorController, Button.kRightBumper.value).whileTrue(
+      new IntakeInAndIndex(mIntake, mIndexer)
+    );
+    
+    new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
+      new IntakeOutAndIndex(mIntake, mIndexer)
     );
 
     new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(

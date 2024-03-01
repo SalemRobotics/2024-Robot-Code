@@ -15,6 +15,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.util.SwerveUtils;
 
+/**
+ * Swerve Drivetrain based off of REV Robotics MAXSwerve template. 
+ */
 public class Drivetrain extends SubsystemBase {
     // Create MAXSwerveModules
   final MAXSwerveModule mFrontLeft = new MAXSwerveModule(
