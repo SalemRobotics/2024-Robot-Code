@@ -36,17 +36,30 @@ public class StrongArmMachine extends SubsystemBase {
         mPivotPID.setI(SAMConstants.kPivotI);
         mPivotPID.setD(SAMConstants.kPivotD);
         mPivotPID.setFF(SAMConstants.kPivotFF);
-        
+        mPivotPID.setOutputRange(SAMConstants.kMinOutput, SAMConstants.kMaxOutput);
+
         mPivotMotor.burnFlash();
         
+        SmartDashboard.putData(setShuffleboardPID());
     }
 
+    Command setShuffleboardPID() {
+        return runOnce(() -> {
+            mPivotPID.setP(SmartDashboard.getNumber("samP", SAMConstants.kPivotP));
+            mPivotPID.setI(SmartDashboard.getNumber("samI", SAMConstants.kPivotI));
+            mPivotPID.setD(SmartDashboard.getNumber("samD", SAMConstants.kPivotD));
+            mPivotPID.setFF(SmartDashboard.getNumber("samFF", SAMConstants.kPivotFF));
+        });
+    }
+
+    /** Intended for debug/testing only */
     public Command snapshotPosition() {
         return runOnce(() -> {
             SmartDashboard.putNumber("New Position", mPivotEncoder.getPosition());
         });
     }
 
+    /** Intended for debug/testing only */
     public Command movePivotManual(double axisOutput) {
         return run(() -> {
             mPivotMotor.set(axisOutput);
