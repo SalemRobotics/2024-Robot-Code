@@ -11,9 +11,9 @@ public final class Constants {
     public static final class ShooterContants {
         public static final double kShooterSpeed = 1.0;
 
-        public static final int kLeftMotorID = 10;
-        public static final int kRightMotorID = 13;
-        public static final int kPivotMotorID = 0; // TODO: set this field
+        public static final int kPivotMotorID = 13;
+        public static final int kRightMotorID = 14;
+        public static final int kLeftMotorID = 15;
 
         public static final double kPivotPositionConversionFactor = 0.0; // TODO: set this field
 
