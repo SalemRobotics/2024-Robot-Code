@@ -87,6 +87,92 @@ public class VisionCamera {
     }
 
     /**
+     * Gets the best result of individual Apriltags.
+     * @return The best Apriltag target, should it exist.
+     * @see Optional
+     * @see PhotonTrackedTarget
+     */
+    public Optional<PhotonTrackedTarget> getBestTarget() {
+        var currentResult = mCamera.getLatestResult();
+        if (!currentResult.hasTargets())
+            return null; 
+        
+        return Optional.of(currentResult.getBestTarget());
+    }
+
+    /**
+     * Gets the distance from the robot to the target Apriltag.
+     * @return Distance, in meters, should the target exist. (I think)
+     * @see Optional
+     */
+    public Optional<Double> getTargetDistance() {
+        double targetPitch;
+        try {
+            targetPitch = getTargetPitch().orElseThrow();
+        } catch (Exception e) {
+            return null;
+        }
+
+        return Optional.of(
+            PhotonUtils.calculateDistanceToTargetMeters(
+                VisionConstants.kCameraHeight, 
+                Units.inchesToMeters(66), 
+                VisionConstants.kCameraPitch, 
+                targetPitch));
+    }
+
+    /**
+     * Gets the pitch between the camera and target Apriltag, in radians.
+     * @return Pitch rotation in radians, should it exist.
+     * @see Optional
+     */
+    public Optional<Double> getTargetPitch() {
+        double targetPitch;
+        try {
+            targetPitch = Units.degreesToRadians(getBestTarget().orElseThrow().getPitch());
+        } catch (Exception e) {
+            return null;
+        }
+
+        return Optional.of(targetPitch);
+    }
+
+    /**
+     * Gets the pitch from the camera to the top of the speaker from the apriltag
+     * @return Pitch rotation in radians, should it exist
+     * @see Optional
+     */
+    public Optional<Double> getSpeakerPitch() {
+        double targetDistance;
+        try {
+            targetDistance = getTargetDistance().orElseThrow();
+        } catch (Exception e) {
+            return null;
+        }
+
+        return Optional.of(
+            Math.atan2(VisionConstants.kTargetHeight, targetDistance)
+        );
+    }
+
+    /**
+     * Gets the yaw between the camera and target, in radians.
+     * @return Yaw rotation in radians, should it exist.
+     * @see Optional
+     */
+    public Optional<Double> getTargetYaw() {
+        double targetYaw;
+        try {
+            targetYaw = Units.degreesToRadians(getBestTarget().orElseThrow().getYaw());
+        } catch (Exception e) {
+            return null;
+        }
+
+        return Optional.of(targetYaw);
+    }
+
+
+    /**
      * Gets the Multitag target from the camera.
      * @return The Multitag target, should it exist.
      * @see Optional
@@ -142,7 +228,7 @@ public class VisionCamera {
      * @see Optional
      * @see Rotation2d
      */
-    public Optional<Rotation2d> getMultitagYaw() {
+    public Optional<Rotation2d> getMultitagRelativeYaw() {
         Transform3d targetTransform;
         try {
             targetTransform = getMultiTagTransform().orElseThrow();
@@ -170,7 +256,7 @@ public class VisionCamera {
      * @return Distance, in meters, if the target exists
      * @see Optional
      */
-    public Optional<Double> getMultitagDistance() {
+    public Optional<Double> getMultitagRelativeDistance() {
         Transform3d targetTransform;
         try {
             targetTransform = getMultiTagTransform().orElseThrow();
@@ -195,70 +281,4 @@ public class VisionCamera {
         return Optional.of(PhotonUtils.getDistanceToPose(robotPose, targetPose));
     }
 
-    /**
-     * Gets the best result of individual Apriltags.
-     * @return The best Apriltag target, should it exist.
-     * @see Optional
-     * @see PhotonTrackedTarget
-     */
-    public Optional<PhotonTrackedTarget> getBestTarget() {
-        var currentResult = mCamera.getLatestResult();
-        if (!currentResult.hasTargets())
-            return null; 
-        
-        return Optional.of(currentResult.getBestTarget());
-    }
-
-    /**
-     * Gets the distance from the robot to the target Multitag.
-     * @return Distance, in meters, should the target exist. (I think)
-     * @see Optional
-     */
-    public Optional<Double> getTargetDistance() {
-        double targetPitch;
-        try {
-            targetPitch = getTargetPitch().orElseThrow();
-        } catch (Exception e) {
-            return null;
-        }
-
-        return Optional.of(
-            PhotonUtils.calculateDistanceToTargetMeters(
-                VisionConstants.kCameraHeight, 
-                Units.inchesToMeters(66), 
-                VisionConstants.kCameraPitch, 
-                targetPitch));
-    }
-
-    /**
-     * Gets the pitch between the camera and target, in radians.
-     * @return Pitch rotation, should it exist.
-     * @see Optional
-     */
-    public Optional<Double> getTargetPitch() {
-        double targetPitch;
-        try {
-            targetPitch = Units.degreesToRadians(getBestTarget().orElseThrow().getYaw());
-        } catch (Exception e) {
-            return null;
-        }
-
-        return Optional.of(targetPitch);
-    }
-
-    /**
-     * Gets the yaw between the camera and target, in radians.
-     * @return Yaw rotation, should it exist.
-     * @see Optional
-     */
-    public Optional<Double> getTargetYaw() {
-        double targetYaw;
-        try {
-            targetYaw = Units.degreesToRadians(getBestTarget().orElseThrow().getYaw());
-        } catch (Exception e) {
-            return null;
-        }
-
-        return Optional.of(targetYaw);
-    }
 }
