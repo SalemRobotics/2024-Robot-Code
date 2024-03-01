@@ -35,6 +35,7 @@ public class StrongArmMachine extends SubsystemBase {
     }
 
     public StrongArmMachine() {
+        mPivotMotor.restoreFactoryDefaults();
 
         mPivotMotor.setIdleMode(IdleMode.kBrake);
 
