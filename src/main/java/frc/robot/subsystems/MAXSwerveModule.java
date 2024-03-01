@@ -27,9 +27,6 @@ public class MAXSwerveModule {
   final SparkPIDController mDrivingPIDController;
   final SparkPIDController mTurningPIDController;
 
-  double drivingP=0.04, drivingI=0, drivingD=0, drivingFF=1 / SwerveConstants.kDriveWheelFreeSpeedRps, drivingMin=-1, drivingMax=1;
-  double turningP=1, turningI=0, turningD=0, turningFF=0, turningMin=-1, turningMax=1;
-
   double mChassisAngularOffset = 0;
   SwerveModuleState mDesiredState = new SwerveModuleState(0.0, new Rotation2d());
 
@@ -108,14 +105,7 @@ public class MAXSwerveModule {
     mDesiredState.angle = new Rotation2d(mTurningEncoder.getPosition());
     mDrivingEncoder.setPosition(0);
   }
-
-  public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset, boolean inverted) {
-    this(drivingCANId, turningCANId, chassisAngularOffset);
-
-    mDrivingSparkMax.setInverted(inverted);
-    mDrivingSparkMax.burnFlash();
-  }
-
+  
   /**
    * Returns the current state of the module.
    *
