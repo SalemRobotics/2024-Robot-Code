@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,6 +42,17 @@ public class Shooter extends SubsystemBase {
         mPivotPID.setOutputRange(ShooterContants.kPivotMinOutput, ShooterContants.kPivotMaxOutput);
         
         mPivotMotor.burnFlash();
+
+        SmartDashboard.putData(setSmartDashboardPID());
+    }
+
+    Command setSmartDashboardPID() {
+        return runOnce(() -> {
+            mPivotPID.setP(SmartDashboard.getNumber("shootP", ShooterContants.kPivotP));
+            mPivotPID.setI(SmartDashboard.getNumber("shootI", ShooterContants.kPivotI));
+            mPivotPID.setD(SmartDashboard.getNumber("shootD", ShooterContants.kPivotD));
+            mPivotPID.setFF(SmartDashboard.getNumber("shootFF", ShooterContants.kPivotFF));
+        });
     }
 
     /**
@@ -48,7 +60,7 @@ public class Shooter extends SubsystemBase {
      */
     public Command snapshotPosition() {
         return runOnce(() -> 
-            SmartDashboard.putNumber("New Position", mPivotEncoder.getPosition())
+            SmartDashboard.putNumber("New Shoot Position", mPivotEncoder.getPosition())
         );
     }
 
@@ -66,9 +78,12 @@ public class Shooter extends SubsystemBase {
      * @see InstantCommand
      */
     public Command setPivotAngle(double degrees) {
-        // TODO: use our interpolating tree map instead
+        // clamp input between lower and upper limits
+        double degreesClamped = MathUtil.clamp(degrees, ShooterContants.kLowerAngleLimit, ShooterContants.kUpperAngleLimit);
+
+        // TODO: use our interpolating tree map instead (or not idk what to use it for just yet)
         return runOnce(() -> 
-            mPivotPID.setReference(Units.degreesToRadians(degrees), ControlType.kPosition)
+            mPivotPID.setReference(Units.degreesToRadians(degreesClamped), ControlType.kPosition)
         );
     }
 

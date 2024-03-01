@@ -25,6 +25,9 @@ public final class Constants {
         public static final double kPivotMaxOutput = 1.0;
         public static final double kPivotMinOutput = -1.0;
 
+        public static final double kUpperAngleLimit = 0.0;
+        public static final double kLowerAngleLimit = 0.0;
+
         public static final InterpolatingDoubleTreeMap kPivotAngleMap = new InterpolatingDoubleTreeMap() {{
             put(0.0, 0.0);
         }};
