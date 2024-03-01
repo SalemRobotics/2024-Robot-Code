@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDconstants;
 import frc.robot.LEDColor;
@@ -58,19 +59,37 @@ public class StatusLED extends SubsystemBase {
         );
     }
  
-    /*
-     * Accepts two colors 
-     * Color A is bottom
-     * Color B is top
+    /**
+     * Sets half of the LED strip to colorB, and the other half to colorA
+     * @param colorA Bottom half color
+     * @param colorB Top half color
+     * @return Command to constantly set the strip
+     * @see LEDColor
+     * @see RunCommand
      */
     public Command setHalfSolidColor(LEDColor colorA, LEDColor colorB) {
         return run(() -> setPartsOfStripColors(colorA, colorB));
     }
 
+    /**
+     * Sets the whole LED strip to a color
+     * @param color color to set the strip to
+     * @return Command to constantly set the strip
+     * @see LEDColor
+     * @see RunCommand
+     */
     public Command setSolidColor(LEDColor color) {
         return run(() -> setStripColorHSV(color));
     }
 
+    /**
+     * Pulsates a color across the whole strip, to give it a 'breathing' motion
+     * @param color Color to pulsate
+     * @param speed Speed at which the strip pulsates, arbitrary units
+     * @return Command to set the strip color
+     * @see LEDColor
+     * @see FunctionalCommand
+     */
     public Command breathStripColor(LEDColor color, double speed) {
         return new FunctionalCommand(
             () -> { // init
@@ -97,6 +116,15 @@ public class StatusLED extends SubsystemBase {
         );
     }
 
+    /**
+     * 'Races' a color up the strip by continously setting an incrementing buffer of LEDs to a color
+     * @param raceColor Color to race up the strip
+     * @param backColor Color of the background; the non-racing color
+     * @param interval Interval of time between updates, in seconds
+     * @return Command to set the strip
+     * @see LEDColor
+     * @see FunctionalCommand
+     */
     public Command raceColorsUpStrip(LEDColor raceColor, LEDColor backColor, double interval){
         LEDColor[] colorArray = makeRaceArray(backColor, raceColor);
         return new FunctionalCommand(
@@ -119,6 +147,17 @@ public class StatusLED extends SubsystemBase {
         );
     }
 
+    /**
+     * Blinks colors across the strip in a 'staggered' motion, blinking a number of times before stopping for a delay.
+     * @param color1 First color to blink between
+     * @param color2 Second color to blink between
+     * @param blinkInterval Interval of time between blinks, in seconds
+     * @param delay Delay between sets of blinks, in seconds
+     * @param blinkNum Number of blinks in a set 
+     * @return Command to set the strip
+     * @see LEDColor
+     * @see FunctionalCommand
+     */
     public Command staggeredBlinkStripColor(LEDColor color1, LEDColor color2, double blinkInterval, double delay, int blinkNum) {
         var counterWrapper = new Object() { int counter = 0; };
         return new FunctionalCommand(
@@ -134,7 +173,7 @@ public class StatusLED extends SubsystemBase {
                     timer.restart();
                 }
 
-                isOn = timer.hasElapsed(blinkInterval);
+                isOn = timer.advanceIfElapsed(blinkInterval);
                 if (isOn && timer.advanceIfElapsed(blinkInterval*2))
                     counterWrapper.counter++;
 
@@ -151,7 +190,16 @@ public class StatusLED extends SubsystemBase {
         );
     }
 
-    public Command blinkStripColor(LEDColor color1, LEDColor color2, double interval) {
+    /**
+     * Blinks the LED strip between two colors
+     * @param color1 First color to blink between
+     * @param color2 Second color to blink between
+     * @param delay Delay between blinks, in seconds
+     * @return Command to set the strip
+     * @see LEDColor
+     * @see FunctionalCommand
+     */
+    public Command blinkStripColor(LEDColor color1, LEDColor color2, double delay) {
         return new FunctionalCommand(
             () -> { // init
                 setStripColorHSV(color1);
@@ -160,8 +208,8 @@ public class StatusLED extends SubsystemBase {
                 isOn = false;
             }, 
             () -> { // exec
-                isOn = timer.hasElapsed(interval);
-                if (isOn && timer.hasElapsed(interval*2)) {
+                isOn = timer.hasElapsed(delay);
+                if (isOn && timer.hasElapsed(delay*2)) {
                     timer.restart();
                 }
 
