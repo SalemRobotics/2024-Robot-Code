@@ -1,5 +1,7 @@
 package frc.util;
 
+import edu.wpi.first.math.MathUtil;
+
 public class SwerveUtils {
 
     /**
@@ -85,5 +87,10 @@ public class SwerveUtils {
         else {
             return _angle;
         }
+    }
+
+    public static double SquareInputs(double value, double deadband) {
+        double input = MathUtil.applyDeadband(value, deadband);
+        return Math.copySign(input*input, input);
     }
 }

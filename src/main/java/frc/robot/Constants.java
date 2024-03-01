@@ -92,15 +92,15 @@ public final class Constants {
         public static final double kHeadingD = 0.0;
         
         // SPARK MAX IDs
-        public static final int kFrontLeftDrivingCanID = 7;
-        public static final int kFrontRightDrivingCanID = 2;
-        public static final int kRearLeftDrivingCanID = 6;
-        public static final int kRearRightDrivingCanID = 3;
+        public static final int kFrontLeftDrivingCanID = 2;
+        public static final int kFrontRightDrivingCanID = 3;
+        public static final int kRearLeftDrivingCanID = 7;
+        public static final int kRearRightDrivingCanID = 6;
 
-        public static final int kFrontLeftTurningCanID = 8;
-        public static final int kFrontRightTurningCanID = 1;
-        public static final int kRearLeftTurningCanID = 5;
-        public static final int kRearRightTurningCanID = 4;
+        public static final int kFrontLeftTurningCanID = 1;
+        public static final int kFrontRightTurningCanID = 4;
+        public static final int kRearLeftTurningCanID = 8;
+        public static final int kRearRightTurningCanID = 5;
     }
 
     public static final class SwerveConstants {

@@ -24,6 +24,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.util.SwerveUtils;
 
 public class RobotContainer {
   
@@ -61,12 +62,11 @@ public class RobotContainer {
     mDrivetrain.setDefaultCommand(
       new RunCommand(
         () -> mDrivetrain.drive(
-              -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband),
-              true, true),
-        mDrivetrain
-      )
+          -SwerveUtils.SquareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+          -SwerveUtils.SquareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
+          -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband),
+          true, true), 
+        mDrivetrain)
     );
   }
 
