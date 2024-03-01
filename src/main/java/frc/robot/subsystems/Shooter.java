@@ -26,6 +26,10 @@ public class Shooter extends SubsystemBase {
     final SparkPIDController mPivotPID;
 
     public Shooter() {
+        mRightMotor.restoreFactoryDefaults();
+        mLeftMotor.restoreFactoryDefaults();
+        mPivotMotor.restoreFactoryDefaults();
+
         mRightMotor.follow(mLeftMotor, true);
         
         mPivotMotor.setIdleMode(IdleMode.kBrake);
