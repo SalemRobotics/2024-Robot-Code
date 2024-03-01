@@ -43,9 +43,9 @@ public class RobotContainer {
       mDrivetrain.setX()
     );
     
-    new JoystickButton(mDriveController, Button.kX.value).whileTrue(
-      mShooter.shootRing()
-    );
+    // new JoystickButton(mDriveController, Button.kX.value).whileTrue(
+    //   mShooter.shootRing()
+    // );
   }
 
   public Command getAutonomousCommand() {

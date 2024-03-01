@@ -27,9 +27,12 @@ public class Shooter extends SubsystemBase {
 
     public Shooter() {
         mRightMotor.restoreFactoryDefaults();
+        mLeftMotor.restoreFactoryDefaults();
         mPivotMotor.restoreFactoryDefaults();
 
-        mRightMotor.follow(mLeftMotor, true);
+        mLeftMotor.setInverted(true);
+
+        mRightMotor.follow(mLeftMotor, false);
         
         mPivotMotor.setIdleMode(IdleMode.kBrake);
 
