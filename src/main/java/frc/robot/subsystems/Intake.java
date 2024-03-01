@@ -19,7 +19,7 @@ public class Intake extends SubsystemBase {
         return runEnd(
             () -> {
                 double newSpeed = mBreakBeam.get() ? -speed : speed;
-                mIntakeMotor.set(newSpeed);
+                mIntakeMotor.set(speed);
             }, 
             () -> mIntakeMotor.stopMotor()
         );
