@@ -31,8 +31,9 @@ public class Shooter extends SubsystemBase {
         mPivotMotor.restoreFactoryDefaults();
 
         mLeftMotor.setInverted(true);
+        mRightMotor.setInverted(true);
 
-        mRightMotor.follow(mLeftMotor, false);
+        // mRightMotor.follow(mLeftMotor, false);
         
         mPivotMotor.setIdleMode(IdleMode.kBrake);
 
@@ -48,17 +49,18 @@ public class Shooter extends SubsystemBase {
         mPivotPID.setOutputRange(ShooterContants.kPivotMinOutput, ShooterContants.kPivotMaxOutput);
         
         mPivotMotor.burnFlash();
-
-        SmartDashboard.putData(setSmartDashboardPID());
     }
 
-    Command setSmartDashboardPID() {
-        return runOnce(() -> {
-            mPivotPID.setP(SmartDashboard.getNumber("shootP", ShooterContants.kPivotP));
-            mPivotPID.setI(SmartDashboard.getNumber("shootI", ShooterContants.kPivotI));
-            mPivotPID.setD(SmartDashboard.getNumber("shootD", ShooterContants.kPivotD));
-            mPivotPID.setFF(SmartDashboard.getNumber("shootFF", ShooterContants.kPivotFF));
-        });
+    @Override
+    public void periodic() {
+        setSmartDashboardPID();
+    }
+
+    void setSmartDashboardPID() {
+        mPivotPID.setP(SmartDashboard.getNumber("shootP", ShooterContants.kPivotP));
+        mPivotPID.setI(SmartDashboard.getNumber("shootI", ShooterContants.kPivotI));
+        mPivotPID.setD(SmartDashboard.getNumber("shootD", ShooterContants.kPivotD));
+        mPivotPID.setFF(SmartDashboard.getNumber("shootFF", ShooterContants.kPivotFF));
     }
 
     /**
@@ -101,10 +103,12 @@ public class Shooter extends SubsystemBase {
     public Command shootRing() {
         return runEnd(
             () -> {
-                mLeftMotor.set(ShooterContants.kShooterSpeed);
+                mLeftMotor.set(0.7);
+                mRightMotor.set(0.9);
             },
             () -> {
                 mLeftMotor.stopMotor();
+                mRightMotor.stopMotor();
             }
         );
     }
