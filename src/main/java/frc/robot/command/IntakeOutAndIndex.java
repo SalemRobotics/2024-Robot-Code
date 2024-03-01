@@ -26,7 +26,7 @@ public class IntakeOutAndIndex extends ParallelCommandGroup {
 
         addCommands(
             mIntake.intakeRing(IntakeConstants.kIntakeSpeedOut),
-            mIndexer.runMiddleIndexer(IndexerConstants.kIndexerSpeedOut)
+            mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeedOut)
         );
 
         addRequirements(mIntake, mIndexer);
