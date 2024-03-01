@@ -105,7 +105,7 @@ public class MAXSwerveModule {
     mDesiredState.angle = new Rotation2d(mTurningEncoder.getPosition());
     mDrivingEncoder.setPosition(0);
   }
-
+  
   /**
    * Returns the current state of the module.
    *
