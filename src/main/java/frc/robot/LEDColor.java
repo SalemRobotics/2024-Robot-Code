@@ -16,6 +16,7 @@ public class LEDColor extends Color {
         red = color.red;
         green = color.green;
         blue = color.blue;
+        calcHSV();
     }
 
     /**
@@ -44,6 +45,22 @@ public class LEDColor extends Color {
         this.green=green/255.0;
         this.blue=blue/255.0;
         calcHSV();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (super.equals(other)) {
+            return true;
+        }
+        
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+
+        LEDColor color = (LEDColor) other;
+        return Double.compare(hue, color.hue) == 0
+        && Double.compare(saturation, color.saturation) == 0
+        && Double.compare(green, blue) == 0;
     }
 
     public void setRGB(double r, double g, double b) {
@@ -98,30 +115,13 @@ public class LEDColor extends Color {
      * @return The product color.
      */
     public static LEDColor lerpHSV(LEDColor a, LEDColor b, double t) {
-        double h=0; 
-        double d = b.hue - a.hue;
+        double time = MathUtil.clamp(t, 0, 1);
 
-        if (a.hue > b.hue) {
-            double temp = b.hue;
-            b.hue = a.hue;
-            a.hue = temp;
-
-            d = -d;
-            t = 1 - t;
-        }
-        if (d > 0.5) {
-            a.hue = a.hue + 1;
-            h = (a.hue + t * (b.hue - a.hue)) % 1;
-        }
-        if (d <= 0.5) {
-            h = a.hue + t * d;
-        }
-
-        LEDColor out = new LEDColor(0, 0, 0);
+        LEDColor out = new LEDColor(Color.kBlack);
         out.setHSV(
-            h, 
-            a.saturation + t * (b.saturation - a.saturation), 
-            a.value + t * (b.value - a.value)
+            a.hue + time * (b.hue - a.hue), 
+            a.saturation + time * (b.saturation - a.saturation), 
+            a.value + time * (b.value - a.value)
         );
         return out;
     }
@@ -141,7 +141,7 @@ public class LEDColor extends Color {
 
         value = cMax * 255;
 
-        saturation = cMax == 0 ? 0 : (delta/cMax) * 255;
+        saturation = cMax == 0 ? 0 : (delta/cMax);
 
         if (delta == 0) 
             hue = 0;
@@ -158,35 +158,30 @@ public class LEDColor extends Color {
      */
     void calcRGB() {
         double cMax = value;
-        double cMin = cMax * (1 - (saturation / 255));
+        double cMin = cMax * (1 - (saturation/255));
         double z = (cMax - cMin) * (1 - Math.abs((hue / 30) % 2 - 1));
 
         if (hue < 30) {
             red = cMax;
             green = z + cMin;
             blue = cMin;
-        }
-        else if (30 <= hue && hue < 60) {
+        } else if (30 <= hue && hue < 60) {
             red = z + cMin;
             green = cMax;
             blue = cMin;
-        }
-        else if (60 <= hue && hue < 90) {
+        } else if (60 <= hue && hue < 90) {
             red = cMin;
             green = cMax;
             blue = z + cMin;
-        }
-        else if (90 <= hue && hue < 120) {
+        } else if (90 <= hue && hue < 120) {
             red = cMin;
             green = z + cMin;
             blue = cMax;
-        }
-        else if (120 <= hue && hue < 150) {
+        } else if (120 <= hue && hue < 150) {
             red = z + cMin;
             green = cMin;
             blue = cMax;
-        }
-        else if (150 <= hue && hue < 180) {
+        } else if (150 <= hue && hue < 180) {
             red = cMax;
             green = cMin;
             blue = z + cMin;

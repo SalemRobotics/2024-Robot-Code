@@ -28,7 +28,7 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
 
-    mLED.setDefaultCommand(mLED.interpolateStripColor(new LEDColor(Color.kPurple), new LEDColor(Color.kYellow), 0.1));
+    mLED.setDefaultCommand(mLED.chromaShiftColor(Color.kRed, Color.kGreen, 0.5));
 
     mDrivetrain.setDefaultCommand(
       new RunCommand(

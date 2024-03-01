@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -31,12 +30,14 @@ public class StatusLED extends SubsystemBase {
      * @param a First color to interpolate between
      * @param b Second color to interpolate between
      * @param speed Speed at which to interpolate, in percentage (0.0-1.0)
-     * @return
+     * @return Command to set the strip
+     * @see LEDColor
+     * @see FunctionalCommand
      */
-    public Command interpolateStripColor(LEDColor a, LEDColor b, double speed) {
+    public Command interpolateStripColor(Color a, Color b, double speed) {
         return new FunctionalCommand(
             () -> { // init
-                setStripColorHSV(a);
+                setStripColorHSV(new LEDColor(a));
                 timer.reset();
                 timer.start();
                 isOn = true;
@@ -66,7 +67,51 @@ public class StatusLED extends SubsystemBase {
             this
         );
     }
- 
+
+    /**
+     * Linearly interpolates in HSV space between two colors, creating a hue shift/chroma shift effect
+     * @param color1 First color to interpolate between
+     * @param color2 Second color to interpolate between
+     * @param speed Speed at which to interpolate, in percentage (0.0-1.0)
+     * @return Command to set the strip
+     * @see LEDColor
+     * @see FunctionalCommand
+     */
+    public Command chromaShiftColor(Color color1, Color color2, double speed) {
+        LEDColor a = new LEDColor(color1);
+        LEDColor b = new LEDColor(color2);
+        return new FunctionalCommand(
+            () -> { // init
+                setStripColorHSV(a);
+                timer.reset();
+                timer.start();
+                isOn = true;
+            }, 
+            () -> { // exec
+                LEDColor lerpColor;
+                if (isOn) {
+                    lerpColor = LEDColor.lerpHSV(a, b, timer.get() * speed);
+                    if (lerpColor.hue == b.hue) {
+                        isOn = false;
+                        timer.restart();
+                    }
+                    setStripColorHSV(lerpColor);
+                    return;
+                }
+
+                lerpColor = LEDColor.lerpHSV(b, a, timer.get() * speed);
+                if (lerpColor.hue == a.hue) {
+                    isOn = true;
+                    timer.restart();
+                }
+                setStripColorHSV(lerpColor);
+            }, 
+            isFinished -> timer.stop(), // end
+            () -> false, // isFinished
+            this
+        );
+    }
+
     /**
      * Sets half of the LED strip to colorB, and the other half to colorA
      * @param colorA Bottom half color
