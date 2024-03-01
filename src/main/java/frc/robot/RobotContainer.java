@@ -64,18 +64,6 @@ public class RobotContainer {
     new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
       new IntakeOutAndIndex(mIntake, mIndexer)
     );
-
-    new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
-       mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeed)
-    );
-
-    new JoystickButton(mDriveController, Button.kB.value).whileTrue(
-      mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeed)
-    );
-
-    new JoystickButton(mDriveController, Button.kA.value).whileTrue(
-      mIndexer.runUpperIndexer(IndexerConstants.kIndexerSpeed)
-    );
   }
 
   public Command getAutonomousCommand() {
