@@ -23,6 +23,17 @@ public class StrongArmMachine extends SubsystemBase {
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
 
+    enum SAMPositions {
+        HANDOFF(0.0),
+        INTAKE_SOURCE(0.0),
+        EJECT_AMP(0.0);
+        
+        public final double value;
+        private SAMPositions(double value) {
+            this.value = value;    
+        }
+    }
+
     public StrongArmMachine() {
 
         mPivotMotor.setIdleMode(IdleMode.kBrake);
