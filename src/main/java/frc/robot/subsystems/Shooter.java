@@ -27,7 +27,6 @@ public class Shooter extends SubsystemBase {
 
     public Shooter() {
         mRightMotor.restoreFactoryDefaults();
-        mLeftMotor.restoreFactoryDefaults();
         mPivotMotor.restoreFactoryDefaults();
 
         mRightMotor.follow(mLeftMotor, true);
