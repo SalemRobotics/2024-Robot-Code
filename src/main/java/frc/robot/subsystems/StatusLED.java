@@ -24,6 +24,7 @@ public class StatusLED extends SubsystemBase {
         led.setData(ledBuffer);
         led.start();
     }
+
     // It doesnt work
     public Command interpolateStripColor(LEDColor a, LEDColor b) {
         return new FunctionalCommand(
@@ -51,10 +52,8 @@ public class StatusLED extends SubsystemBase {
                 setStripColorHSV(lerpColor);
                 SmartDashboard.putBoolean("isOn", isOn);
             }, 
-            isFinished -> {
-                timer.stop();
-            }, 
-            () -> { return false; }, 
+            isFinished -> timer.stop(), // end
+            () -> false, // isFinished
             this
         );
     }
@@ -63,21 +62,12 @@ public class StatusLED extends SubsystemBase {
      * Color A is bottom
      * Color B is top
      */
-    public Command halfSolidColor(LEDColor colorA, LEDColor colorB) {
-        LEDColor[]ledColors = {colorA,colorB};
-        return run(
-            () -> {
-                setPartsOfStripColors(ledColors);
-            }
-        );
+    public Command setHalfSolidColor(LEDColor colorA, LEDColor colorB) {
+        return run(() -> setPartsOfStripColors(colorA, colorB));
     }
 
-    public Command solidColor(LEDColor color) {
-        return run(
-            () -> {
-                setStripColorHSV(color);
-            }
-        );
+    public Command setSolidColor(LEDColor color) {
+        return run(() -> setStripColorHSV(color));
     }
 
     public Command breathStripColor(LEDColor color, double speed) {
@@ -89,44 +79,44 @@ public class StatusLED extends SubsystemBase {
             () -> { // exec
                 LEDColor hsvColor = color;
                 if (isOn){
-                    hsvColor.value = hsvColor.value > 0 ? hsvColor.value -= speed*2.55 : 0;
+                    hsvColor.value = hsvColor.value > 0 ? hsvColor.value -= speed * 2.55 : 0;
                     hsvColor.setHSV(hsvColor.hue, hsvColor.saturation, hsvColor.value);
                     isOn = !(hsvColor.value == 0);
-                }
-                else {
-                    hsvColor.value = hsvColor.value < 255 ? hsvColor.value += speed*2.55 : 255;
+                } else {
+                    hsvColor.value = hsvColor.value < 255 ? hsvColor.value += speed * 2.55 : 255;
                     hsvColor.setHSV(hsvColor.hue, hsvColor.saturation, hsvColor.value);
                     isOn = hsvColor.value == 255;
                 }
+
                 setStripColorHSV(hsvColor);
             },
-            isFinished -> {},
-            () -> { return false; },
+            isFinished -> {}, // end
+            () -> false, // isFinished
             this
         );
     }
 
     public Command raceColorsUpStrip(LEDColor raceColor, LEDColor backColor){
         LEDColor[] colorArray = makeRaceArray(backColor, raceColor);
-        return run(
-            () -> {
-                for (int i = 0; i < LEDconstants.ledLength; i++) {
-
-                }
-            }
+        return new FunctionalCommand(
+            () -> {}, 
+            null, 
+            isFinished -> {}, 
+            () -> false, 
+            this
         );
     }
 
     public Command staggeredBlinkStripColor(LEDColor color1, LEDColor color2, double blinkInterval, double delay, int blinkNum) {
         var counterWrapper = new Object() { int counter = 0; };
         return new FunctionalCommand(
-            () -> {
+            () -> { // init
                 setStripColorHSV(color1);
                 timer.reset();
                 timer.start();
                 isOn = false;
             },
-            () -> {
+            () -> { // exec
                 if (counterWrapper.counter % blinkNum == 0) {
                     isOn = false;
                     timer.restart();
@@ -138,18 +128,17 @@ public class StatusLED extends SubsystemBase {
                     counterWrapper.counter++;
                 }
 
-                if (isOn)
+                if (isOn) {
                     setStripColorHSV(color2);
-                else 
-                    setStripColorHSV(color1);
-            },
-            isFinished -> {
-                timer.stop();
-            },
-            () -> { return false; }, 
-            this
-            )   ;
+                    return;
+                }
 
+                setStripColorHSV(color1);
+            },
+            isFinished -> timer.stop(), // end
+            () -> false, // isFinished
+            this
+        );
     }
 
     public Command blinkStripColor(LEDColor color1, LEDColor color2, double interval) {
@@ -171,22 +160,23 @@ public class StatusLED extends SubsystemBase {
                 else 
                     setStripColorHSV(color1);
             }, 
-            isFinished -> {
-                timer.stop();
-            }, 
-            () -> { return false; },
+            isFinished -> timer.stop(), // end 
+            () -> false, // isFinished
             this
         );
     }
 
-    void makeRaceArray(LEDColor backColor, LEDColor raceColor) {
-        LEDColor[] colorArray = new LEDColor[LEDconstants.ledLength];
-        for(var i = LEDconstants.ledChaserLength; i < (LEDconstants.ledLength - LEDconstants.ledChaserLength); i++) {
+    LEDColor[] makeRaceArray(LEDColor backColor, LEDColor raceColor) {
+        LEDColor[] colorArray = new LEDColor[ledBuffer.getLength()];
+        for(var i = LEDconstants.ledChaserLength; i < (ledBuffer.getLength() - LEDconstants.ledChaserLength); i++) {
             colorArray[i] = backColor;
         }
+
         for(var i = 0; i < LEDconstants.ledChaserLength; i++) {
             colorArray[i] = raceColor;
         }
+        
+        return colorArray;
     }
 
     void setPartsOfStripColors(LEDColor... colors) {
@@ -201,19 +191,9 @@ public class StatusLED extends SubsystemBase {
         }
         led.setData(ledBuffer);
     }
-
-    void setBottemHalfStripColorHSV(LEDColor color) {
-        for (int i = 0; i < ledBuffer.getLength() / 2; i++) {
-            setHSV(i, color);
-        }
-        led.setData(ledBuffer);
-    }
-
-    void setTopHalfStripColorHSV(LEDColor color) {
-        for (int i = ledBuffer.getLength() / 2; i < ledBuffer.getLength(); i++) {
-            setHSV(i, color);
-        }
-        led.setData(ledBuffer);
+    
+    void setHSV(int index, LEDColor color) {
+        ledBuffer.setHSV(index, (int)color.hue, (int)color.saturation, (int)color.value);
     }
 
     void setStripColorHSV(LEDColor color) {
@@ -227,16 +207,10 @@ public class StatusLED extends SubsystemBase {
         ledBuffer.setRGB(index, (int)color.red, (int)color.green, (int)color.blue);
     }
 
-    void setHSV(int index, LEDColor color) {
-        ledBuffer.setHSV(index, (int)color.hue, (int)color.saturation, (int)color.value);
-    }
-
     void setStripColorRGB(Color color) {
         for (int i=0; i < ledBuffer.getLength(); i++) {
             setRGB(i, color);
         }
         led.setData(ledBuffer);
     }
-
-
 }
