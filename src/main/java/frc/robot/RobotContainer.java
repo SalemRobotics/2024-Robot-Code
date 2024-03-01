@@ -7,12 +7,14 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.StatusLED;
 import frc.util.SwerveUtils;
 
 public class RobotContainer {
@@ -20,9 +22,13 @@ public class RobotContainer {
   final XboxController mDriveController = new XboxController(ControllerConstants.kDriverPort); 
 
   final Drivetrain mDrivetrain = new Drivetrain();
+
+  final StatusLED mLED = new StatusLED();
   
   public RobotContainer() {
     configureBindings();
+
+    mLED.setDefaultCommand(mLED.interpolateStripColor(new LEDColor(Color.kPurple), new LEDColor(Color.kYellow), 0.1));
 
     mDrivetrain.setDefaultCommand(
       new RunCommand(

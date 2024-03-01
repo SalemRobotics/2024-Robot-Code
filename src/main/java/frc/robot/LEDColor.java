@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.util.Color;
 
 /**
@@ -10,11 +11,18 @@ public class LEDColor extends Color {
     public double red, green, blue;
     public double hue, saturation, value;
 
+    public LEDColor(Color color) {
+        super(color.red, color.green, color.blue);
+        red = color.red;
+        green = color.green;
+        blue = color.blue;
+    }
+
     /**
      * Constructs an LEDColor.
-     * @param red 0-255
-     * @param green 0-255
-     * @param blue 0-255
+     * @param red 0-1
+     * @param green 0-1
+     * @param blue 0-1
      */
     public LEDColor(double red, double green, double blue) {
         super(red, green, blue);
@@ -32,9 +40,9 @@ public class LEDColor extends Color {
      */
     public LEDColor(int red, int green, int blue) {
         super(red, green, blue);
-        this.red=red;
-        this.green=green;
-        this.blue=blue;
+        this.red=red/255.0;
+        this.green=green/255.0;
+        this.blue=blue/255.0;
         calcHSV();
     }
 
@@ -74,10 +82,11 @@ public class LEDColor extends Color {
      * @return The calculated color at t seconds
      */
     public static LEDColor lerpRGB(Color a, Color b, double t) {
+        double time = MathUtil.clamp(t, 0, 1);
         return new LEDColor(
-            a.red + (b.red - a.red) * t,
-            a.green + (b.green - a.green) * t,
-            a.blue + (b.blue - a.blue) * t
+            a.red + ((b.red - a.red) * time),
+            a.green + ((b.green - a.green) * time),
+            a.blue + ((b.blue - a.blue) * time)
         );
     }
 

@@ -26,8 +26,14 @@ public class StatusLED extends SubsystemBase {
         led.start();
     }
 
-    // It doesnt work
-    public Command interpolateStripColor(LEDColor a, LEDColor b) {
+    /**
+     * Linearly interpolates back and forth between two colors, at a set speed
+     * @param a First color to interpolate between
+     * @param b Second color to interpolate between
+     * @param speed Speed at which to interpolate, in percentage (0.0-1.0)
+     * @return
+     */
+    public Command interpolateStripColor(LEDColor a, LEDColor b, double speed) {
         return new FunctionalCommand(
             () -> { // init
                 setStripColorHSV(a);
@@ -36,22 +42,24 @@ public class StatusLED extends SubsystemBase {
                 isOn = true;
             }, 
             () -> { // exec
-                LEDColor lerpColor = a;
+                LEDColor lerpColor;
                 if (isOn) {
-                    lerpColor = LEDColor.lerpRGB(a, b, timer.get());
-                    if (!lerpColor.equals(b)) {
+                    lerpColor = LEDColor.lerpRGB(a, b, timer.get() * speed);
+                    if (lerpColor.equals(b)) {
                         isOn = false;
                         timer.restart();
                     }
-                } else {
-                    lerpColor = LEDColor.lerpRGB(b, a, timer.get());
-                    if (lerpColor.equals(a)) {
-                        isOn = true;
-                        timer.restart();
-                    }
+                    
+                    setStripColorHSV(lerpColor);
+                    return;
+                }
+
+                lerpColor = LEDColor.lerpRGB(b, a, timer.get() * speed);
+                if (lerpColor.equals(a)) {
+                    isOn = true;
+                    timer.restart();
                 }
                 setStripColorHSV(lerpColor);
-                SmartDashboard.putBoolean("isOn", isOn);
             }, 
             isFinished -> timer.stop(), // end
             () -> false, // isFinished
@@ -236,15 +244,13 @@ public class StatusLED extends SubsystemBase {
     }
 
     void setPartsOfStripColors(LEDColor... colors) {
-        for (int i = 0; i < colors.length; i++) {
+        for (int i = 0; i < colors.length; i++)
             setPartOfStripColor(colors[i], i, colors.length);
-        }
     }
 
     void setPartOfStripColor(LEDColor color, int part, int length){
-        for (int i = (int)((ledBuffer.getLength() / length) * part); i < (int)((ledBuffer.getLength() / length) * (part + 1)); i++) {
+        for (int i = (int)((ledBuffer.getLength() / length) * part); i < (int)((ledBuffer.getLength() / length) * (part + 1)); i++) 
             setHSV(i, color);
-        }
         led.setData(ledBuffer);
     }
     
