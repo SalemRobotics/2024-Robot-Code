@@ -12,6 +12,7 @@ public final class Constants {
         public static final double kIntakeSpeedOut = -0.5;
 
         public static final int kSparkMaxID = 9;
+        public static final int kBreakBeamChannel = 0; // TODO: set this value
     }
 
     public static final class DriveConstants {
