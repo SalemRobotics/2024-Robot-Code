@@ -52,16 +52,45 @@ public class StrongArmMachine extends SubsystemBase {
 
         mPivotMotor.burnFlash();
         
-        SmartDashboard.putData(setShuffleboardPID());
+        SmartDashboard.putNumber("samP", SAMConstants.kPivotP);
+        SmartDashboard.putNumber("samI", SAMConstants.kPivotI);
+        SmartDashboard.putNumber("samD", SAMConstants.kPivotD);
+        SmartDashboard.putNumber("samFF", SAMConstants.kPivotFF);
     }
 
-    Command setShuffleboardPID() {
-        return runOnce(() -> {
-            mPivotPID.setP(SmartDashboard.getNumber("samP", SAMConstants.kPivotP));
-            mPivotPID.setI(SmartDashboard.getNumber("samI", SAMConstants.kPivotI));
-            mPivotPID.setD(SmartDashboard.getNumber("samD", SAMConstants.kPivotD));
-            mPivotPID.setFF(SmartDashboard.getNumber("samFF", SAMConstants.kPivotFF));
-        });
+    @Override
+    public void periodic() {
+        setShuffleboardPID();
+    }
+
+    double gP  = SAMConstants.kPivotP,
+           gI  = SAMConstants.kPivotI,
+           gD  = SAMConstants.kPivotD,
+           gFF = SAMConstants.kPivotFF;
+    void setShuffleboardPID() {
+        double p  = SmartDashboard.getNumber("samP", SAMConstants.kPivotP),
+               i  = SmartDashboard.getNumber("samI", SAMConstants.kPivotI),
+               d  = SmartDashboard.getNumber("samD", SAMConstants.kPivotD),
+               ff = SmartDashboard.getNumber("samFF", SAMConstants.kPivotFF);
+        if (Double.compare(p, gP) != 0) {
+            mPivotPID.setP(p);
+            gP = p;
+        }
+
+        if (Double.compare(i, gI) != 0) {
+            mPivotPID.setI(i);
+            gI = i;
+        }
+
+        if (Double.compare(d, gD) != 0) {
+            mPivotPID.setD(d);
+            gD = d;
+        }
+
+        if (Double.compare(ff, gFF) != 0) {
+            mPivotPID.setFF(ff);
+            gFF = ff;
+        }
     }
 
     /** Intended for debug/testing only */
