@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,6 +20,9 @@ import frc.robot.Constants.ShooterContants;
 public class Shooter extends SubsystemBase {
     final CANSparkMax mLeftMotor = new CANSparkMax(ShooterContants.kLeftMotorID, MotorType.kBrushless);
     final CANSparkMax mRightMotor = new CANSparkMax(ShooterContants.kRightMotorID, MotorType.kBrushless);
+
+    final BangBangController mLeftController = new BangBangController(ShooterContants.kControllerErrorTolerance);
+    final BangBangController mRightController = new BangBangController(ShooterContants.kControllerErrorTolerance);
     
     final CANSparkMax mPivotMotor = new CANSparkMax(ShooterContants.kPivotMotorID, MotorType.kBrushless);
 
@@ -31,9 +35,14 @@ public class Shooter extends SubsystemBase {
         mPivotMotor.restoreFactoryDefaults();
 
         mLeftMotor.setInverted(true);
-
-        mRightMotor.follow(mLeftMotor, false);
+        mRightMotor.setInverted(true);
         
+        mLeftMotor.burnFlash();
+        mRightMotor.burnFlash();
+
+        mLeftController.setSetpoint(ShooterContants.kLeftMotorSpeedSetpoint);
+        mRightController.setSetpoint(ShooterContants.kRightMotorSpeedSetpoint);
+
         mPivotMotor.setIdleMode(IdleMode.kBrake);
 
         mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
@@ -48,17 +57,18 @@ public class Shooter extends SubsystemBase {
         mPivotPID.setOutputRange(ShooterContants.kPivotMinOutput, ShooterContants.kPivotMaxOutput);
         
         mPivotMotor.burnFlash();
-
-        SmartDashboard.putData(setSmartDashboardPID());
     }
 
-    Command setSmartDashboardPID() {
-        return runOnce(() -> {
-            mPivotPID.setP(SmartDashboard.getNumber("shootP", ShooterContants.kPivotP));
-            mPivotPID.setI(SmartDashboard.getNumber("shootI", ShooterContants.kPivotI));
-            mPivotPID.setD(SmartDashboard.getNumber("shootD", ShooterContants.kPivotD));
-            mPivotPID.setFF(SmartDashboard.getNumber("shootFF", ShooterContants.kPivotFF));
-        });
+    @Override
+    public void periodic() {
+        setSmartDashboardPID();
+    }
+
+    void setSmartDashboardPID() {
+        mPivotPID.setP(SmartDashboard.getNumber("shootP", ShooterContants.kPivotP));
+        mPivotPID.setI(SmartDashboard.getNumber("shootI", ShooterContants.kPivotI));
+        mPivotPID.setD(SmartDashboard.getNumber("shootD", ShooterContants.kPivotD));
+        mPivotPID.setFF(SmartDashboard.getNumber("shootFF", ShooterContants.kPivotFF));
     }
 
     /**
@@ -93,6 +103,13 @@ public class Shooter extends SubsystemBase {
         );
     }
 
+    public boolean atOutputThreshold() {
+        double leftOutput = mLeftMotor.getAppliedOutput() / ShooterContants.kLeftMotorSpeedSetpoint;
+        double rightOutput = mRightMotor.getAppliedOutput() / ShooterContants.kRightMotorSpeedSetpoint;
+        return Double.compare(leftOutput, ShooterContants.kOutputTolerance) >= 0
+            && Double.compare(rightOutput, ShooterContants.kOutputTolerance) >= 0;
+    }
+
     /**
      * Sets both motors to a constant speed, intened to fire the gamepiece.
      * @return runEnd command
@@ -101,10 +118,17 @@ public class Shooter extends SubsystemBase {
     public Command shootRing() {
         return runEnd(
             () -> {
-                mLeftMotor.set(ShooterContants.kShooterSpeed);
+                mLeftMotor.set(
+                    mLeftController.calculate(mLeftMotor.getAppliedOutput())
+                );
+
+                mRightMotor.set(
+                    mRightController.calculate(mRightMotor.getAppliedOutput())
+                );
             },
             () -> {
                 mLeftMotor.stopMotor();
+                mRightMotor.stopMotor();
             }
         );
     }
