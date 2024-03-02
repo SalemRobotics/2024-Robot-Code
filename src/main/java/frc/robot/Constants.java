@@ -9,8 +9,10 @@ import edu.wpi.first.math.util.Units;
 
 public final class Constants {
     public static final class ShooterContants {
-        public static final double kShooterSpeed = 1.0;
-        public static final double kAllowedOutputVelocity = 5800.0 * (85.0 / 100.0); // 85% of the measured peak RPM
+        public static final double kLeftMotorSpeedSetpoint = 0.9;
+        public static final double kRightMotorSpeedSetpoint = 0.7;
+        public static final double kControllerErrorTolerance = 0.1;
+        public static final double kOutputTolerance = 0.8;
 
         public static final int kPivotMotorID = 13;
         public static final int kRightMotorID = 14;
