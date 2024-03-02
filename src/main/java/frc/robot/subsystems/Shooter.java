@@ -75,6 +75,9 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         setSmartDashboardPID();
+
+        SmartDashboard.putNumber("leftVel", mleftEncoder.getVelocity());
+        SmartDashboard.putNumber("leftVel", mRightEncoder.getVelocity());
     }
 
     void setSmartDashboardPID() {
@@ -130,11 +133,11 @@ public class Shooter extends SubsystemBase {
         return runEnd(
             () -> {
                 mLeftMotor.set(
-                    mLeftController.calculate(mLeftMotor.getAppliedOutput())
+                    mLeftController.calculate(mleftEncoder.getVelocity())
                 );
 
                 mRightMotor.set(
-                    mRightController.calculate(mRightMotor.getAppliedOutput())
+                    mRightController.calculate(mleftEncoder.getVelocity())
                 );
             },
             () -> {
