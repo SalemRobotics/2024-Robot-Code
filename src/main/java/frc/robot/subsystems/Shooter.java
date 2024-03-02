@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
@@ -24,6 +25,9 @@ public class Shooter extends SubsystemBase {
     final CANSparkMax mLeftMotor = new CANSparkMax(ShooterContants.kLeftMotorID, MotorType.kBrushless);
     final CANSparkMax mRightMotor = new CANSparkMax(ShooterContants.kRightMotorID, MotorType.kBrushless);
 
+    final RelativeEncoder mleftEncoder;
+    final RelativeEncoder mRightEncoder;
+
     final BangBangController mLeftController = new BangBangController(ShooterContants.kControllerErrorTolerance);
     final BangBangController mRightController = new BangBangController(ShooterContants.kControllerErrorTolerance);
     
@@ -39,6 +43,12 @@ public class Shooter extends SubsystemBase {
 
         mLeftMotor.setInverted(true);
         mRightMotor.setInverted(true);
+
+        mleftEncoder = mLeftMotor.getEncoder();
+        mRightEncoder = mRightMotor.getEncoder();
+
+        mleftEncoder.setVelocityConversionFactor(ShooterContants.kVelocityFactor);
+        mRightEncoder.setVelocityConversionFactor(ShooterContants.kVelocityFactor);
         
         mLeftMotor.burnFlash();
         mRightMotor.burnFlash();
@@ -107,7 +117,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean atOutputThreshold() {
-        return mLeftController.atSetpoint() && mRightController.atSetpoint();
+        return Double.compare(mleftEncoder.getVelocity(), ShooterContants.kOutputVelocityThreshold) >= 0
+            && Double.compare(mRightEncoder.getVelocity(), ShooterContants.kOutputVelocityThreshold) >= 0;
     }
 
     /**
