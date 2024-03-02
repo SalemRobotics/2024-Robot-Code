@@ -96,6 +96,22 @@ public class Drivetrain extends SubsystemBase {
       }, 
       this
     );
+
+    displayShuffleboardPID();
+  }
+
+  void displayShuffleboardPID() {
+    SmartDashboard.putNumber("Driving P", AutoConstants.kAutoDrivingP);
+    SmartDashboard.putNumber("Driving I", AutoConstants.kAutoDrivingI);
+    SmartDashboard.putNumber("Driving D", AutoConstants.kAutoDrivingD);
+    SmartDashboard.putNumber("Driving IZone", AutoConstants.kAutoDrivingIZone);
+
+    SmartDashboard.putNumber("Turning P", AutoConstants.kAutoTurningP);
+    SmartDashboard.putNumber("Turning I", AutoConstants.kAutoTurningI);
+    SmartDashboard.putNumber("Turning D", AutoConstants.kAutoTurningD);
+    SmartDashboard.putNumber("Turning IZone", AutoConstants.kAutoTurningIZone);
+
+    SmartDashboard.putData("Reset PID and Odometry", setPIDAndReset());
   }
 
   @Override
@@ -296,23 +312,22 @@ public class Drivetrain extends SubsystemBase {
   public Command setPIDAndReset() {
     return runOnce(() -> {
       HolonomicPathFollowerConfig pathConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(
-              // TODO: Get from smart dashboard
-                SmartDashboard.getNumber("Driving P", AutoConstants.kAutoDrivingP),
-                SmartDashboard.getNumber("Driving I", AutoConstants.kAutoDrivingI),
-                SmartDashboard.getNumber("Driving D", AutoConstants.kAutoDrivingD),
-                SmartDashboard.getNumber("Driving IZone", AutoConstants.kAutoDrivingIZone)
-            ), 
-            new PIDConstants(
-                SmartDashboard.getNumber("Turning P", AutoConstants.kAutoTurningP),
-                SmartDashboard.getNumber("Turning I", AutoConstants.kAutoTurningI),
-                SmartDashboard.getNumber("Turning D", AutoConstants.kAutoTurningD),
-                SmartDashboard.getNumber("Turning IZone", AutoConstants.kAutoTurningIZone)
-            ), 
-            DriveConstants.kMaxSpeedMetersPerSecond, 
-            DriveConstants.kDriveBaseRadius, 
-            new ReplanningConfig(true, true)
-        );
+        new PIDConstants(
+          SmartDashboard.getNumber("Driving P", AutoConstants.kAutoDrivingP),
+          SmartDashboard.getNumber("Driving I", AutoConstants.kAutoDrivingI),
+          SmartDashboard.getNumber("Driving D", AutoConstants.kAutoDrivingD),
+          SmartDashboard.getNumber("Driving IZone", AutoConstants.kAutoDrivingIZone)
+        ), 
+        new PIDConstants(
+          SmartDashboard.getNumber("Turning P", AutoConstants.kAutoTurningP),
+          SmartDashboard.getNumber("Turning I", AutoConstants.kAutoTurningI),
+          SmartDashboard.getNumber("Turning D", AutoConstants.kAutoTurningD),
+          SmartDashboard.getNumber("Turning IZone", AutoConstants.kAutoTurningIZone)
+        ), 
+        DriveConstants.kMaxSpeedMetersPerSecond, 
+        DriveConstants.kDriveBaseRadius, 
+        new ReplanningConfig(true, true)
+      );
       resetEncoders();
       mPigeon.reset();
 

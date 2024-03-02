@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.commands.IntakeInAndIndex;
@@ -45,18 +44,6 @@ public class RobotContainer {
     configureNamedCommands();
 
     SmartDashboard.putData("Field", m_field);
-
-    SmartDashboard.putNumber("Driving P", AutoConstants.kAutoDrivingP);
-    SmartDashboard.putNumber("Driving I", AutoConstants.kAutoDrivingI);
-    SmartDashboard.putNumber("Driving D", AutoConstants.kAutoDrivingD);
-    SmartDashboard.putNumber("Driving IZone", AutoConstants.kAutoDrivingIZone);
-
-    SmartDashboard.putNumber("Turning P", AutoConstants.kAutoTurningP);
-    SmartDashboard.putNumber("Turning I", AutoConstants.kAutoTurningI);
-    SmartDashboard.putNumber("Turning D", AutoConstants.kAutoTurningD);
-    SmartDashboard.putNumber("Turning IZone", AutoConstants.kAutoTurningIZone);
-
-    SmartDashboard.putData("Reset PID and Odometry", mDrivetrain.setPIDAndReset());
 
     // Set default Drivetrain command to a RunCommand containing Drivetrain::drive.
     mDrivetrain.setDefaultCommand(
