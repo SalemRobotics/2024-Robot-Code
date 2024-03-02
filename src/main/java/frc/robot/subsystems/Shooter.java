@@ -1,4 +1,6 @@
 package frc.robot.subsystems;
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder;
@@ -133,8 +135,8 @@ public class Shooter extends SubsystemBase {
     /**
      * Intended for testing/data collection use only.
      */
-    public Command movePivotManual(double axisOutput) {
-        return run(() -> mPivotMotor.set(axisOutput));
+    public Command movePivotManual(DoubleSupplier axisOutput) {
+        return run(() -> mPivotMotor.set(axisOutput.getAsDouble()));
     }
 
     /**

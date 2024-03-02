@@ -48,8 +48,20 @@ public class RobotContainer {
     new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
       new RunCommand(() -> mDrivetrain.setX(), mDrivetrain)
     );
+
+    // #region debug
+
+    mShooter.setDefaultCommand(
+      mShooter.movePivotManual(mOperatorController::getLeftY)
+    );
+
+    new JoystickButton(mOperatorController, Button.kA.value).whileTrue(
+      mShooter.snapshotPosition()
+    );
+
+    // #endregion
     
-    new JoystickButton(mDriveController, Button.kX.value).whileTrue(
+    new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
       new SpinUpShooterAndIndex(mIndexer, mShooter)
     );
     
