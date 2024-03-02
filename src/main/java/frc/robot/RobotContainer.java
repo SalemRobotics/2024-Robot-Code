@@ -46,7 +46,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
-      new RunCommand(() -> mDrivetrain.setX(), mDrivetrain)
+      mDrivetrain.setX()
     );
 
     // #region debug
