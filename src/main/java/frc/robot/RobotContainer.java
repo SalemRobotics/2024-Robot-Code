@@ -49,7 +49,7 @@ public class RobotContainer {
       new RunCommand(() -> mDrivetrain.setX(), mDrivetrain)
     );
     
-    new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
+    new JoystickButton(mDriveController, Button.kX.value).whileTrue(
       new SpinUpShooterAndIndex(mIndexer, mShooter)
     );
     

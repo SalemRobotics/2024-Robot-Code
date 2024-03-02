@@ -107,10 +107,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean atOutputThreshold() {
-        double leftOutput = mLeftMotor.getAppliedOutput() / ShooterContants.kLeftMotorSpeedSetpoint;
-        double rightOutput = mRightMotor.getAppliedOutput() / ShooterContants.kRightMotorSpeedSetpoint;
-        return Double.compare(leftOutput, ShooterContants.kOutputTolerance) >= 0
-            && Double.compare(rightOutput, ShooterContants.kOutputTolerance) >= 0;
+        return mLeftController.atSetpoint() && mRightController.atSetpoint();
     }
 
     /**

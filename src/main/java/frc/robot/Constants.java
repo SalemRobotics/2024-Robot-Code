@@ -12,7 +12,7 @@ public final class Constants {
         public static final double kLeftMotorSpeedSetpoint = 0.9;
         public static final double kRightMotorSpeedSetpoint = 0.7;
         public static final double kControllerErrorTolerance = 0.1;
-        public static final double kOutputTolerance = 0.8;
+        public static final double kOutputErrorTolerance = 0.2;
 
         public static final int kPivotMotorID = 13;
         public static final int kRightMotorID = 14;
