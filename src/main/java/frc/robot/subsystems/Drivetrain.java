@@ -6,6 +6,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -233,14 +235,10 @@ public class Drivetrain extends SubsystemBase {
    * @param setpoint Angle setpoint, in degrees
    * @return Relative angle
    */
-  double getRelativeAngle(double setpoint) {
-    double angle = mPigeon.getAngle();
-    double target = (int)(angle / 180) * 180.0 - Math.copySign(setpoint, angle);
-    if (angle < setpoint && angle > -360) {
-      target = Math.abs(target);
-    }
-    
-    return target;
+  double getPigeonModulus() {
+    double angle = mPigeon.getRotation2d().getRadians();
+    angle = MathUtil.angleModulus(angle);
+    return Units.radiansToDegrees(angle);
   }
 
   public Command trackAngle(double degrees, double xSpeed, double ySpeed, boolean fieldRelative, boolean rateLimit) {
@@ -250,8 +248,8 @@ public class Drivetrain extends SubsystemBase {
         DriveConstants.kHeadingI,
         DriveConstants.kHeadingD
       ), 
-      () -> mPigeon.getAngle(), 
-      () -> getRelativeAngle(degrees),
+      this::getPigeonModulus, 
+      () -> degrees,
       (receivedOutput) -> drive(xSpeed, ySpeed, receivedOutput, fieldRelative, rateLimit),
       this
     );
