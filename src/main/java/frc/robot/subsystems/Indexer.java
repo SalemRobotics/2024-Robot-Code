@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,16 +45,29 @@ public class Indexer extends SubsystemBase {
         );
     }
 
+    void runAllMotors(double speed) {
+        mLowerMotor.set(speed);
+        mUpperMotor.set(speed);
+    }
+
+    void stopMotors() {
+        mLowerMotor.stopMotor();
+        mUpperMotor.stopMotor();
+    }
+
     public Command runAllIndexer(double speed) {
         return runEnd(
+            () -> runAllMotors(speed), 
+            this::stopMotors
+        );
+    }
+
+    public Command runAllIndexer(double speed, BooleanSupplier canRun) {
+        return runEnd(
             () -> {
-                mLowerMotor.set(speed);
-                mUpperMotor.set(speed);
+                if (canRun.getAsBoolean()) runAllMotors(speed);
             }, 
-            () -> {
-                mLowerMotor.stopMotor();
-                mUpperMotor.stopMotor();
-            }
+            this::stopMotors
         );
     }
 }

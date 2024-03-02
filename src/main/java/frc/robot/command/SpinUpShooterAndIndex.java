@@ -26,7 +26,7 @@ public class SpinUpShooterAndIndex extends ParallelCommandGroup {
         
         addCommands(
             mShooter.shootRing(),
-            mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn)
+            mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn, mShooter::atOutputThreshold)
         );
 
         addRequirements(mIndexer, mShooter);

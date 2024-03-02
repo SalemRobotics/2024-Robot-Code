@@ -26,11 +26,8 @@ public class RobotContainer {
   final XboxController mOperatorController = new XboxController(ControllerConstants.kOperatorPort);
 
   final Drivetrain mDrivetrain = new Drivetrain();
-
   final Shooter mShooter = new Shooter();
-  
   final Indexer mIndexer = new Indexer();
-  
   final Intake mIntake = new Intake();
 
   public RobotContainer() {
