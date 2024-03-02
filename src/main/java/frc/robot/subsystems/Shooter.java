@@ -10,7 +10,6 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.BangBangController;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -36,6 +35,16 @@ public class Shooter extends SubsystemBase {
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
 
+    enum ShooterPositions {
+        DEFAULT(0.0),
+        SOURCE(0.0);
+
+        public final double value;
+        private ShooterPositions(double value) {
+            this.value = value;
+        }
+    }
+
     public Shooter() {
         mRightMotor.restoreFactoryDefaults();
         mLeftMotor.restoreFactoryDefaults();
@@ -47,9 +56,6 @@ public class Shooter extends SubsystemBase {
         mleftEncoder = mLeftMotor.getEncoder();
         mRightEncoder = mRightMotor.getEncoder();
 
-        mleftEncoder.setVelocityConversionFactor(ShooterContants.kVelocityFactor);
-        mRightEncoder.setVelocityConversionFactor(ShooterContants.kVelocityFactor);
-        
         mLeftMotor.burnFlash();
         mRightMotor.burnFlash();
 
@@ -59,7 +65,6 @@ public class Shooter extends SubsystemBase {
         mPivotMotor.setIdleMode(IdleMode.kBrake);
 
         mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
-        mPivotEncoder.setPositionConversionFactor(ShooterContants.kPivotPositionConversionFactor);
         
         mPivotPID = mPivotMotor.getPIDController();
         mPivotPID.setFeedbackDevice(mPivotEncoder);
@@ -70,6 +75,11 @@ public class Shooter extends SubsystemBase {
         mPivotPID.setOutputRange(ShooterContants.kPivotMinOutput, ShooterContants.kPivotMaxOutput);
         
         mPivotMotor.burnFlash();
+
+        SmartDashboard.putNumber("shootP", ShooterContants.kPivotP);
+        SmartDashboard.putNumber("shootI", ShooterContants.kPivotI);
+        SmartDashboard.putNumber("shootD", ShooterContants.kPivotD);
+        SmartDashboard.putNumber("shootFF", ShooterContants.kPivotFF);
     }
 
     @Override
@@ -77,14 +87,38 @@ public class Shooter extends SubsystemBase {
         setSmartDashboardPID();
 
         SmartDashboard.putNumber("leftVel", mleftEncoder.getVelocity());
-        SmartDashboard.putNumber("leftVel", mRightEncoder.getVelocity());
+        SmartDashboard.putNumber("rightVel", mRightEncoder.getVelocity());
     }
 
+    double gP  = ShooterContants.kPivotP,
+           gI  = ShooterContants.kPivotI,
+           gD  = ShooterContants.kPivotD,
+           gFF = ShooterContants.kPivotFF;
     void setSmartDashboardPID() {
-        mPivotPID.setP(SmartDashboard.getNumber("shootP", ShooterContants.kPivotP));
-        mPivotPID.setI(SmartDashboard.getNumber("shootI", ShooterContants.kPivotI));
-        mPivotPID.setD(SmartDashboard.getNumber("shootD", ShooterContants.kPivotD));
-        mPivotPID.setFF(SmartDashboard.getNumber("shootFF", ShooterContants.kPivotFF));
+        double p  = SmartDashboard.getNumber("shootP", gP),
+               i  = SmartDashboard.getNumber("shootI", gI),
+               d  = SmartDashboard.getNumber("shootD", gD),
+               ff = SmartDashboard.getNumber("shootFF", gFF);
+
+        if (Double.compare(p, gP) != 0) {
+            mPivotPID.setP(p);
+            gP = p;
+        }
+
+        if (Double.compare(i, gI) != 0) {
+            mPivotPID.setI(i);
+            gI = i;
+        }
+
+        if (Double.compare(d, gD) != 0) {
+            mPivotPID.setD(d);
+            gD = d;
+        }
+
+        if (Double.compare(ff, gFF) != 0) {
+            mPivotPID.setFF(ff);
+            gFF = ff;
+        }
     }
 
     /**
@@ -113,15 +147,20 @@ public class Shooter extends SubsystemBase {
         // clamp input between lower and upper limits
         double degreesClamped = MathUtil.clamp(degrees, ShooterContants.kLowerAngleLimit, ShooterContants.kUpperAngleLimit);
 
-        // TODO: use our interpolating tree map instead (or not idk what to use it for just yet)
         return runOnce(() -> 
-            mPivotPID.setReference(Units.degreesToRadians(degreesClamped), ControlType.kPosition)
+            mPivotPID.setReference(
+                ShooterContants.kPivotAngleMap.get(degreesClamped),
+                ControlType.kPosition)
         );
     }
 
     public boolean atOutputThreshold() {
-        return Double.compare(mleftEncoder.getVelocity(), ShooterContants.kOutputVelocityThreshold) >= 0
-            && Double.compare(mRightEncoder.getVelocity(), ShooterContants.kOutputVelocityThreshold) >= 0;
+        return Double.compare(
+            mleftEncoder.getVelocity(), 
+            ShooterContants.kLeftMotorSpeedSetpoint * ShooterContants.kOutputVelocityThreshold) >= 0
+        && Double.compare(
+            mRightEncoder.getVelocity(), 
+            ShooterContants.kRightMotorSpeedSetpoint * ShooterContants.kOutputVelocityThreshold) >= 0;
     }
 
     /**
