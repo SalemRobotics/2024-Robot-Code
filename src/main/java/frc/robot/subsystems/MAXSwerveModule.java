@@ -42,8 +42,8 @@ public class MAXSwerveModule {
 
     // Factory reset, so we get the SPARKS MAX to a known state before configuring
     // them. This is useful in case a SPARK MAX is swapped out.
-    // mDrivingSparkMax.restoreFactoryDefaults();
-    // mTurningSparkMax.restoreFactoryDefaults();
+    mDrivingSparkMax.restoreFactoryDefaults();
+    mTurningSparkMax.restoreFactoryDefaults();
 
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
     mDrivingEncoder = mDrivingSparkMax.getEncoder();

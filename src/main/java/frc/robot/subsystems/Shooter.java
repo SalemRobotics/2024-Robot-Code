@@ -65,8 +65,11 @@ public class Shooter extends SubsystemBase {
         mRightController.setSetpoint(ShooterContants.kRightMotorSpeedSetpoint);
 
         mPivotMotor.setIdleMode(IdleMode.kBrake);
+        mPivotMotor.setInverted(true);
 
         mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
+        mPivotEncoder.setInverted(true);
+        mPivotEncoder.setPositionConversionFactor(10);
         
         mPivotPID = mPivotMotor.getPIDController();
         mPivotPID.setFeedbackDevice(mPivotEncoder);
@@ -88,6 +91,9 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         setSmartDashboardPID();
 
+        SmartDashboard.putNumber("New Shoot Position", mPivotEncoder.getPosition());
+        SmartDashboard.putNumber("motor output", mPivotMotor.getAppliedOutput());
+
         SmartDashboard.putNumber("leftVel", mleftEncoder.getVelocity());
         SmartDashboard.putNumber("rightVel", mRightEncoder.getVelocity());
     }
@@ -104,6 +110,7 @@ public class Shooter extends SubsystemBase {
 
         if (Double.compare(p, gP) != 0) {
             mPivotPID.setP(p);
+            SmartDashboard.putNumber("temp", mPivotPID.getP());
             gP = p;
         }
 
@@ -126,15 +133,6 @@ public class Shooter extends SubsystemBase {
     /**
      * Intended for testing/data collection use only.
      */
-    public Command snapshotPosition() {
-        return runOnce(() -> 
-            SmartDashboard.putNumber("New Shoot Position", mPivotEncoder.getPosition())
-        );
-    }
-
-    /**
-     * Intended for testing/data collection use only.
-     */
     public Command movePivotManual(DoubleSupplier axisOutput) {
         return run(() -> mPivotMotor.set(axisOutput.getAsDouble()));
     }
@@ -146,13 +144,15 @@ public class Shooter extends SubsystemBase {
      * @see InstantCommand
      */
     public Command setPivotAngle(double degrees) {
-        // clamp input between lower and upper limits
-        double degreesClamped = MathUtil.clamp(degrees, ShooterContants.kLowerAngleLimit, ShooterContants.kUpperAngleLimit);
-
-        return runOnce(() -> 
+        return run(() -> {
+            // clamp input between lower and upper limits
+            double degreesClamped = MathUtil.clamp(degrees, ShooterContants.kLowerAngleLimit, ShooterContants.kUpperAngleLimit);
+            
+            System.out.println(degreesClamped);
             mPivotPID.setReference(
-                ShooterContants.kPivotAngleMap.get(degreesClamped),
-                ControlType.kPosition)
+                ShooterContants.kPivotAngleEncoderMap.get(degreesClamped),
+                ControlType.kPosition);
+        }
         );
     }
 

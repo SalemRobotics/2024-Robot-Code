@@ -14,7 +14,7 @@ public final class Constants {
         public static final double kLeftMotorSpeedSetpoint = 0.9 * kFreeSpinVelocity; // RPM
         public static final double kRightMotorSpeedSetpoint = 0.7 * kFreeSpinVelocity; // RPM
         public static final double kControllerErrorTolerance = 0.1; // percent
-        public static final double kOutputVelocityThreshold = 0.8; // percent
+        public static final double kOutputVelocityThreshold = 0.85; // percent
 
         public static final int kPivotMotorID = 13;
         public static final int kRightMotorID = 14;
@@ -25,16 +25,17 @@ public final class Constants {
         public static final double kPivotI = 0.0;
         public static final double kPivotD = 0.0;
         public static final double kPivotFF = 0.0;
-        public static final double kPivotMaxOutput = 1.0;
-        public static final double kPivotMinOutput = -1.0;
+        public static final double kPivotMaxOutput = 0.25;
+        public static final double kPivotMinOutput = -0.25;
 
-        public static final double kUpperAngleLimit = 0.0;
-        public static final double kLowerAngleLimit = 0.0;
+        public static final double kUpperAngleLimit = 49.5;
+        public static final double kLowerAngleLimit = 25.5;
 
         // TODO: set these values. Points should be angle in degrees to encoder positions.
-        public static final InterpolatingDoubleTreeMap kPivotAngleMap = new InterpolatingDoubleTreeMap() {{
-            put(0.0, 0.0);
-            put(0.0, 0.0);
+        // Pivot degrees to encoder positions
+        public static final InterpolatingDoubleTreeMap kPivotAngleEncoderMap = new InterpolatingDoubleTreeMap() {{
+            put(25.0, 0.35);
+            put(50.0, 1.003);
         }};
     }
     
@@ -64,7 +65,7 @@ public final class Constants {
         public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
         public static final double kDirectionSlewRate = 1.2; // radians per second
-        public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
+        public static final double kMagnitudeSlewRate = 2.5; // percent per second (1 = 100%)
         public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
         
         public static final boolean kGyroReversed = false;

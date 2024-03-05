@@ -51,12 +51,16 @@ public class RobotContainer {
 
     // #region debug
 
-    mShooter.setDefaultCommand(
-      mShooter.movePivotManual(mOperatorController::getLeftY)
+    new JoystickButton(mOperatorController, Button.kA.value).whileTrue(
+      mShooter.setPivotAngle(50)
     );
 
-    new JoystickButton(mOperatorController, Button.kA.value).whileTrue(
-      mShooter.snapshotPosition()
+    new JoystickButton(mOperatorController, Button.kB.value).whileTrue(
+      mShooter.setPivotAngle(25)
+    );
+      
+    mShooter.setDefaultCommand(
+      mShooter.movePivotManual(mOperatorController::getLeftY)
     );
 
     // #endregion
