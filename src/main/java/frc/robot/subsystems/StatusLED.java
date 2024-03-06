@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
@@ -180,19 +181,40 @@ public class StatusLED extends SubsystemBase {
      */
     public Command raceColorsUpStrip(LEDColor raceColor, LEDColor backColor, double interval){
         LEDColor[] colorArray = makeRaceArray(backColor, raceColor);
+        ArrayList<LEDColor> colorArrayList = new ArrayList<LEDColor>();
+        var positionWrapper = new Object() { int LEDPosition = 0;}; 
+        for(int i = 0; i < colorArray.length; i++){
+            colorArrayList.add(colorArray[i]);
+        }
         return new FunctionalCommand(
             () -> { // init
-                setStripColorHSV(backColor);
+                
+                for (int j = 0; j < LEDconstants.ledLength; j++) {
+                    setHSV(j, colorArrayList.get(j));
+                }
                 timer.reset();
                 timer.start();
             }, 
             () -> { // exec
-                for (int i = 0; i < colorArray.length;) {
-                    if (timer.advanceIfElapsed(interval))
-                        i++;
-
-                    setHSV(i, colorArray[i]);
+                if(positionWrapper.LEDPosition <= LEDconstants.ledLength- LEDconstants.ledChaserLength)
+                {
+                    colorArrayList.add(0, backColor);
                 }
+                else
+                {
+                    colorArrayList.add(0, raceColor);
+                }
+                positionWrapper.LEDPosition++;
+                colorArrayList.remove(colorArrayList.size()-1);
+                for (int j = 0; j < LEDconstants.ledLength; j++) {
+                    setHSV(j, colorArrayList.get(j));
+                }
+                if(positionWrapper.LEDPosition > LEDconstants.ledLength)
+                {
+                    positionWrapper.LEDPosition = 0;
+                }
+                
+                
             }, 
             isFinished -> timer.stop(), // end 
             () -> false, // isFinished
