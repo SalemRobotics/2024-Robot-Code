@@ -11,7 +11,9 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.BangBangController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -37,6 +39,9 @@ public class Shooter extends SubsystemBase {
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
 
+    final ArmFeedforward mPivotFeedforward = new ArmFeedforward(
+        0.0, ShooterContants.kPivotKg, ShooterContants.kPivotKv);
+
     enum ShooterPositions {
         DEFAULT(0.0),
         SOURCE(0.0);
@@ -48,10 +53,6 @@ public class Shooter extends SubsystemBase {
     }
 
     public Shooter() {
-        mRightMotor.restoreFactoryDefaults();
-        mLeftMotor.restoreFactoryDefaults();
-        mPivotMotor.restoreFactoryDefaults();
-
         mLeftMotor.setInverted(true);
         mRightMotor.setInverted(true);
 
@@ -68,15 +69,13 @@ public class Shooter extends SubsystemBase {
         mPivotMotor.setInverted(true);
 
         mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
-        mPivotEncoder.setInverted(true);
-        mPivotEncoder.setPositionConversionFactor(10);
+        mPivotEncoder.setPositionConversionFactor(ShooterContants.kPivotPositionConversionFactor);
         
         mPivotPID = mPivotMotor.getPIDController();
         mPivotPID.setFeedbackDevice(mPivotEncoder);
         mPivotPID.setP(ShooterContants.kPivotP);
         mPivotPID.setI(ShooterContants.kPivotI);
         mPivotPID.setD(ShooterContants.kPivotD);
-        mPivotPID.setFF(ShooterContants.kPivotFF);
         mPivotPID.setOutputRange(ShooterContants.kPivotMinOutput, ShooterContants.kPivotMaxOutput);
         
         mPivotMotor.burnFlash();
@@ -91,8 +90,7 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         setSmartDashboardPID();
 
-        SmartDashboard.putNumber("New Shoot Position", mPivotEncoder.getPosition());
-        SmartDashboard.putNumber("motor output", mPivotMotor.getAppliedOutput());
+        SmartDashboard.putNumber("Current Position", mPivotEncoder.getPosition());
 
         SmartDashboard.putNumber("leftVel", mleftEncoder.getVelocity());
         SmartDashboard.putNumber("rightVel", mRightEncoder.getVelocity());
@@ -134,7 +132,9 @@ public class Shooter extends SubsystemBase {
      * Intended for testing/data collection use only.
      */
     public Command movePivotManual(DoubleSupplier axisOutput) {
-        return run(() -> mPivotMotor.set(axisOutput.getAsDouble()));
+        return run(
+            () -> mPivotMotor.set(MathUtil.applyDeadband(axisOutput.getAsDouble(), 0.05))
+        );
     }
 
     /**
@@ -147,11 +147,14 @@ public class Shooter extends SubsystemBase {
         return run(() -> {
             // clamp input between lower and upper limits
             double degreesClamped = MathUtil.clamp(degrees, ShooterContants.kLowerAngleLimit, ShooterContants.kUpperAngleLimit);
-            
-            System.out.println(degreesClamped);
+
+            SmartDashboard.putNumber("Target Position", degreesClamped);
             mPivotPID.setReference(
-                ShooterContants.kPivotAngleEncoderMap.get(degreesClamped),
-                ControlType.kPosition);
+                degreesClamped, 
+                ControlType.kPosition, 
+                0, 
+                mPivotFeedforward.calculate(Units.degreesToRadians(degreesClamped), 0.0)
+            );
         }
         );
     }

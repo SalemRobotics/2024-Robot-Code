@@ -3,13 +3,12 @@ package frc.robot;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
     public static final class ShooterContants {
-        public static final double kFreeSpinVelocity = 5676; // RPM
+        public static final double kFreeSpinVelocity = 5880; // RPM
 
         public static final double kLeftMotorSpeedSetpoint = 0.9 * kFreeSpinVelocity; // RPM
         public static final double kRightMotorSpeedSetpoint = 0.7 * kFreeSpinVelocity; // RPM
@@ -21,22 +20,21 @@ public final class Constants {
         public static final int kLeftMotorID = 15;
 
         // TODO: tune constants
-        public static final double kPivotP = 0.0;
+        public static final double kPivotP = 0.0028;
         public static final double kPivotI = 0.0;
         public static final double kPivotD = 0.0;
         public static final double kPivotFF = 0.0;
         public static final double kPivotMaxOutput = 0.25;
         public static final double kPivotMinOutput = -0.25;
 
-        public static final double kUpperAngleLimit = 49.5;
-        public static final double kLowerAngleLimit = 25.5;
+        public static final double kPivotPositionConversionFactor = 360.0; // Degrees
 
-        // TODO: set these values. Points should be angle in degrees to encoder positions.
-        // Pivot degrees to encoder positions
-        public static final InterpolatingDoubleTreeMap kPivotAngleEncoderMap = new InterpolatingDoubleTreeMap() {{
-            put(25.0, 0.35);
-            put(50.0, 1.003);
-        }};
+        public static final double kPivotKs = 0;
+        public static final double kPivotKg = 0.38; // volts
+        public static final double kPivotKv = 0.005; // volts * seconds/degree
+
+        public static final double kUpperAngleLimit = 23.5;
+        public static final double kLowerAngleLimit = 0.5;
     }
     
     public static final class IndexerConstants {
