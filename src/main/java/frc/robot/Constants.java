@@ -1,10 +1,16 @@
 package frc.robot;
 
+import java.util.HashMap;
+import java.util.List;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public final class Constants {
     public static final class ShooterConstants {
@@ -56,6 +62,25 @@ public final class Constants {
         public static final double kIntakeSpeedOut = -0.25;
 
         public static final int kSparkMaxID = 10;
+    }
+    
+    public static final class VisionConstants {
+        /** Camera height in meters relative to where it is mounted on the robot */
+        public static final double kCameraHeight = Units.inchesToMeters(46); 
+        /**  Camera pitch in radians relative to where it is mounted on the robot */
+        public static final double kCameraPitch = Units.degreesToRadians(10);
+        /** Height of the target in meters, in this case the Speaker */
+        public static final double kTargetHeight = 0.0; // TODO: measure this value
+
+        public static final Transform3d kCameraOffset = new Transform3d(
+            0.0, 0.0, 0.0, 
+            new Rotation3d(0.0, 0.0, 0.0)
+        );
+
+        public static final HashMap<Alliance, List<Integer>> kValidFiducialIDs = new HashMap<>() {{
+            put(Alliance.Red, List.of(3, 4));
+            put(Alliance.Blue, List.of(7, 8));
+        }};
     }
 
     public static final class DriveConstants {
@@ -152,3 +177,4 @@ public final class Constants {
         public static final int kOperatorPort = 1;
     }
 }
+
