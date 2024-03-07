@@ -7,7 +7,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
-    public static final class ShooterContants {
+    public static final class ShooterConstants {
         public static final double kFreeSpinVelocity = 5880; // RPM
 
         public static final double kLeftMotorSpeedSetpoint = 0.9 * kFreeSpinVelocity; // RPM
@@ -20,12 +20,12 @@ public final class Constants {
         public static final int kLeftMotorID = 15;
 
         // TODO: tune constants
-        public static final double kPivotP = 0.0028;
+        public static final double kPivotP = 0.035;
         public static final double kPivotI = 0.0;
         public static final double kPivotD = 0.0;
-        public static final double kPivotFF = 0.0;
-        public static final double kPivotMaxOutput = 0.25;
-        public static final double kPivotMinOutput = -0.25;
+        public static final double kPivotFF = 0.001;
+        public static final double kPivotMaxOutput = 0.5;
+        public static final double kPivotMinOutput = -0.5;
 
         public static final double kPivotPositionConversionFactor = 360.0; // Degrees
 
@@ -33,8 +33,10 @@ public final class Constants {
         public static final double kPivotKg = 0.38; // volts
         public static final double kPivotKv = 0.005; // volts * seconds/degree
 
-        public static final double kUpperAngleLimit = 23.5;
-        public static final double kLowerAngleLimit = 0.5;
+        public static final double kUpperAngleLimit = 53.0;
+        public static final double kLowerAngleLimit = 25.0;
+
+        public static final double kEncoderOffset = 231.9;
     }
     
     public static final class IndexerConstants {
@@ -50,8 +52,8 @@ public final class Constants {
     }
     
     public static final class IntakeConstants {
-        public static final double kIntakeSpeedIn = 0.5;
-        public static final double kIntakeSpeedOut = -0.5;
+        public static final double kIntakeSpeedIn = 0.25;
+        public static final double kIntakeSpeedOut = -0.25;
 
         public static final int kSparkMaxID = 10;
     }

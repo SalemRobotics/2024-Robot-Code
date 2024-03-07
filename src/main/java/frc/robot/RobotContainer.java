@@ -52,11 +52,11 @@ public class RobotContainer {
     // #region debug
 
     new JoystickButton(mOperatorController, Button.kA.value).whileTrue(
-      mShooter.setPivotAngle(0.5)
+      mShooter.setPivotAngle(30.0)
     );
 
     new JoystickButton(mOperatorController, Button.kB.value).whileTrue(
-      mShooter.setPivotAngle(23.5)
+      mShooter.setPivotAngle(45.0)
     );
       
     mShooter.setDefaultCommand(

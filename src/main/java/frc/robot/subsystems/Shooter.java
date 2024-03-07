@@ -19,28 +19,28 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ShooterContants;
+import frc.robot.Constants.ShooterConstants;
 
 /**
  * Shooter subsystem with two motors. Responsible for firing game pieces from the robot to the speaker goal.
  */
 public class Shooter extends SubsystemBase {
-    final CANSparkMax mLeftMotor = new CANSparkMax(ShooterContants.kLeftMotorID, MotorType.kBrushless);
-    final CANSparkMax mRightMotor = new CANSparkMax(ShooterContants.kRightMotorID, MotorType.kBrushless);
+    final CANSparkMax mLeftMotor = new CANSparkMax(ShooterConstants.kLeftMotorID, MotorType.kBrushless);
+    final CANSparkMax mRightMotor = new CANSparkMax(ShooterConstants.kRightMotorID, MotorType.kBrushless);
 
     final RelativeEncoder mleftEncoder;
     final RelativeEncoder mRightEncoder;
 
-    final BangBangController mLeftController = new BangBangController(ShooterContants.kControllerErrorTolerance);
-    final BangBangController mRightController = new BangBangController(ShooterContants.kControllerErrorTolerance);
+    final BangBangController mLeftController = new BangBangController(ShooterConstants.kControllerErrorTolerance);
+    final BangBangController mRightController = new BangBangController(ShooterConstants.kControllerErrorTolerance);
     
-    final CANSparkMax mPivotMotor = new CANSparkMax(ShooterContants.kPivotMotorID, MotorType.kBrushless);
+    final CANSparkMax mPivotMotor = new CANSparkMax(ShooterConstants.kPivotMotorID, MotorType.kBrushless);
 
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
 
     final ArmFeedforward mPivotFeedforward = new ArmFeedforward(
-        0.0, ShooterContants.kPivotKg, ShooterContants.kPivotKv);
+        1.0, ShooterConstants.kPivotKg, ShooterConstants.kPivotKv);
 
     enum ShooterPositions {
         DEFAULT(0.0),
@@ -62,44 +62,44 @@ public class Shooter extends SubsystemBase {
         mLeftMotor.burnFlash();
         mRightMotor.burnFlash();
 
-        mLeftController.setSetpoint(ShooterContants.kLeftMotorSpeedSetpoint);
-        mRightController.setSetpoint(ShooterContants.kRightMotorSpeedSetpoint);
+        mLeftController.setSetpoint(ShooterConstants.kLeftMotorSpeedSetpoint);
+        mRightController.setSetpoint(ShooterConstants.kRightMotorSpeedSetpoint);
 
         mPivotMotor.setIdleMode(IdleMode.kBrake);
         mPivotMotor.setInverted(true);
 
         mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
-        mPivotEncoder.setPositionConversionFactor(ShooterContants.kPivotPositionConversionFactor);
-        
+        mPivotEncoder.setPositionConversionFactor(ShooterConstants.kPivotPositionConversionFactor);
+        mPivotEncoder.setInverted(true);
         mPivotPID = mPivotMotor.getPIDController();
         mPivotPID.setFeedbackDevice(mPivotEncoder);
-        mPivotPID.setP(ShooterContants.kPivotP);
-        mPivotPID.setI(ShooterContants.kPivotI);
-        mPivotPID.setD(ShooterContants.kPivotD);
-        mPivotPID.setOutputRange(ShooterContants.kPivotMinOutput, ShooterContants.kPivotMaxOutput);
+        mPivotPID.setP(ShooterConstants.kPivotP);
+        mPivotPID.setI(ShooterConstants.kPivotI);
+        mPivotPID.setD(ShooterConstants.kPivotD);
+        mPivotPID.setOutputRange(ShooterConstants.kPivotMinOutput, ShooterConstants.kPivotMaxOutput);
         
         mPivotMotor.burnFlash();
 
-        SmartDashboard.putNumber("shootP", ShooterContants.kPivotP);
-        SmartDashboard.putNumber("shootI", ShooterContants.kPivotI);
-        SmartDashboard.putNumber("shootD", ShooterContants.kPivotD);
-        SmartDashboard.putNumber("shootFF", ShooterContants.kPivotFF);
+        SmartDashboard.putNumber("shootP", ShooterConstants.kPivotP);
+        SmartDashboard.putNumber("shootI", ShooterConstants.kPivotI);
+        SmartDashboard.putNumber("shootD", ShooterConstants.kPivotD);
+        SmartDashboard.putNumber("shootFF", ShooterConstants.kPivotFF);
     }
 
     @Override
     public void periodic() {
         setSmartDashboardPID();
 
-        SmartDashboard.putNumber("Current Position", mPivotEncoder.getPosition());
+        SmartDashboard.putNumber("Current Position", getFloorRelativeAngle());
 
         SmartDashboard.putNumber("leftVel", mleftEncoder.getVelocity());
         SmartDashboard.putNumber("rightVel", mRightEncoder.getVelocity());
     }
 
-    double gP  = ShooterContants.kPivotP,
-           gI  = ShooterContants.kPivotI,
-           gD  = ShooterContants.kPivotD,
-           gFF = ShooterContants.kPivotFF;
+    double gP  = ShooterConstants.kPivotP,
+           gI  = ShooterConstants.kPivotI,
+           gD  = ShooterConstants.kPivotD,
+           gFF = ShooterConstants.kPivotFF;
     void setSmartDashboardPID() {
         double p  = SmartDashboard.getNumber("shootP", gP),
                i  = SmartDashboard.getNumber("shootI", gI),
@@ -146,14 +146,14 @@ public class Shooter extends SubsystemBase {
     public Command setPivotAngle(double degrees) {
         return run(() -> {
             // clamp input between lower and upper limits
-            double degreesClamped = MathUtil.clamp(degrees, ShooterContants.kLowerAngleLimit, ShooterContants.kUpperAngleLimit);
+            double degreesClamped = MathUtil.clamp(degrees, ShooterConstants.kLowerAngleLimit, ShooterConstants.kUpperAngleLimit);
 
-            SmartDashboard.putNumber("Target Position", degreesClamped);
+            SmartDashboard.putNumber("Target Position", getEncoderRelativeAngle(degreesClamped));
             mPivotPID.setReference(
-                degreesClamped, 
+                getEncoderRelativeAngle(degreesClamped), 
                 ControlType.kPosition, 
                 0, 
-                mPivotFeedforward.calculate(Units.degreesToRadians(degreesClamped), 0.0)
+                0
             );
         }
         );
@@ -162,10 +162,10 @@ public class Shooter extends SubsystemBase {
     public boolean atOutputThreshold() {
         return Double.compare(
             mleftEncoder.getVelocity(), 
-            ShooterContants.kLeftMotorSpeedSetpoint * ShooterContants.kOutputVelocityThreshold) >= 0
+            ShooterConstants.kLeftMotorSpeedSetpoint * ShooterConstants.kOutputVelocityThreshold) >= 0
         && Double.compare(
             mRightEncoder.getVelocity(), 
-            ShooterContants.kRightMotorSpeedSetpoint * ShooterContants.kOutputVelocityThreshold) >= 0;
+            ShooterConstants.kRightMotorSpeedSetpoint * ShooterConstants.kOutputVelocityThreshold) >= 0;
     }
 
     /**
@@ -190,4 +190,13 @@ public class Shooter extends SubsystemBase {
             }
         );
     }
+
+    private double getFloorRelativeAngle() {
+        return mPivotEncoder.getPosition() - ShooterConstants.kEncoderOffset;
+    }
+    private double getEncoderRelativeAngle(double angle) {
+        return ShooterConstants.kEncoderOffset + angle;
+    }
 }
+
+
