@@ -13,6 +13,7 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.BangBangController;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,6 +42,8 @@ public class Shooter extends SubsystemBase {
 
     final ArmFeedforward mPivotFeedforward = new ArmFeedforward(
         1.0, ShooterConstants.kPivotKg, ShooterConstants.kPivotKv);
+    
+    final InterpolatingDoubleTreeMap mTreeMap;
 
     enum ShooterPositions {
         DEFAULT(0.0),
@@ -84,6 +87,9 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("shootI", ShooterConstants.kPivotI);
         SmartDashboard.putNumber("shootD", ShooterConstants.kPivotD);
         SmartDashboard.putNumber("shootFF", ShooterConstants.kPivotFF);
+
+        mTreeMap = new InterpolatingDoubleTreeMap();
+        
     }
 
     @Override

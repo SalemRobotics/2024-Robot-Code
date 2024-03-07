@@ -43,6 +43,8 @@ public final class Constants {
         public static final double kLowerAngleLimit = 25.0;
 
         public static final double kEncoderOffset = 231.9;
+
+        public static final Map<double,double> kTreeMapValues = Map.of(1.0,1.0);
     }
     
     public static final class IndexerConstants {
@@ -63,7 +65,7 @@ public final class Constants {
 
         public static final int kSparkMaxID = 10;
     }
-    
+
     public static final class VisionConstants {
         /** Camera height in meters relative to where it is mounted on the robot */
         public static final double kCameraHeight = Units.inchesToMeters(46); 
