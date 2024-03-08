@@ -42,22 +42,6 @@ public class RobotContainer {
     new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
       mDrivetrain.setX()
     );
-
-    new JoystickButton(mDriveController, Button.kA.value).whileTrue(
-      mStrongArmMachine.runIntake()
-    );
-
-    new JoystickButton(mDriveController, Button.kB.value).whileTrue(
-      mStrongArmMachine.runAmp()
-    );
-
-    new JoystickButton(mDriveController, Button.kX.value).whileTrue(
-      mStrongArmMachine.pivotDown()
-    );
-
-    new JoystickButton(mDriveController, Button.kY.value).whileTrue(
-      mStrongArmMachine.pivotUp()
-    );
   }
 
   public Command getAutonomousCommand() {

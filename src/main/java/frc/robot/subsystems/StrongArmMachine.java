@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,8 +24,10 @@ public class StrongArmMachine extends SubsystemBase {
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
 
+    double mCurrentSetpoint;
+
     enum SAMPositions {
-        HANDOFF(0.0),
+        HANDOFF_NOTE(0.0),
         INTAKE_SOURCE(0.0),
         EJECT_AMP(0.0);
         
@@ -61,6 +64,10 @@ public class StrongArmMachine extends SubsystemBase {
     @Override
     public void periodic() {
         setShuffleboardPID();
+
+        setPivotAngle(mCurrentSetpoint);
+
+        SmartDashboard.putNumber("SAM Encoder", mPivotEncoder.getPosition());
     }
 
     double gP  = SAMConstants.kPivotP,
@@ -93,65 +100,34 @@ public class StrongArmMachine extends SubsystemBase {
         }
     }
 
-    /** Intended for debug/testing only */
-    public Command snapshotPosition() {
-        return runOnce(() -> {
-            SmartDashboard.putNumber("New Position", mPivotEncoder.getPosition());
-        });
+    public double getCurrentSetpoint() {
+        return mCurrentSetpoint;
+    }
+
+    public void setCurrentSetpoint(double setpoint) {
+        mCurrentSetpoint = setpoint;
     }
 
     /** Intended for debug/testing only */
     public Command movePivotManual(double axisOutput) {
-        return run(() -> {
-            mPivotMotor.set(axisOutput);
-        });
+        return run(() -> mPivotMotor.set(axisOutput));
     }
 
-    public Command setPivotAngle(double degrees) {
-        return runOnce(() -> {
-            mPivotPID.setReference(
-                mFeedForward.calculate(Units.degreesToRadians(degrees), 0), 
-                ControlType.kPosition);
-        });
-    }
+    public void setPivotAngle(double degrees) {
+        double degreesClamped = MathUtil.clamp(degrees, SAMConstants.kLowerAngleLimit, SAMConstants.kUpperAngleLimit);
 
-    public Command runIntake() {
-        return runEnd(
-            () -> {
-                mIntakeMotor.set(SAMConstants.SAMIntakeSpeed);
-            },
-            () -> {
-                mIntakeMotor.stopMotor();
-            }
+        mPivotPID.setReference(
+            degreesClamped,
+            ControlType.kPosition,
+            0,
+            mFeedForward.calculate(Units.degreesToRadians(degreesClamped), 0)
         );
     }
 
-    public Command pivotUp() {
+    public Command runIntake(double speed) {
         return runEnd(
             () -> {
-                mPivotMotor.set(-SAMConstants.SAMPivotSpeed);
-            },
-            () -> {
-                mPivotMotor.stopMotor();
-            }
-        );
-    }
-
-    public Command pivotDown() {
-        return runEnd(
-            () -> {
-                mPivotMotor.set(SAMConstants.SAMPivotSpeed);
-            },
-            () -> {
-                mPivotMotor.stopMotor();
-            }
-        );
-    }
-    
-    public Command runAmp() {
-        return runEnd(
-            () -> {
-                mIntakeMotor.set(-SAMConstants.SAMIntakeSpeed);
+                mIntakeMotor.set(speed);
             },
             () -> {
                 mIntakeMotor.stopMotor();

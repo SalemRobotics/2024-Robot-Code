@@ -122,5 +122,8 @@ public final class Constants {
         public static final double kPivotFF = 0;
         public static final double kMaxOutput = 1.0;
         public static final double kMinOutput = -1.0;
+
+        public static final double kUpperAngleLimit = 0.0;
+        public static final  double kLowerAngleLimit = 0.0;
     }
 }
