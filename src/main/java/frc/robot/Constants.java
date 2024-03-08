@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -35,16 +36,14 @@ public final class Constants {
 
         public static final double kPivotPositionConversionFactor = 360.0; // Degrees
 
-        public static final double kPivotKs = 0;
-        public static final double kPivotKg = 0.38; // volts
-        public static final double kPivotKv = 0.005; // volts * seconds/degree
-
         public static final double kUpperAngleLimit = 53.0;
         public static final double kLowerAngleLimit = 25.0;
 
         public static final double kEncoderOffset = 231.9;
 
-        public static final Map<double,double> kTreeMapValues = Map.of(1.0,1.0);
+        public static final InterpolatingDoubleTreeMap kPivotDistanceAngleMap = new InterpolatingDoubleTreeMap() {{
+            put(null, null);
+        }};
     }
     
     public static final class IndexerConstants {

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Indexer;
 import frc.util.SwerveUtils;
 import frc.robot.command.IntakeInAndIndex;
@@ -29,6 +30,7 @@ public class RobotContainer {
   final Shooter mShooter = new Shooter();
   final Indexer mIndexer = new Indexer();
   final Intake mIntake = new Intake();
+  final Vision mVision = new Vision();
 
   public RobotContainer() {
     configureBindings();
@@ -48,25 +50,9 @@ public class RobotContainer {
     new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
       mDrivetrain.setX()
     );
-
-    // #region debug
-
-    new JoystickButton(mOperatorController, Button.kA.value).whileTrue(
-      mShooter.setPivotAngle(30.0)
-    );
-
-    new JoystickButton(mOperatorController, Button.kB.value).whileTrue(
-      mShooter.setPivotAngle(45.0)
-    );
-      
-    mShooter.setDefaultCommand(
-      mShooter.movePivotManual(mOperatorController::getLeftY)
-    );
-
-    // #endregion
     
     new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
-      new SpinUpShooterAndIndex(mIndexer, mShooter)
+      new SpinUpShooterAndIndex(mIndexer, mShooter, mVision)
     );
     
     new JoystickButton(mOperatorController, Button.kRightBumper.value).whileTrue(

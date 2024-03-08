@@ -11,10 +11,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.BangBangController;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -40,11 +37,8 @@ public class Shooter extends SubsystemBase {
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
 
-    final ArmFeedforward mPivotFeedforward = new ArmFeedforward(
-        1.0, ShooterConstants.kPivotKg, ShooterConstants.kPivotKv);
+    double mCurrentSetpoint = ShooterPositions.DEFAULT.value;
     
-    final InterpolatingDoubleTreeMap mTreeMap;
-
     enum ShooterPositions {
         DEFAULT(0.0),
         SOURCE(0.0);
@@ -82,24 +76,22 @@ public class Shooter extends SubsystemBase {
         mPivotPID.setOutputRange(ShooterConstants.kPivotMinOutput, ShooterConstants.kPivotMaxOutput);
         
         mPivotMotor.burnFlash();
-
-        SmartDashboard.putNumber("shootP", ShooterConstants.kPivotP);
-        SmartDashboard.putNumber("shootI", ShooterConstants.kPivotI);
-        SmartDashboard.putNumber("shootD", ShooterConstants.kPivotD);
-        SmartDashboard.putNumber("shootFF", ShooterConstants.kPivotFF);
-
-        mTreeMap = new InterpolatingDoubleTreeMap();
-        
     }
 
     @Override
     public void periodic() {
-        setSmartDashboardPID();
+        SmartDashboard.putNumber("Current pivot", getFloorRelativeAngle());
 
-        SmartDashboard.putNumber("Current Position", getFloorRelativeAngle());
+        // continously set pivot reference
+        setPivotAngle(mCurrentSetpoint);
+    }
 
-        SmartDashboard.putNumber("leftVel", mleftEncoder.getVelocity());
-        SmartDashboard.putNumber("rightVel", mRightEncoder.getVelocity());
+    public double getCurrentSetpoint() {
+        return mCurrentSetpoint;
+    }
+
+    public void setCurrentSetpoint(double setpoint) {
+        mCurrentSetpoint = setpoint;
     }
 
     double gP  = ShooterConstants.kPivotP,
@@ -149,22 +141,20 @@ public class Shooter extends SubsystemBase {
      * @return runOnce command
      * @see InstantCommand
      */
-    public Command setPivotAngle(double degrees) {
-        return run(() -> {
-            // clamp input between lower and upper limits
-            double degreesClamped = MathUtil.clamp(degrees, ShooterConstants.kLowerAngleLimit, ShooterConstants.kUpperAngleLimit);
+    void setPivotAngle(double degrees) {
+        // clamp input between lower and upper limits
+        double degreesClamped = MathUtil.clamp(degrees, ShooterConstants.kLowerAngleLimit, ShooterConstants.kUpperAngleLimit);
 
-            SmartDashboard.putNumber("Target Position", getEncoderRelativeAngle(degreesClamped));
-            mPivotPID.setReference(
-                getEncoderRelativeAngle(degreesClamped), 
-                ControlType.kPosition, 
-                0, 
-                0
-            );
-        }
+        mPivotPID.setReference(
+            getEncoderRelativeAngle(degreesClamped), 
+            ControlType.kPosition
         );
     }
 
+    /**
+     * Checks if the shooter velocity is within a threshold of its max allowed speed
+     * @return True if the shooter is at its output threshold
+     */
     public boolean atOutputThreshold() {
         return Double.compare(
             mleftEncoder.getVelocity(), 
@@ -197,9 +187,43 @@ public class Shooter extends SubsystemBase {
         );
     }
 
+    /**
+     * Sets both motors to a constant speed, intened to fire the gamepiece.
+     * @return runEnd command
+     * @param targetDistance Distance of target to set the pivot angle to, should the target exist
+     * @see FunctionalCommand
+     */
+    public Command shootRing(DoubleSupplier targetDistance) {
+        return runEnd(
+            () -> {
+                double distance = targetDistance.getAsDouble();
+                setCurrentSetpoint(
+                    distance == 0 ? 
+                    ShooterPositions.DEFAULT.value : 
+                    ShooterConstants.kPivotDistanceAngleMap.get(targetDistance.getAsDouble())
+                );
+
+                mLeftMotor.set(
+                    mLeftController.calculate(mleftEncoder.getVelocity())
+                );
+
+                mRightMotor.set(
+                    mRightController.calculate(mleftEncoder.getVelocity())
+                );
+            },
+            () -> {
+                setCurrentSetpoint(ShooterPositions.DEFAULT.value);
+
+                mLeftMotor.stopMotor();
+                mRightMotor.stopMotor();
+            }
+        );
+    }
+
     private double getFloorRelativeAngle() {
         return mPivotEncoder.getPosition() - ShooterConstants.kEncoderOffset;
     }
+
     private double getEncoderRelativeAngle(double angle) {
         return ShooterConstants.kEncoderOffset + angle;
     }
