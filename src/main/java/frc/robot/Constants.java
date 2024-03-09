@@ -26,7 +26,6 @@ public final class Constants {
         public static final int kRightMotorID = 14;
         public static final int kLeftMotorID = 15;
 
-        // TODO: tune constants
         public static final double kPivotP = 0.035;
         public static final double kPivotI = 0.0;
         public static final double kPivotD = 0.0;
@@ -34,12 +33,12 @@ public final class Constants {
         public static final double kPivotMaxOutput = 0.5;
         public static final double kPivotMinOutput = -0.5;
 
-        public static final double kPivotPositionConversionFactor = 360.0; // Degrees
+        public static final double kPivotPositionDegreesConversionFactor = 360.0;
 
-        public static final double kUpperAngleLimit = 53.0;
-        public static final double kLowerAngleLimit = 25.0;
+        public static final double kUpperAngleLimitDegrees = 53.0;
+        public static final double kLowerAngleLimitDegrees = 25.0;
 
-        public static final double kEncoderOffset = 231.9;
+        public static final double kEncoderOffsetDegrees = 231.9;
 
         public static final InterpolatingDoubleTreeMap kPivotDistanceAngleMap = new InterpolatingDoubleTreeMap() {{
             put(null, null);
@@ -178,4 +177,3 @@ public final class Constants {
         public static final int kOperatorPort = 1;
     }
 }
-

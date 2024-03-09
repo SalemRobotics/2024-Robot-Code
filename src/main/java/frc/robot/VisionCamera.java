@@ -47,19 +47,15 @@ public class VisionCamera {
      * @param target Valid single Apriltag target
      * @return True if target is valid (if it exists)
      * @see PhotonTrackedTarget
-     * @see Optional
      */
-    public Optional<Boolean> isTargetValid(PhotonTrackedTarget target) {
+    public boolean isTargetValid(PhotonTrackedTarget target) {
         Alliance allianceColor;
         try {
             allianceColor = DriverStation.getAlliance().orElseThrow();
         } catch (Exception e) {
-            return null;
+            return false;
         }
-
-        return Optional.of(
-            VisionConstants.kValidFiducialIDs.get(allianceColor).contains(target.getFiducialId())
-        );
+            return VisionConstants.kValidFiducialIDs.get(allianceColor).contains(target.getFiducialId());
     }
 
     /**
@@ -74,7 +70,7 @@ public class VisionCamera {
         try {
             allianceColor = DriverStation.getAlliance().orElseThrow();
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
 
         // copy and sort the fiducial ID list
@@ -95,7 +91,7 @@ public class VisionCamera {
     public Optional<PhotonTrackedTarget> getBestTarget() {
         var currentResult = mCamera.getLatestResult();
         if (!currentResult.hasTargets())
-            return null; 
+            return Optional.empty(); 
         
         return Optional.of(currentResult.getBestTarget());
     }
@@ -110,7 +106,7 @@ public class VisionCamera {
         try {
             targetPitch = getTargetPitch().orElseThrow();
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
 
         return Optional.of(
@@ -131,7 +127,7 @@ public class VisionCamera {
         try {
             targetPitch = Units.degreesToRadians(getBestTarget().orElseThrow().getPitch());
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
 
         return Optional.of(targetPitch);
@@ -147,7 +143,7 @@ public class VisionCamera {
         try {
             targetDistance = getTargetDistance().orElseThrow();
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
 
         return Optional.of(
@@ -165,7 +161,7 @@ public class VisionCamera {
         try {
             targetYaw = Units.degreesToRadians(getBestTarget().orElseThrow().getYaw());
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
 
         return Optional.of(targetYaw);
@@ -181,7 +177,7 @@ public class VisionCamera {
     public Optional<MultiTargetPNPResult> getMultiTagTarget() {
         var currentResult = mCamera.getLatestResult();
         if (!currentResult.hasTargets())
-            return null;
+            return Optional.empty();
 
         return Optional.of(currentResult.getMultiTagResult());
     }
@@ -197,12 +193,12 @@ public class VisionCamera {
         try {
             multiTag = getMultiTagTarget().orElseThrow();
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
         
         if (multiTag.estimatedPose.isPresent)
             return Optional.of(multiTag.estimatedPose.best);
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -216,7 +212,7 @@ public class VisionCamera {
         try {
             estimatedPose = mPoseEstimator.update().orElseThrow().estimatedPose;
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
 
         return Optional.of(estimatedPose);
@@ -233,7 +229,7 @@ public class VisionCamera {
         try {
             targetTransform = getMultiTagTransform().orElseThrow();
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
 
         var targetPose = new Pose2d(
@@ -245,7 +241,7 @@ public class VisionCamera {
         try {
             robotPose = getMultitagRobotPose().orElseThrow().toPose2d();
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
 
         return Optional.of(PhotonUtils.getYawToPose(robotPose, targetPose));
@@ -262,7 +258,7 @@ public class VisionCamera {
             targetTransform = getMultiTagTransform().orElseThrow();
         } catch (NoSuchElementException e) {
             System.err.println(e);
-            return null;
+            return Optional.empty();
         }
 
         var targetPose = new Pose2d(
@@ -275,7 +271,7 @@ public class VisionCamera {
             robotPose = getMultitagRobotPose().orElseThrow().toPose2d();
         } catch (Exception e) {
             System.err.println(e);
-            return null;
+            return Optional.empty();
         }
 
         return Optional.of(PhotonUtils.getDistanceToPose(robotPose, targetPose));

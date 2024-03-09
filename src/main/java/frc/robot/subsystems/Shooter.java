@@ -66,7 +66,7 @@ public class Shooter extends SubsystemBase {
         mPivotMotor.setInverted(true);
 
         mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
-        mPivotEncoder.setPositionConversionFactor(ShooterConstants.kPivotPositionConversionFactor);
+        mPivotEncoder.setPositionConversionFactor(ShooterConstants.kPivotPositionDegreesConversionFactor);
         mPivotEncoder.setInverted(true);
         mPivotPID = mPivotMotor.getPIDController();
         mPivotPID.setFeedbackDevice(mPivotEncoder);
@@ -94,47 +94,6 @@ public class Shooter extends SubsystemBase {
         mCurrentSetpoint = setpoint;
     }
 
-    double gP  = ShooterConstants.kPivotP,
-           gI  = ShooterConstants.kPivotI,
-           gD  = ShooterConstants.kPivotD,
-           gFF = ShooterConstants.kPivotFF;
-    void setSmartDashboardPID() {
-        double p  = SmartDashboard.getNumber("shootP", gP),
-               i  = SmartDashboard.getNumber("shootI", gI),
-               d  = SmartDashboard.getNumber("shootD", gD),
-               ff = SmartDashboard.getNumber("shootFF", gFF);
-
-        if (Double.compare(p, gP) != 0) {
-            mPivotPID.setP(p);
-            SmartDashboard.putNumber("temp", mPivotPID.getP());
-            gP = p;
-        }
-
-        if (Double.compare(i, gI) != 0) {
-            mPivotPID.setI(i);
-            gI = i;
-        }
-
-        if (Double.compare(d, gD) != 0) {
-            mPivotPID.setD(d);
-            gD = d;
-        }
-
-        if (Double.compare(ff, gFF) != 0) {
-            mPivotPID.setFF(ff);
-            gFF = ff;
-        }
-    }
-
-    /**
-     * Intended for testing/data collection use only.
-     */
-    public Command movePivotManual(DoubleSupplier axisOutput) {
-        return run(
-            () -> mPivotMotor.set(MathUtil.applyDeadband(axisOutput.getAsDouble(), 0.05))
-        );
-    }
-
     /**
      * Sets the angle of the pivot.
      * @param degrees Desired angle setpoint, in degrees
@@ -143,7 +102,7 @@ public class Shooter extends SubsystemBase {
      */
     void setPivotAngle(double degrees) {
         // clamp input between lower and upper limits
-        double degreesClamped = MathUtil.clamp(degrees, ShooterConstants.kLowerAngleLimit, ShooterConstants.kUpperAngleLimit);
+        double degreesClamped = MathUtil.clamp(degrees, ShooterConstants.kLowerAngleLimitDegrees, ShooterConstants.kUpperAngleLimitDegrees);
 
         mPivotPID.setReference(
             getEncoderRelativeAngle(degreesClamped), 
@@ -221,11 +180,11 @@ public class Shooter extends SubsystemBase {
     }
 
     private double getFloorRelativeAngle() {
-        return mPivotEncoder.getPosition() - ShooterConstants.kEncoderOffset;
+        return mPivotEncoder.getPosition() - ShooterConstants.kEncoderOffsetDegrees;
     }
 
     private double getEncoderRelativeAngle(double angle) {
-        return ShooterConstants.kEncoderOffset + angle;
+        return ShooterConstants.kEncoderOffsetDegrees + angle;
     }
 }
 
