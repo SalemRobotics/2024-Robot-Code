@@ -37,7 +37,7 @@ public class Shooter extends SubsystemBase {
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
 
-    double mCurrentSetpoint = ShooterPositions.DEFAULT.value;
+    public double mCurrentSetpoint = ShooterPositions.DEFAULT.value;
     
     enum ShooterPositions {
         DEFAULT(0.0),
@@ -73,6 +73,7 @@ public class Shooter extends SubsystemBase {
         mPivotPID.setP(ShooterConstants.kPivotP);
         mPivotPID.setI(ShooterConstants.kPivotI);
         mPivotPID.setD(ShooterConstants.kPivotD);
+        mPivotPID.setFF(ShooterConstants.kPivotFF);
         mPivotPID.setOutputRange(ShooterConstants.kPivotMinOutput, ShooterConstants.kPivotMaxOutput);
         
         mPivotMotor.burnFlash();
@@ -80,7 +81,10 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Current pivot", getFloorRelativeAngle());
+        SmartDashboard.putNumber("Current encoder angle", mPivotEncoder.getPosition());
+        SmartDashboard.putNumber("Current floor angle", getFloorRelativeAngle());
+        SmartDashboard.putNumber("Current setpoint", mCurrentSetpoint);
+        SmartDashboard.putNumber("Encoder zero", mPivotEncoder.getZeroOffset());
 
         // continously set pivot reference
         setPivotAngle(mCurrentSetpoint);
@@ -144,6 +148,7 @@ public class Shooter extends SubsystemBase {
     void setPivotAngle(double degrees) {
         // clamp input between lower and upper limits
         double degreesClamped = MathUtil.clamp(degrees, ShooterConstants.kLowerAngleLimit, ShooterConstants.kUpperAngleLimit);
+        SmartDashboard.putNumber("degreesClamped", getEncoderRelativeAngle(degreesClamped));
 
         mPivotPID.setReference(
             getEncoderRelativeAngle(degreesClamped), 

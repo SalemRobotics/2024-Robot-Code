@@ -34,7 +34,7 @@ public class VisionCamera {
 
     public VisionCamera(String cameraName) throws IOException {
         mCamera = new PhotonCamera(cameraName);
-        mFieldLayout = new AprilTagFieldLayout(AprilTagFields.k2024Crescendo.m_resourceFile);
+        mFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         mPoseEstimator = new PhotonPoseEstimator(
             mFieldLayout, 
             PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, 
@@ -100,15 +100,27 @@ public class VisionCamera {
         return Optional.of(currentResult.getBestTarget());
     }
 
+    public Optional<Pose3d> getTargetPose() {
+        PhotonTrackedTarget target;
+        try {
+            target = getBestTarget().orElseThrow();
+        } catch (Exception e) {
+            return null;
+        }
+
+        return mFieldLayout.getTagPose(target.getFiducialId());
+    }
+
     /**
      * Gets the distance from the robot to the target Apriltag.
      * @return Distance, in meters, should the target exist. (I think)
      * @see Optional
      */
     public Optional<Double> getTargetDistance() {
-        double targetPitch;
+        double targetPitch, targetHeight;
         try {
             targetPitch = getTargetPitch().orElseThrow();
+            targetHeight = getTargetPose().orElseThrow().getZ();
         } catch (Exception e) {
             return null;
         }
@@ -116,8 +128,32 @@ public class VisionCamera {
         return Optional.of(
             PhotonUtils.calculateDistanceToTargetMeters(
                 VisionConstants.kCameraHeight, 
-                Units.inchesToMeters(66), 
+                targetHeight, 
                 VisionConstants.kCameraPitch, 
+                targetPitch));
+    }
+
+    /**
+     * Gets the distance from the robot to the target Apriltag.
+     * @param cameraHeight height of camera in meters
+     * @param cameraPitch pitch of camera in radians
+     * @return Distance, in meters, should the target exist. (I think)
+     * @see Optional
+     */
+    public Optional<Double> getTargetDistance(double cameraHeight, double cameraPitch) {
+        double targetPitch, targetHeight;
+        try {
+            targetPitch = getTargetPitch().orElseThrow();
+            targetHeight = getTargetPose().orElseThrow().getZ();
+        } catch (Exception e) {
+            return null;
+        }
+
+        return Optional.of(
+            PhotonUtils.calculateDistanceToTargetMeters(
+                cameraHeight, 
+                targetHeight, 
+                cameraPitch, 
                 targetPitch));
     }
 
@@ -135,24 +171,6 @@ public class VisionCamera {
         }
 
         return Optional.of(targetPitch);
-    }
-
-    /**
-     * Gets the pitch from the camera to the top of the speaker from the apriltag
-     * @return Pitch rotation in radians, should it exist
-     * @see Optional
-     */
-    public Optional<Double> getSpeakerPitch() {
-        double targetDistance;
-        try {
-            targetDistance = getTargetDistance().orElseThrow();
-        } catch (Exception e) {
-            return null;
-        }
-
-        return Optional.of(
-            Math.atan2(VisionConstants.kTargetHeight, targetDistance)
-        );
     }
 
     /**
