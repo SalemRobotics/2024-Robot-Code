@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -23,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Direction;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -32,7 +35,7 @@ import frc.util.SwerveUtils;
  * Swerve Drivetrain based off of REV Robotics MAXSwerve template. 
  */
 public class Drivetrain extends SubsystemBase {
-    // Create MAXSwerveModules
+  // Create MAXSwerveModules
   final MAXSwerveModule mFrontLeft = new MAXSwerveModule(
       DriveConstants.kFrontLeftDrivingCanID,
       DriveConstants.kFrontLeftTurningCanID,
@@ -55,8 +58,6 @@ public class Drivetrain extends SubsystemBase {
 
   final Pigeon2 mPigeon = new Pigeon2(DriveConstants.kPigeonID);
 
-  //final PigeonIMU mPigeon = new PigeonIMU(1);
-
   // Slew rate filter variables for controlling lateral acceleration
   double mCurrentRotation = 0.0;
   double mCurrentTranslationDir = 0.0;
@@ -77,12 +78,23 @@ public class Drivetrain extends SubsystemBase {
         mRearRight.getPosition()
       });
 
-  public Drivetrain() {
+  final boolean mIsFieldRelative, mIsRateLimited;
+
+  /**
+   * Constructs a drivetrain subsystem
+   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
+   * @param rateLimit     Whether to enable rate limiting for smoother control.
+   */
+  public Drivetrain(boolean fieldRelative, boolean rateLimit) {
+    mIsFieldRelative = fieldRelative;
+    mIsRateLimited = rateLimit;
+
     resetEncoders();
     mPigeon.reset();
 
+    // configures holonomic drivetrain for auto 
     AutoBuilder.configureHolonomic(
-      this::getPose, 
+      () -> mOdometry.getPoseMeters(), 
       this::resetOdometry, 
       this::getSpeeds, 
       this::setRobotRelativeStates, 
@@ -100,6 +112,7 @@ public class Drivetrain extends SubsystemBase {
     displayShuffleboardPID();
   }
 
+  /** Debug method to display driving and turning PID gains */
   void displayShuffleboardPID() {
     SmartDashboard.putNumber("Driving P", AutoConstants.kAutoDrivingP);
     SmartDashboard.putNumber("Driving I", AutoConstants.kAutoDrivingI);
@@ -130,13 +143,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * Returns the currently-estimated pose of the robot.
-   * @return The pose.
+   * Gets swerve chassis speeds from swerve module states
+   * @return {@link ChassisSpeeds}
    */
-  public Pose2d getPose() {
-    return mOdometry.getPoseMeters();
-  }
-
   public ChassisSpeeds getSpeeds() {
     return DriveConstants.kDriveKinematics.toChassisSpeeds(
       mFrontLeft.getState(),
@@ -146,6 +155,11 @@ public class Drivetrain extends SubsystemBase {
     );
   }
 
+  /**
+   * Sets swerve states relative to the robot from chassis speeds
+   * @param robotRelativeSpeeds Chassis speeds relative to the robot
+   * @see ChassisSpeeds
+   */
   public void setRobotRelativeStates(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     setModuleStates(DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds));
@@ -175,12 +189,12 @@ public class Drivetrain extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+  public void drive(double xSpeed, double ySpeed, double rot) {
 
     double xSpeedCommanded;
     double ySpeedCommanded;
 
-    if (rateLimit) {
+    if (mIsRateLimited) {
       // Convert XY to polar for rate limiting
       double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
       double inputTranslationMag = Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2));
@@ -233,17 +247,11 @@ public class Drivetrain extends SubsystemBase {
     double rotDelivered = mCurrentRotation * DriveConstants.kMaxAngularSpeed;
 
     var swerveStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-            fieldRelative
+            mIsFieldRelative
               ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, mPigeon.getRotation2d())
               : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
 
     setModuleStates(swerveStates);
-  }
-
-  void setModuleHeading(double receivedOutput) {
-    setModuleStates(DriveConstants.kDriveKinematics.toSwerveModuleStates(
-        new ChassisSpeeds(0, 0, -receivedOutput * DriveConstants.kMaxAngularSpeed)
-      ));
   }
 
   /**
@@ -257,18 +265,45 @@ public class Drivetrain extends SubsystemBase {
     return Units.radiansToDegrees(angle);
   }
 
-  public Command trackAngle(double degrees, double xSpeed, double ySpeed, boolean fieldRelative, boolean rateLimit) {
+  /** Command to track drivetrain rotation to an setpoint with a supplied measurement source */
+  Command trackSetpoint(double xSpeed, double ySpeed, double setpoint, DoubleSupplier measurement) {
     return new PIDCommand(
       new PIDController(
         DriveConstants.kHeadingP,
         DriveConstants.kHeadingI,
         DriveConstants.kHeadingD
       ), 
-      this::getPigeonModulus, 
-      () -> degrees,
-      (receivedOutput) -> drive(xSpeed, ySpeed, receivedOutput, fieldRelative, rateLimit),
+      measurement, 
+      () -> setpoint,
+      (receivedOutput) -> drive(xSpeed, ySpeed, receivedOutput),
       this
     );
+  }
+
+  /**
+   * Tracks the drivetrain towards a vision target
+   * @param yaw Supplied yaw of target
+   * @param xSpeed Speed of the robot in the x direction (forward).
+   * @param ySpeed Speed of the robot in the y direction (sideways).
+   * @return Command to set the direction of the drivetrain
+   * @see DoubleSupplier
+   * @see PIDCommand
+   */
+  public Command trackTarget(DoubleSupplier yaw, double xSpeed, double ySpeed) {
+    return trackSetpoint(xSpeed, ySpeed, 0.0, yaw);
+  }
+
+  /**
+   * Tracks the drivetrain to a cardinal direction.
+   * @param direction Cardinal direction to track
+   * @param xSpeed Speed of the robot in the x direction (forward).
+   * @param ySpeed Speed of the robot in the y direction (sideways).
+   * @return Command to set the direction of the drivetrain
+   * @see Direction
+   * @see PIDCommand
+   */
+  public Command trackCardinal(Direction direction, double xSpeed, double ySpeed) {
+    return trackSetpoint(xSpeed, ySpeed, direction.value, this::getPigeonModulus);
   }
 
   /** Sets the wheels into an X formation to prevent movement. */
@@ -328,11 +363,12 @@ public class Drivetrain extends SubsystemBase {
         DriveConstants.kDriveBaseRadius, 
         new ReplanningConfig(true, true)
       );
+      
       resetEncoders();
       mPigeon.reset();
 
       AutoBuilder.configureHolonomic(
-        this::getPose, 
+        () -> mOdometry.getPoseMeters(), 
         this::resetOdometry, 
         this::getSpeeds, 
         this::setRobotRelativeStates, 

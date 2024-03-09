@@ -89,7 +89,7 @@ public class SwerveUtils {
         }
     }
 
-    public static double SquareInputs(double value, double deadband) {
+    public static double squareInputs(double value, double deadband) {
         double input = MathUtil.applyDeadband(value, deadband);
         return Math.copySign(input*input, input);
     }

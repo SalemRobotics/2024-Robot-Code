@@ -32,7 +32,7 @@ public class RobotContainer {
   final XboxController mDriveController = new XboxController(ControllerConstants.kDriverPort); 
   final XboxController mOperatorController = new XboxController(ControllerConstants.kOperatorPort);
 
-  final Drivetrain mDrivetrain = new Drivetrain();
+  final Drivetrain mDrivetrain = new Drivetrain(true, true);
   final Shooter mShooter = new Shooter();
   final Indexer mIndexer = new Indexer();
   final Intake mIntake = new Intake();
@@ -49,10 +49,9 @@ public class RobotContainer {
     mDrivetrain.setDefaultCommand(
       new RunCommand(
         () -> mDrivetrain.drive(
-          -SwerveUtils.SquareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
-          -SwerveUtils.SquareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
-          -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband),
-          true, true), 
+          -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+          -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
+          -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband)), 
         mDrivetrain)
     );
   }
@@ -65,31 +64,27 @@ public class RobotContainer {
     // #region Cardinal Direction Commands
 
     new JoystickButton(mDriveController, Button.kY.value).whileTrue(
-      mDrivetrain.trackAngle(Direction.North.value, 
-              -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
-              true, true)
+      mDrivetrain.trackCardinal(Direction.North, 
+        -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+        -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
     );
 
     new JoystickButton(mDriveController, Button.kB.value).whileTrue(
-      mDrivetrain.trackAngle(Direction.East.value,
-              -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
-              true, true)
+      mDrivetrain.trackCardinal(Direction.East,
+        -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+        -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
     );
 
     new JoystickButton(mDriveController, Button.kA.value).whileTrue(
-      mDrivetrain.trackAngle(Direction.South.value,
-              -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
-              true, true)
+      mDrivetrain.trackCardinal(Direction.South,
+        -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+        -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
     );
 
     new JoystickButton(mDriveController, Button.kX.value).whileTrue(
-      mDrivetrain.trackAngle(Direction.West.value,
-              -MathUtil.applyDeadband(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
-              -MathUtil.applyDeadband(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband),
-              true, true)
+      mDrivetrain.trackCardinal(Direction.West,
+        -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+        -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
     );
     
     // #endregion
