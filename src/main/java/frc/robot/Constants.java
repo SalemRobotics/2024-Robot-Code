@@ -29,9 +29,9 @@ public final class Constants {
         public static final double kPivotP = 0.035;
         public static final double kPivotI = 0.0;
         public static final double kPivotD = 0.0;
-        public static final double kPivotFF = 0.001;
-        public static final double kPivotMaxOutput = 0.5;
-        public static final double kPivotMinOutput = -0.5;
+        public static final double kPivotFF = 0.0;
+        public static final double kPivotMaxOutput = 0.25;
+        public static final double kPivotMinOutput = -0.25;
 
         public static final double kPivotPositionDegreesConversionFactor = 360.0;
 
@@ -41,7 +41,8 @@ public final class Constants {
         public static final double kEncoderOffsetDegrees = 231.9;
 
         public static final InterpolatingDoubleTreeMap kPivotDistanceAngleMap = new InterpolatingDoubleTreeMap() {{
-            put(null, null);
+            put(1.0, 48.0);
+            put(2.0, 30.0);
         }};
     }
     
@@ -66,11 +67,10 @@ public final class Constants {
 
     public static final class VisionConstants {
         /** Camera height in meters relative to where it is mounted on the robot */
-        public static final double kCameraHeight = Units.inchesToMeters(46); 
+        public static final double kCameraHeight = Units.inchesToMeters(22); 
         /**  Camera pitch in radians relative to where it is mounted on the robot */
-        public static final double kCameraPitch = Units.degreesToRadians(10);
+        public static final double kCameraPitch = Units.degreesToRadians(45);
         /** Height of the target in meters, in this case the Speaker */
-        public static final double kTargetHeight = 0.0; // TODO: measure this value
 
         public static final Transform3d kCameraOffset = new Transform3d(
             0.0, 0.0, 0.0, 

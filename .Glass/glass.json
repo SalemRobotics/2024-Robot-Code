@@ -2,6 +2,9 @@
   "NetworkTables": {
     "transitory": {
       "photonvision": {
+        "USB-Camera": {
+          "open": true
+        },
         "USB_Camera": {
           "open": true
         },
@@ -13,10 +16,16 @@
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
+    "Server": {
+      "open": true
+    },
     "visible": true
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",
-    "serverTeam": "10.99.98.2"
+    "serverTeam": "10.63.24.2"
   }
 }
