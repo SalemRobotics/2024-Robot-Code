@@ -65,21 +65,19 @@ public class VisionCamera {
      * @see MultiTargetPNPResult
      * @see Optional
      */
-    public Optional<Boolean> isTargetValid(MultiTargetPNPResult target) {
+    public Boolean isTargetValid(MultiTargetPNPResult target) {
         Alliance allianceColor;
         try {
             allianceColor = DriverStation.getAlliance().orElseThrow();
         } catch (Exception e) {
-            return Optional.empty();
+            return false;
         }
 
         // copy and sort the fiducial ID list
         var fiducialIDsCopy = List.copyOf(target.fiducialIDsUsed);
         Collections.sort(fiducialIDsCopy);
 
-        return Optional.of(
-            fiducialIDsCopy.equals(VisionConstants.kValidFiducialIDs.get(allianceColor))
-        );
+        return fiducialIDsCopy.equals(VisionConstants.kValidFiducialIDs.get(allianceColor));
     }
 
     /**
@@ -112,21 +110,20 @@ public class VisionCamera {
      * @return Distance, in meters, should the target exist. (I think)
      * @see Optional
      */
-    public Optional<Double> getTargetDistance() {
+    public Double getTargetDistance() {
         double targetPitch, targetHeight;
         try {
             targetPitch = getTargetPitch().orElseThrow();
             targetHeight = getTargetPose().orElseThrow().getZ();
         } catch (Exception e) {
-            return Optional.empty();
+            return 0.0;
         }
 
-        return Optional.of(
-            PhotonUtils.calculateDistanceToTargetMeters(
-                VisionConstants.kCameraHeight, 
-                targetHeight, 
-                VisionConstants.kCameraPitch, 
-                targetPitch));
+        return PhotonUtils.calculateDistanceToTargetMeters(
+            VisionConstants.kCameraHeight, 
+            targetHeight, 
+            VisionConstants.kCameraPitch, 
+            targetPitch);
     }
 
     /**
