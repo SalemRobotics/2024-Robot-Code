@@ -196,23 +196,28 @@ public class StatusLED extends SubsystemBase {
                 timer.start();
             }, 
             () -> { // exec
-                if(positionWrapper.LEDPosition <= LEDconstants.ledLength- LEDconstants.ledChaserLength)
+                if(timer.hasElapsed(interval))
                 {
-                    colorArrayList.add(0, backColor);
+                    if(positionWrapper.LEDPosition <= LEDconstants.ledLength- LEDconstants.ledChaserLength)
+                    {
+                        colorArrayList.add(0, backColor);
+                    }
+                    else
+                    {
+                        colorArrayList.add(0, raceColor);
+                    }
+                    positionWrapper.LEDPosition++;
+                    colorArrayList.remove(colorArrayList.size()-1);
+                    for (int j = 0; j < LEDconstants.ledLength; j++) {
+                        setHSV(j, colorArrayList.get(j));
+                    }
+                    if(positionWrapper.LEDPosition > LEDconstants.ledLength)
+                    {
+                        positionWrapper.LEDPosition = 0;
+                    }
+                    timer.restart();
                 }
-                else
-                {
-                    colorArrayList.add(0, raceColor);
-                }
-                positionWrapper.LEDPosition++;
-                colorArrayList.remove(colorArrayList.size()-1);
-                for (int j = 0; j < LEDconstants.ledLength; j++) {
-                    setHSV(j, colorArrayList.get(j));
-                }
-                if(positionWrapper.LEDPosition > LEDconstants.ledLength)
-                {
-                    positionWrapper.LEDPosition = 0;
-                }
+                
                 
                 
             }, 
