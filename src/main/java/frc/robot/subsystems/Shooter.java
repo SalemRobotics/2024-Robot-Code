@@ -36,7 +36,7 @@ public class Shooter extends SubsystemBase {
 
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
-
+    //TODO: Set value
     public double mCurrentSetpoint = ShooterPositions.DEFAULT.value;
     
     enum ShooterPositions {

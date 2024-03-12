@@ -71,6 +71,8 @@ public final class Constants {
         /**  Camera pitch in radians relative to where it is mounted on the robot */
         public static final double kCameraPitch = Units.degreesToRadians(45);
         /** Height of the target in meters, in this case the Speaker */
+        //TODO: get accurate target height
+        public static final double kTargetHeight = 2;
 
         public static final Transform3d kCameraOffset = new Transform3d(
             0.0, 0.0, 0.0, 

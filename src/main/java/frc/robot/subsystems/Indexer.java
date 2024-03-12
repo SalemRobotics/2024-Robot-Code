@@ -23,6 +23,12 @@ public class Indexer extends SubsystemBase {
         mLowerMotor.setNeutralMode(NeutralModeValue.Coast);
     }
 
+    /**
+     * Runs the lower indexer motor.
+     * @param speed Speed to run lower indexer motor at.
+     * @return runEnd command
+     * @see Command
+     */
     public Command runLowerIndexer(double speed) {
         return runEnd(
             () -> {
@@ -34,6 +40,12 @@ public class Indexer extends SubsystemBase {
         );
     }
 
+    /**
+     * Runs the upper indexer motor.
+     * @param speed Speed to run upper indexer motor at.
+     * @return runEnd command
+     * @see Command
+     */
     public Command runUpperIndexer(double speed) {
         return runEnd(
             () -> {
@@ -45,16 +57,29 @@ public class Indexer extends SubsystemBase {
         );
     }
 
+    /**
+     * Runs both indexer motors.
+     * @param speed Speed to run both indexer motors at.
+     */
     void runAllMotors(double speed) {
         mLowerMotor.set(speed);
         mUpperMotor.set(speed);
     }
 
+    /**
+     * Stops both indexer motors.
+     */
     void stopMotors() {
         mLowerMotor.stopMotor();
         mUpperMotor.stopMotor();
     }
 
+    /**
+     * Returns a command that runs both indexer motors and stops 
+     * them when it finishes.
+     * @param speed Speed to run both indexer motors at.
+     * @return runEnd Command
+     */
     public Command runAllIndexer(double speed) {
         return runEnd(
             () -> runAllMotors(speed), 
@@ -62,6 +87,13 @@ public class Indexer extends SubsystemBase {
         );
     }
 
+    /**
+     * Returns a command that runs both indexer motors if canRun 
+     * is true and stops them when it finishes.
+     * @param speed Speed to run both indexer motors at.
+     * @param canRun BooleanSupplier for whether the motors should run
+     * @return runEnd Command
+     */
     public Command runAllIndexer(double speed, BooleanSupplier canRun) {
         return runEnd(
             () -> {
