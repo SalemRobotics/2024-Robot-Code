@@ -35,14 +35,20 @@ public final class Constants {
 
         public static final double kPivotPositionDegreesConversionFactor = 360.0;
 
-        public static final double kUpperAngleLimitDegrees = 53.0;
-        public static final double kLowerAngleLimitDegrees = 25.0;
+        public static final double kUpperAngleLimit = 53.0;
+        public static final double kLowerAngleLimit = 24.0;
 
         public static final double kEncoderOffsetDegrees = 231.9;
 
         public static final InterpolatingDoubleTreeMap kPivotDistanceAngleMap = new InterpolatingDoubleTreeMap() {{
-            put(1.0, 48.0);
-            put(2.0, 30.0);
+            put(1.166, 53.0);
+            put(1.273, 51.0);
+            put(1.567, 47.5);
+            put(2.028, 41.0);
+            put(2.854, 35.0);
+            put(3.3798, 30.0);
+            put(4.280, 25.0);
+            put(4.721, 24.0);
         }};
     }
     
@@ -59,8 +65,8 @@ public final class Constants {
     }
     
     public static final class IntakeConstants {
-        public static final double kIntakeSpeedIn = 0.25;
-        public static final double kIntakeSpeedOut = -0.25;
+        public static final double kIntakeSpeedIn = 0.8;
+        public static final double kIntakeSpeedOut = -0.5;
 
         public static final int kSparkMaxID = 10;
     }
@@ -69,7 +75,7 @@ public final class Constants {
         /** Camera height in meters relative to where it is mounted on the robot */
         public static final double kCameraHeight = Units.inchesToMeters(22); 
         /**  Camera pitch in radians relative to where it is mounted on the robot */
-        public static final double kCameraPitch = Units.degreesToRadians(45);
+        public static final double kCameraPitch = Units.degreesToRadians(28);
         /** Height of the target in meters, in this case the Speaker */
         //TODO: get accurate target height
         public static final double kTargetHeight = 2;
