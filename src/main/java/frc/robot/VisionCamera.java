@@ -74,7 +74,7 @@ public class VisionCamera {
      * @see Optional
      */
     public Optional<Double> getTargetDistance() {
-        var distance = getTargetDistance(VisionConstants.kCameraHeight, VisionConstants.kCameraPitch);
+        var distance = getTargetDistance(VisionConstants.kCameraHeightMeters, VisionConstants.kCameraPitchRadians);
         if (distance.isEmpty())
             return Optional.empty();
 

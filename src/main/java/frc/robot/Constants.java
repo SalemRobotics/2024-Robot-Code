@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -40,6 +38,7 @@ public final class Constants {
 
         public static final double kEncoderOffsetDegrees = 231.9;
 
+        /** Maps distances in meters to angles in degrees */
         public static final InterpolatingDoubleTreeMap kPivotDistanceAngleMap = new InterpolatingDoubleTreeMap() {{
             put(1.166, 53.0);
             put(1.273, 51.0);
@@ -73,17 +72,9 @@ public final class Constants {
 
     public static final class VisionConstants {
         /** Camera height in meters relative to where it is mounted on the robot */
-        public static final double kCameraHeight = Units.inchesToMeters(22); //Meters
+        public static final double kCameraHeightMeters = Units.inchesToMeters(22); //Meters
         /**  Camera pitch in radians relative to where it is mounted on the robot */
-        public static final double kCameraPitch = Units.degreesToRadians(28); //Radians
-        /** Height of the target in meters, in this case the Speaker */
-        //TODO: get accurate target height
-        public static final double kTargetHeight = 2;
-
-        public static final Transform3d kCameraOffset = new Transform3d(
-            0.0, 0.0, 0.0, 
-            new Rotation3d(0.0, 0.0, 0.0)
-        );
+        public static final double kCameraPitchRadians = Units.degreesToRadians(28); //Radians
 
         public static final HashMap<Alliance, List<Integer>> kValidFiducialIDs = new HashMap<>() {{
             put(Alliance.Red, List.of(3, 4));
