@@ -49,16 +49,16 @@ public final class Constants {
         // Chassis configuration
         public static final boolean kGyroReversed = false;
         // Distance between centers of right and left wheels on robot
-        public static final double kTrackWidth = Units.inchesToMeters(23.5);
+        public static final double kTrackWidthMeters = Units.inchesToMeters(23.5);
         // Distance between front and back wheels on robot
-        public static final double kWheelBase = Units.inchesToMeters(23.5);
+        public static final double kWheelBaseMeters = Units.inchesToMeters(23.5);
         // Radius of drive base. Equal to distance from center of robot to center of module.
-        public static final double kDriveBaseRadius = Units.inchesToMeters(16.6);
+        public static final double kDriveBaseRadiusMeters = Units.inchesToMeters(16.6);
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-            new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-            new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-            new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-            new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+            new Translation2d(kWheelBaseMeters / 2, kTrackWidthMeters / 2),
+            new Translation2d(kWheelBaseMeters / 2, -kTrackWidthMeters / 2),
+            new Translation2d(-kWheelBaseMeters / 2, kTrackWidthMeters / 2),
+            new Translation2d(-kWheelBaseMeters / 2, -kTrackWidthMeters / 2));
 
         public static final HolonomicPathFollowerConfig kPathConfig = new HolonomicPathFollowerConfig(
             new PIDConstants(
@@ -74,7 +74,7 @@ public final class Constants {
                 AutoConstants.kAutoTurningIZone
             ), 
             kMaxSpeedMetersPerSecond, 
-            kDriveBaseRadius, 
+            kDriveBaseRadiusMeters, 
             new ReplanningConfig(true, true)
         );
 
@@ -158,21 +158,18 @@ public final class Constants {
     }
 
     public static final class AutoConstants{
-        public static final String kTestAuto = "Test Auto";
-        public static final String kTestAuto2 = "Test Auto 2";
-        
         public static final double kAutoDrivingP = 15;
         public static final double kAutoDrivingI = 1.5;
         public static final double kAutoDrivingD = 1;
         public static final double kAutoDrivingIZone = 1000;
         
-        //oscillation in turning
+        //TODO: retune constants
         public static final double kAutoTurningP = 3.5;
         public static final double kAutoTurningI = 1;
         public static final double kAutoTurningD = 0.3;
         public static final double kAutoTurningIZone = 1000.0;
 
-        // TODO: fill in auto names
+        /** Map of folder names to lists of auto command names */
         public static final HashMap<String, List<String>> kAutoFolders = new HashMap<>() {{
             put("Test Autos", List.of(
                 "Test Auto",

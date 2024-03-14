@@ -378,7 +378,7 @@ public class Drivetrain extends SubsystemBase {
           SmartDashboard.getNumber("Turning IZone", AutoConstants.kAutoTurningIZone)
         ), 
         DriveConstants.kMaxSpeedMetersPerSecond, 
-        DriveConstants.kDriveBaseRadius, 
+        DriveConstants.kDriveBaseRadiusMeters, 
         new ReplanningConfig(true, true)
       );
       
