@@ -13,14 +13,25 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Indexer;
 import frc.util.SwerveUtils;
+import frc.robot.command.IntakeInAndIndex;
+import frc.robot.command.IntakeOutAndIndex;
+import frc.robot.command.SpinUpShooterAndIndex;
+import frc.robot.subsystems.Intake;
 
 public class RobotContainer {
-  
   final XboxController mDriveController = new XboxController(ControllerConstants.kDriverPort); 
+  final XboxController mOperatorController = new XboxController(ControllerConstants.kOperatorPort);
 
   final Drivetrain mDrivetrain = new Drivetrain();
-  
+  final Shooter mShooter = new Shooter();
+  final Indexer mIndexer = new Indexer();
+  final Intake mIntake = new Intake();
+  final Vision mVision = new Vision();
+
   public RobotContainer() {
     configureBindings();
 
@@ -39,9 +50,26 @@ public class RobotContainer {
     new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
       mDrivetrain.setX()
     );
+    
+    //#region Operator controls
+
+    new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
+      new SpinUpShooterAndIndex(mIndexer, mShooter, mVision)
+    );
+    
+    new JoystickButton(mOperatorController, Button.kRightBumper.value).whileTrue(
+      new IntakeInAndIndex(mIntake, mIndexer)
+    );
+    
+    new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
+      new IntakeOutAndIndex(mIntake, mIndexer)
+    );
+
+    //#endregion
   }
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
+
 }

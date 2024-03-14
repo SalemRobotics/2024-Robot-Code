@@ -1,21 +1,105 @@
 package frc.robot;
 
+import java.util.HashMap;
+import java.util.List;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public final class Constants {
+    public static final class ShooterConstants {
+        public static final double kFreeSpinVelocity = 5880; // RPM
+
+        public static final double kLeftMotorSpeedSetpoint = 0.9 * kFreeSpinVelocity; // RPM
+        public static final double kRightMotorSpeedSetpoint = 0.7 * kFreeSpinVelocity; // RPM
+        public static final double kControllerErrorTolerance = 0.1; // percent
+        public static final double kOutputVelocityThreshold = 0.85; // percent
+
+        public static final int kPivotMotorID = 13;
+        public static final int kRightMotorID = 14;
+        public static final int kLeftMotorID = 15;
+
+        public static final double kPivotP = 0.035;
+        public static final double kPivotI = 0.0;
+        public static final double kPivotD = 0.0;
+        public static final double kPivotFF = 0.0;
+        public static final double kPivotMaxOutput = 0.25;
+        public static final double kPivotMinOutput = -0.25;
+
+        public static final double kPivotPositionDegreesConversionFactor = 360.0;
+
+        public static final double kUpperAngleLimitDegrees = 53.0;
+        public static final double kLowerAngleLimitDegrees = 24.0;
+
+        public static final double kEncoderOffsetDegrees = 231.9;
+
+        public static final InterpolatingDoubleTreeMap kPivotDistanceAngleMap = new InterpolatingDoubleTreeMap() {{
+            put(1.166, 53.0);
+            put(1.273, 51.0);
+            put(1.567, 47.5);
+            put(2.028, 41.0);
+            put(2.854, 35.0);
+            put(3.3798, 30.0);
+            put(4.280, 25.0);
+            put(4.721, 24.0);
+        }};
+    }
+    
+    public static final class IndexerConstants {
+        public static final double kIndexerSpeed = 1.0;
+
+        public static final int kIndexerLowerID = 11;
+        public static final int kIndexerUpperID = 12;
+        public static final double kIndexerSpeedIn = 1.0;
+        public static final double kIndexerSpeedOut = -1.0;
+
+        public static final int kIndexerIntakeID = 11;
+        public static final int kIndexerShooterID = 12;
+    }
+    
+    public static final class IntakeConstants {
+        public static final double kIntakeSpeedIn = 0.8;
+        public static final double kIntakeSpeedOut = -0.5;
+
+        public static final int kSparkMaxID = 10;
+    }
+
+    public static final class VisionConstants {
+        /** Camera height in meters relative to where it is mounted on the robot */
+        public static final double kCameraHeight = Units.inchesToMeters(22); //Meters
+        /**  Camera pitch in radians relative to where it is mounted on the robot */
+        public static final double kCameraPitch = Units.degreesToRadians(28); //Radians
+        /** Height of the target in meters, in this case the Speaker */
+        //TODO: get accurate target height
+        public static final double kTargetHeight = 2;
+
+        public static final Transform3d kCameraOffset = new Transform3d(
+            0.0, 0.0, 0.0, 
+            new Rotation3d(0.0, 0.0, 0.0)
+        );
+
+        public static final HashMap<Alliance, List<Integer>> kValidFiducialIDs = new HashMap<>() {{
+            put(Alliance.Red, List.of(3, 4));
+            put(Alliance.Blue, List.of(7, 8));
+        }};
+    }
+
     public static final class DriveConstants {
         // Driving Parameters - Note that these are not the maximum capable speeds of
         // the robot, rather the allowed maximum speeds
         public static final double kMaxSpeedMetersPerSecond = 4.8;
-        public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+        public static final double kMaxAngularSpeedRadiansPerSec = 2 * Math.PI;
 
-        public static final double kDirectionSlewRate = 1.2; // radians per second
-        public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
-        public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
+        public static final double kDirectionSlewRateRadiansPerSec = 1.2; 
+        public static final double kMagnitudeSlewRatePercentPerSec = 2.5; 
+        public static final double kRotationalSlewRatePercentPerSec = 2.0; 
         
         public static final boolean kGyroReversed = false;
         // Chassis configuration
@@ -98,5 +182,6 @@ public final class Constants {
     public static final class ControllerConstants {
         public static final int kDriverPort = 0;
         public static final double kDriveDeadband = 0.05;
+        public static final int kOperatorPort = 1;
     }
 }
