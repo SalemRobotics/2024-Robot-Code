@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,7 +40,7 @@ public class Vision extends SubsystemBase {
 
     /**
      * Gets the target apriltag distance.
-     * @return
+     * @return in meters
      */
     public double getDistance() {
         try {

@@ -184,10 +184,19 @@ public class Shooter extends SubsystemBase {
         );
     }
 
+    /**
+     * Gets the floor relative angle by subtracting the encoder offset from the encoder position
+     * @return the floor relative angle
+     */
     private double getFloorRelativeAngle() {
         return mPivotEncoder.getPosition() - ShooterConstants.kEncoderOffsetDegrees;
     }
 
+    /**
+     * Gets the encoder relative angle by adding encoder offset to given angle
+     * @param angle the desired angle
+     * @return the encoder relative angle
+     */
     private double getEncoderRelativeAngle(double angle) {
         return ShooterConstants.kEncoderOffsetDegrees + angle;
     }

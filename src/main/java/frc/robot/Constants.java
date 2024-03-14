@@ -41,6 +41,7 @@ public final class Constants {
         public static final double kEncoderOffsetDegrees = 231.9;
 
         public static final InterpolatingDoubleTreeMap kPivotDistanceAngleMap = new InterpolatingDoubleTreeMap() {{
+            //TODO: set values
             put(1.0, 48.0);
             put(2.0, 30.0);
         }};
@@ -67,9 +68,9 @@ public final class Constants {
 
     public static final class VisionConstants {
         /** Camera height in meters relative to where it is mounted on the robot */
-        public static final double kCameraHeight = Units.inchesToMeters(22); 
+        public static final double kCameraHeight = Units.inchesToMeters(22); //Meters
         /**  Camera pitch in radians relative to where it is mounted on the robot */
-        public static final double kCameraPitch = Units.degreesToRadians(45);
+        public static final double kCameraPitch = Units.degreesToRadians(45); //Radians
         /** Height of the target in meters, in this case the Speaker */
         //TODO: get accurate target height
         public static final double kTargetHeight = 2;
@@ -89,11 +90,11 @@ public final class Constants {
         // Driving Parameters - Note that these are not the maximum capable speeds of
         // the robot, rather the allowed maximum speeds
         public static final double kMaxSpeedMetersPerSecond = 4.8;
-        public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+        public static final double kMaxAngularSpeedRadiansPerSec = 2 * Math.PI;
 
-        public static final double kDirectionSlewRate = 1.2; // radians per second
-        public static final double kMagnitudeSlewRate = 2.5; // percent per second (1 = 100%)
-        public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
+        public static final double kDirectionSlewRateRadiansPerSec = 1.2; 
+        public static final double kMagnitudeSlewRatePercentPerSec = 2.5; 
+        public static final double kRotationalSlewRatePercentPerSec = 2.0; 
         
         public static final boolean kGyroReversed = false;
         // Chassis configuration
