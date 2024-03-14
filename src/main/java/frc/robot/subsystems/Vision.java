@@ -16,11 +16,16 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        
+        printDebug();
+    }
+
+    /**
+     * Sends various values from the camera to Shuffleboard for debugging.
+     */
+    private void printDebug() {
         SmartDashboard.putNumber("Target distance", getDistance());
         SmartDashboard.putNumber("Target Angle", ShooterConstants.kPivotDistanceAngleMap.get(getDistance()));
         
-        mShooter.mCurrentSetpoint = ShooterConstants.kPivotDistanceAngleMap.get(getDistance());
         try {
             SmartDashboard.putNumber("Target ID", mCamera.getBestTarget().get().getFiducialId());
             SmartDashboard.putString("Target Pose", mCamera.getTargetPose().get().toString());

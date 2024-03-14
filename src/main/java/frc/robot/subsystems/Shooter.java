@@ -36,9 +36,12 @@ public class Shooter extends SubsystemBase {
 
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
-    //TODO: Set value
-    public double mCurrentSetpoint = ShooterPositions.DEFAULT.value;
+
+    double mCurrentSetpoint = ShooterPositions.DEFAULT.value;
     
+    /**
+     * Enum for constant, measured shooter positions
+     */
     enum ShooterPositions {
         DEFAULT(0.0),
         SOURCE(0.0);
@@ -81,19 +84,34 @@ public class Shooter extends SubsystemBase {
     
     @Override
     public void periodic() {
+        // continously set pivot reference
+        setPivotAngle(mCurrentSetpoint);
+        
+        printDebug();
+    }
+
+    /**
+     * Prints various values regarding the shooter pivot to shuffleboard for debugging
+     */
+    private void printDebug() {
         SmartDashboard.putNumber("Current setpoint", mCurrentSetpoint);
         SmartDashboard.putNumber("Current encoder angle", mPivotEncoder.getPosition());
         SmartDashboard.putNumber("Current floor angle", getFloorRelativeAngle());
         SmartDashboard.putNumber("Encoder zero", mPivotEncoder.getZeroOffset());
-
-        // continously set pivot reference
-        setPivotAngle(mCurrentSetpoint);
     }
 
+    /**
+     * Gets the current pivot setpoint value.
+     * @return Pivot setpoint in degrees
+     */
     public double getCurrentSetpoint() {
         return mCurrentSetpoint;
     }
 
+    /**
+     * Sets the current pivot setpoint value.
+     * @param setpoint Angle in degrees to set the pivot setpoint to
+     */
     public void setCurrentSetpoint(double setpoint) {
         mCurrentSetpoint = setpoint;
     }
@@ -104,10 +122,9 @@ public class Shooter extends SubsystemBase {
      * @return runOnce command
      * @see InstantCommand
      */
-    void setPivotAngle(double degrees) {
+    private void setPivotAngle(double degrees) {
         // clamp input between lower and upper limits
         double degreesClamped = MathUtil.clamp(degrees, ShooterConstants.kLowerAngleLimitDegrees, ShooterConstants.kUpperAngleLimitDegrees);
-        SmartDashboard.putNumber("degreesClamped", getEncoderRelativeAngle(degreesClamped));
 
         mPivotPID.setReference(
             getEncoderRelativeAngle(degreesClamped), 
