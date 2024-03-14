@@ -23,7 +23,9 @@ import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Direction;
 import frc.robot.RobotContainer;
@@ -112,8 +114,10 @@ public class Drivetrain extends SubsystemBase {
     displayShuffleboardPID();
   }
 
-  /** Debug method to display driving and turning PID gains */
-  void displayShuffleboardPID() {
+  /**
+   * Debug method to display driving and turning PID gains
+   */
+  private void displayShuffleboardPID() {
     SmartDashboard.putNumber("Driving P", AutoConstants.kAutoDrivingP);
     SmartDashboard.putNumber("Driving I", AutoConstants.kAutoDrivingI);
     SmartDashboard.putNumber("Driving D", AutoConstants.kAutoDrivingD);
@@ -186,8 +190,6 @@ public class Drivetrain extends SubsystemBase {
    * @param xSpeed        Speed of the robot in the x direction (forward).
    * @param ySpeed        Speed of the robot in the y direction (sideways).
    * @param rot           Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
-   * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
   public void drive(double xSpeed, double ySpeed, double rot) {
 
@@ -265,7 +267,16 @@ public class Drivetrain extends SubsystemBase {
     return Units.radiansToDegrees(angle);
   }
 
-  /** Command to track drivetrain rotation to an setpoint with a supplied measurement source */
+  /**
+   * Command to track drivetrain rotation to an setpoint with a supplied measurement source
+   * @param xSpeed Speed of the robot in the x direction (forward).
+   * @param ySpeed Speed of the robot in the y direction (sideways).
+   * @param setpoint Setpoint to track drivetrain towards
+   * @param measurement Measurement source of PIDCommand, a function returning a double
+   * @return PIDCommand that tracks the drivetrain Yaw to a setpoint
+   * @see DoubleSupplier
+   * @see PIDCommand
+   */
   Command trackSetpoint(double xSpeed, double ySpeed, double setpoint, DoubleSupplier measurement) {
     return new PIDCommand(
       new PIDController(
@@ -306,7 +317,11 @@ public class Drivetrain extends SubsystemBase {
     return trackSetpoint(xSpeed, ySpeed, direction.value, this::getPigeonModulus);
   }
 
-  /** Sets the wheels into an X formation to prevent movement. */
+  /**
+   * Sets the wheels into an X formation to prevent movement.
+   * @return Command to set the swerve modules
+   * @see RunCommand
+   */
   public Command setX() {
     return run(
       () -> setModuleStates(
@@ -331,7 +346,9 @@ public class Drivetrain extends SubsystemBase {
     mRearRight.setDesiredState(desiredStates[3]);
   }
 
-  /** Resets the drive encoders to currently read a position of 0. */
+  /**
+   * Resets the drive encoders to currently read a position of 0.
+   */
   public void resetEncoders() {
     mFrontLeft.resetEncoders();
     mRearLeft.resetEncoders();
@@ -342,7 +359,8 @@ public class Drivetrain extends SubsystemBase {
   /**
    * Chris's messy suggestion for how to test pid quickly
    * Essentially we reset all of drivetrain just like the constructor
-   * @return
+   * @return Command to set the PID config
+   * @see InstantCommand
    */
   public Command setPIDAndReset() {
     return runOnce(() -> {

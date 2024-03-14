@@ -40,11 +40,6 @@ public class MAXSwerveModule {
     mDrivingSparkMax = new CANSparkMax(drivingCANId, MotorType.kBrushless);
     mTurningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);
 
-    // Factory reset, so we get the SPARKS MAX to a known state before configuring
-    // them. This is useful in case a SPARK MAX is swapped out.
-    // mDrivingSparkMax.restoreFactoryDefaults();
-    // mTurningSparkMax.restoreFactoryDefaults();
-
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
     mDrivingEncoder = mDrivingSparkMax.getEncoder();
     mTurningEncoder = mTurningSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
@@ -110,6 +105,7 @@ public class MAXSwerveModule {
    * Returns the current state of the module.
    *
    * @return The current state of the module.
+   * @see SwerveModuleState
    */
   public SwerveModuleState getState() {
     // Apply chassis angular offset to the encoder position to get the position
@@ -122,6 +118,7 @@ public class MAXSwerveModule {
    * Returns the current position of the module.
    *
    * @return The current position of the module.
+   * @see SwerveModulePosition
    */
   public SwerveModulePosition getPosition() {
     // Apply chassis angular offset to the encoder position to get the position
@@ -135,6 +132,7 @@ public class MAXSwerveModule {
    * Sets the desired state for the module.
    *
    * @param desiredState Desired state with speed and angle.
+   * @see SwerveModuleState
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Apply chassis angular offset to the desired state.

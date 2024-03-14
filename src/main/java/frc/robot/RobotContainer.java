@@ -111,7 +111,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter));
     NamedCommands.registerCommand("index to shoot", mIndexer.runShooterIndexer(IndexerConstants.kIndexerSpeedIn));
     NamedCommands.registerCommand("run shooter", mShooter.shootRing());
-    //NamedCommands.registerCommand("angle45", new setShooterAngle(mShooter, 45.0));
   }
 
   public Command getAutonomousCommand() {
