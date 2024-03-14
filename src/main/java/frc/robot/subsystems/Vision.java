@@ -1,26 +1,17 @@
 package frc.robot.subsystems;
 
-import java.io.IOException;
-import java.util.Optional;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.VisionCamera;
 import frc.robot.Constants.ShooterConstants;
 
 public class Vision extends SubsystemBase {
-    VisionCamera mCamera;
-
+    final VisionCamera mCamera;
     final Shooter mShooter;
 
     public Vision(Shooter shooter) {
         mShooter = shooter;
-
-        try {
-            mCamera = new VisionCamera("Arducam_OV9281_USB_Camera");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        mCamera = new VisionCamera("Arducam_OV9281_USB_Camera");
     }
 
     @Override
@@ -40,13 +31,12 @@ public class Vision extends SubsystemBase {
 
     /**
      * Gets the target apriltag distance.
-     * @return in meters
+     * @return Distance, in meters, of the target. 0 if target is not found.
      */
     public double getDistance() {
-        try {
-            return mCamera.getTargetDistance().orElseThrow();
-        } catch (Exception e) {
+        if (mCamera.getTargetDistance().isEmpty())
             return 0;
-        }
+
+        return mCamera.getTargetDistance().orElseThrow();
     }
 }

@@ -35,8 +35,8 @@ public final class Constants {
 
         public static final double kPivotPositionDegreesConversionFactor = 360.0;
 
-        public static final double kUpperAngleLimit = 53.0;
-        public static final double kLowerAngleLimit = 24.0;
+        public static final double kUpperAngleLimitDegrees = 53.0;
+        public static final double kLowerAngleLimitDegrees = 24.0;
 
         public static final double kEncoderOffsetDegrees = 231.9;
 
