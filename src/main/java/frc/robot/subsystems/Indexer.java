@@ -69,7 +69,7 @@ public class Indexer extends SubsystemBase {
     /**
      * Stops both indexer motors.
      */
-    void stopMotors() {
+    private void stopMotors() {
         mLowerMotor.stopMotor();
         mUpperMotor.stopMotor();
     }

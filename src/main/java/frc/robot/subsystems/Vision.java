@@ -7,10 +7,8 @@ import frc.robot.Constants.ShooterConstants;
 
 public class Vision extends SubsystemBase {
     final VisionCamera mCamera;
-    final Shooter mShooter;
 
-    public Vision(Shooter shooter) {
-        mShooter = shooter;
+    public Vision() {
         mCamera = new VisionCamera("Arducam_OV9281_USB_Camera");
     }
 

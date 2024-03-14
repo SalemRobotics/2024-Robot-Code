@@ -30,7 +30,7 @@ public class RobotContainer {
   final Shooter mShooter = new Shooter();
   final Indexer mIndexer = new Indexer();
   final Intake mIntake = new Intake();
-  final Vision mVision = new Vision(mShooter);
+  final Vision mVision = new Vision();
 
   public RobotContainer() {
     configureBindings();
@@ -51,6 +51,8 @@ public class RobotContainer {
       mDrivetrain.setX()
     );
     
+    //#region Operator controls
+
     new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
       new SpinUpShooterAndIndex(mIndexer, mShooter, mVision)
     );
@@ -62,6 +64,8 @@ public class RobotContainer {
     new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
       new IntakeOutAndIndex(mIntake, mIndexer)
     );
+
+    //#endregion
   }
 
   public Command getAutonomousCommand() {
