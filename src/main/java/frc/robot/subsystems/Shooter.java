@@ -78,12 +78,12 @@ public class Shooter extends SubsystemBase {
         
         mPivotMotor.burnFlash();
     }
-
+    
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Current setpoint", mCurrentSetpoint);
         SmartDashboard.putNumber("Current encoder angle", mPivotEncoder.getPosition());
         SmartDashboard.putNumber("Current floor angle", getFloorRelativeAngle());
-        SmartDashboard.putNumber("Current setpoint", mCurrentSetpoint);
         SmartDashboard.putNumber("Encoder zero", mPivotEncoder.getZeroOffset());
 
         // continously set pivot reference
