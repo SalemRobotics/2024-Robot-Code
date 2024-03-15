@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.util.Units;
 import frc.robot.VisionCamera;
 import frc.robot.Constants.ShooterConstants;
 
@@ -41,5 +42,16 @@ public class Vision extends SubsystemBase {
             return 0;
 
         return mCamera.getTargetDistance().orElseThrow();
+    }
+
+    /*
+     * Gets the target apriltag yaw.
+     * @return Yaw, in degrees, of the target. 0 if target is not found.
+     */
+    public double getYaw() {
+        if (mCamera.getTargetYaw().isEmpty())
+            return 0;
+
+        return Units.radiansToDegreesm(mCamera.getTargetYaw().orElseThrow());
     }
 }

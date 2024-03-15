@@ -25,7 +25,7 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.util.SwerveUtils;
-import frc.util.SwerveUtils;
+import frc.util.TriggerButton;
 import frc.robot.command.IntakeInAndIndex;
 import frc.robot.command.IntakeOutAndIndex;
 import frc.robot.command.SpinUpShooterAndIndex;
@@ -96,6 +96,20 @@ public class RobotContainer {
     // #endregion
     
     // #region Operator Controls
+
+    TriggerButton driverTrigger = new TriggerButton(mDriveController, mDriverController.getRightTriggerAxis());
+    
+    driverTrigger.whileTrue(
+      new TrackTargetAndShoot(
+        mDrivetrain, 
+        mVision, 
+        mIndexer, 
+        mShooter,
+        -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+        -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband)
+      )
+    );
+
     new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
       new SpinUpShooterAndIndex(mIndexer, mShooter, mVision)
     );
