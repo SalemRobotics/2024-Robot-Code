@@ -2,8 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IndexerConstants;
@@ -12,41 +12,47 @@ import frc.robot.Constants.IndexerConstants;
  * Indexer subsystem with two motors. Manipulates gamepiece when it is inside the robot.
  */
 public class Indexer extends SubsystemBase {
-    final CANSparkMax mIndexIntakeMotor = new CANSparkMax(IndexerConstants.kIndexerIntakeID, MotorType.kBrushless);
-    final CANSparkMax mIndexShooterMotor = new CANSparkMax(IndexerConstants.kIndexerShooterID, MotorType.kBrushless);
-    
+    final TalonFX mUpperMotor = new TalonFX(IndexerConstants.kIndexerUpperID);
+    final TalonFX mLowerMotor = new TalonFX(IndexerConstants.kIndexerLowerID);
+
+    public Indexer() {
+        mUpperMotor.setInverted(true);
+        mUpperMotor.setNeutralMode(NeutralModeValue.Coast);
+        
+        mLowerMotor.setInverted(true);
+        mLowerMotor.setNeutralMode(NeutralModeValue.Coast);
+    }
+
     /**
-     * Runs the middle indexer motor only.
-     * @param speed Speed to run middle indexer at.
+     * Runs the lower indexer motor.
+     * @param speed Speed to run lower indexer motor at.
      * @return runEnd command
      * @see Command
      */
-    public Command runMiddleIndexer(double speed) {
+    public Command runLowerIndexer(double speed) {
         return runEnd(
             () -> {
-                mIndexIntakeMotor.set(speed);
-            },
+                mLowerMotor.set(speed);
+            }, 
             () -> {
-                mIndexIntakeMotor.stopMotor();
+                mLowerMotor.stopMotor();
             }
         );
     }
 
     /**
-     * Runs both indexer motors at once.
-     * @param speed Speed to run indexer at.
+     * Runs the upper indexer motor.
+     * @param speed Speed to run upper indexer motor at.
      * @return runEnd command
      * @see Command
      */
-    public Command runAllIndexer(double speed) {
+    public Command runUpperIndexer(double speed) {
         return runEnd(
             () -> {
-                mIndexIntakeMotor.set(speed);
-                mIndexShooterMotor.set(speed);
+                mUpperMotor.set(speed);
             }, 
             () -> {
-                mIndexIntakeMotor.stopMotor();
-                mIndexShooterMotor.stopMotor();
+                mUpperMotor.stopMotor();
             }
         );
     }
@@ -63,25 +69,48 @@ public class Indexer extends SubsystemBase {
     }
 
     /**
-     * Runs both indexer motors conditionally.
-     * @param speed Speed to run indexer at.
-     * @param canRun Supplier that determines when the command can run.
-     * @return runEnd command
-     * @see Command
-     * @see BooleanSupplier
+     * Runs both indexer motors.
+     * @param speed Speed to run both indexer motors at.
+     */
+    void runAllMotors(double speed) {
+        mLowerMotor.set(speed);
+        mUpperMotor.set(speed);
+    }
+
+    /**
+     * Stops both indexer motors.
+     */
+    private void stopMotors() {
+        mLowerMotor.stopMotor();
+        mUpperMotor.stopMotor();
+    }
+
+    /**
+     * Returns a command that runs both indexer motors and stops 
+     * them when it finishes.
+     * @param speed Speed to run both indexer motors at.
+     * @return runEnd Command
+     */
+    public Command runAllIndexer(double speed) {
+        return runEnd(
+            () -> runAllMotors(speed), 
+            this::stopMotors
+        );
+    }
+
+    /**
+     * Returns a command that runs both indexer motors if canRun 
+     * is true and stops them when it finishes.
+     * @param speed Speed to run both indexer motors at.
+     * @param canRun BooleanSupplier for whether the motors should run
+     * @return runEnd Command
      */
     public Command runAllIndexer(double speed, BooleanSupplier canRun) {
         return runEnd(
             () -> {
-                if (canRun.getAsBoolean()) {
-                    mIndexIntakeMotor.set(speed);
-                    mIndexShooterMotor.set(speed);
-                }
+                if (canRun.getAsBoolean()) runAllMotors(speed);
             }, 
-            () -> {
-                mIndexIntakeMotor.stopMotor();
-                mIndexShooterMotor.stopMotor();
-            }
+            this::stopMotors
         );
     }
 }

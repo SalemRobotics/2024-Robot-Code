@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
 
 /**
  * Runs the shooter and indexer together, 
@@ -12,6 +13,7 @@ import frc.robot.subsystems.Shooter;
 public class SpinUpShooterAndIndex extends ParallelCommandGroup {
     final Indexer mIndexer;
     final Shooter mShooter;
+    final Vision mVision;
 
     /**
      * Creates a new {@link SpinUpShooterAndIndex} command group with required subsystems
@@ -20,15 +22,16 @@ public class SpinUpShooterAndIndex extends ParallelCommandGroup {
      * @see Indexer
      * @see Shooter
      */
-    public SpinUpShooterAndIndex(Indexer indexer, Shooter shooter) {
+    public SpinUpShooterAndIndex(Indexer indexer, Shooter shooter, Vision vision) {
         mIndexer = indexer;
         mShooter = shooter;
+        mVision = vision;
         
         addCommands(
-            mShooter.shootRing(),
-            mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn, mShooter::isAllowedShootSpeed)
+            mShooter.shootRing(mVision::getDistance),
+            mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn, mShooter::atOutputThreshold)
         );
 
-        addRequirements(mIndexer, mShooter);
+        addRequirements(mIndexer, mShooter, mVision);
     }
 }

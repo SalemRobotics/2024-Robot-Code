@@ -21,9 +21,15 @@ import frc.robot.commands.IntakeOutAndIndex;
 import frc.robot.commands.SpinUpShooterAndIndex;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.util.SwerveUtils;
+import frc.util.SwerveUtils;
+import frc.robot.command.IntakeInAndIndex;
+import frc.robot.command.IntakeOutAndIndex;
+import frc.robot.command.SpinUpShooterAndIndex;
+import frc.robot.subsystems.Intake;
 
 public class RobotContainer {
   
@@ -36,7 +42,7 @@ public class RobotContainer {
   final Shooter mShooter = new Shooter();
   final Indexer mIndexer = new Indexer();
   final Intake mIntake = new Intake();
-  
+  final Vision mVision = new Vision();
   final AutoPicker mAutoPicker = new AutoPicker();
 
   public RobotContainer() {
@@ -90,9 +96,8 @@ public class RobotContainer {
     // #endregion
     
     // #region Operator Controls
-
     new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
-      new SpinUpShooterAndIndex(mIndexer, mShooter)
+      new SpinUpShooterAndIndex(mIndexer, mShooter, mVision)
     );
     
     new JoystickButton(mOperatorController, Button.kRightBumper.value).whileTrue(
@@ -107,10 +112,13 @@ public class RobotContainer {
   }
 
   public void configureNamedCommands(){
+    // #region Named Commands
     NamedCommands.registerCommand("intake", new IntakeInAndIndex(mIntake, mIndexer));
     NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter));
     NamedCommands.registerCommand("index to shoot", mIndexer.runShooterIndexer(IndexerConstants.kIndexerSpeedIn));
     NamedCommands.registerCommand("run shooter", mShooter.shootRing());
+
+    //#endregion
   }
 
   public Command getAutonomousCommand() {

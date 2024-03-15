@@ -65,8 +65,8 @@ public class Drivetrain extends SubsystemBase {
   double mCurrentTranslationDir = 0.0;
   double mCurrentTranslationMag = 0.0;
 
-  SlewRateLimiter mMagLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
-  SlewRateLimiter mRotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
+  SlewRateLimiter mMagLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRatePercentPerSec);
+  SlewRateLimiter mRotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRatePercentPerSec);
   double mPrevTime = WPIUtilJNI.now() * 1e-6;
 
   // Odometry class for tracking robot pose
@@ -204,7 +204,7 @@ public class Drivetrain extends SubsystemBase {
       // Calculate the direction slew rate based on an estimate of the lateral acceleration
       double directionSlewRate;
       if (mCurrentTranslationMag != 0.0) {
-        directionSlewRate = Math.abs(DriveConstants.kDirectionSlewRate / mCurrentTranslationMag);
+        directionSlewRate = Math.abs(DriveConstants.kDirectionSlewRateRadiansPerSec / mCurrentTranslationMag);
       } else {
         directionSlewRate = 500.0; //some high number that means the slew rate is effectively instantaneous
       }
@@ -246,7 +246,7 @@ public class Drivetrain extends SubsystemBase {
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.kMaxSpeedMetersPerSecond;
-    double rotDelivered = mCurrentRotation * DriveConstants.kMaxAngularSpeed;
+    double rotDelivered = mCurrentRotation * DriveConstants.kMaxAngularSpeedRadiansPerSec;
 
     var swerveStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
             mIsFieldRelative

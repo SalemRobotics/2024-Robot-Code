@@ -26,7 +26,7 @@ public class IntakeInAndIndex extends ParallelCommandGroup {
 
         addCommands(
             mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn),
-            mIndexer.runMiddleIndexer(IndexerConstants.kIndexerSpeedIn)
+            mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeedIn)
         );
 
         addRequirements(mIntake, mIndexer);
