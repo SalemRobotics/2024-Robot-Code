@@ -14,11 +14,11 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.Constants.ControllerConstants;
-import frc.robot.Constants.IndexerConstants;
 import frc.robot.commands.IntakeInAndIndex;
 import frc.robot.commands.IntakeOutAndIndex;
 import frc.robot.commands.SpinUpShooterAndIndex;
+import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
@@ -125,6 +125,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter, mVision));
     NamedCommands.registerCommand("index to shoot", mIndexer.runShooterIndexer(IndexerConstants.kIndexerSpeedIn));
     NamedCommands.registerCommand("run shooter", mShooter.shootRing());
+    NamedCommands.registerCommand("tune shooter", mShooter.shootRing(mVision::getDistance));
+    NamedCommands.registerCommand("angle45", mShooter.setShooterAngle(45.0));
 
     //#endregion
   }

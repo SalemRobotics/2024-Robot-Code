@@ -132,6 +132,14 @@ public class Shooter extends SubsystemBase {
         );
     }
 
+    public Command setShooterAngle(double degrees){
+        return run(
+            () -> {
+                setPivotAngle(degrees);
+            }
+        );
+    }
+
     /**
      * Checks if the shooter velocity is within a threshold of its max allowed speed
      * @return True if the shooter is at its output threshold
