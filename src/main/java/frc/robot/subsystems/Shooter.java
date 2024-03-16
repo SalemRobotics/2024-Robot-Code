@@ -37,20 +37,7 @@ public class Shooter extends SubsystemBase {
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
 
-    double mCurrentSetpoint = ShooterPositions.DEFAULT.value;
-    
-    /**
-     * Enum for constant, measured shooter positions
-     */
-    enum ShooterPositions {
-        DEFAULT(0.0),
-        SOURCE(0.0);
-
-        public final double value;
-        private ShooterPositions(double value) {
-            this.value = value;
-        }
-    }
+    double mCurrentSetpoint = ShooterConstants.kDefaultPivotDegrees;
 
     public Shooter() {
         mLeftMotor.setInverted(true);
@@ -193,7 +180,7 @@ public class Shooter extends SubsystemBase {
                 double distance = targetDistance.getAsDouble();
                 setCurrentSetpoint(
                     distance == 0 ? 
-                    ShooterPositions.DEFAULT.value : 
+                    ShooterConstants.kDefaultPivotDegrees : 
                     ShooterConstants.kPivotDistanceAngleMap.get(targetDistance.getAsDouble())
                 );
 
@@ -206,7 +193,7 @@ public class Shooter extends SubsystemBase {
                 );
             },
             () -> {
-                setCurrentSetpoint(ShooterPositions.DEFAULT.value);
+                setCurrentSetpoint(ShooterConstants.kDefaultPivotDegrees);
 
                 mLeftMotor.stopMotor();
                 mRightMotor.stopMotor();

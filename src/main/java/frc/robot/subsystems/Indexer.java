@@ -4,7 +4,10 @@ import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IndexerConstants;
 
@@ -15,12 +18,31 @@ public class Indexer extends SubsystemBase {
     final TalonFX mUpperMotor = new TalonFX(IndexerConstants.kIndexerUpperID);
     final TalonFX mLowerMotor = new TalonFX(IndexerConstants.kIndexerLowerID);
 
+    final DigitalInput mBreakbeam = new DigitalInput(IndexerConstants.kBreakbeamID);
+
     public Indexer() {
         mUpperMotor.setInverted(true);
         mUpperMotor.setNeutralMode(NeutralModeValue.Coast);
         
         mLowerMotor.setInverted(true);
         mLowerMotor.setNeutralMode(NeutralModeValue.Coast);
+    }
+
+    /**
+     * Runs the lower indexer motor until the breakbeam is hit
+     * @param speed Speed to run lower indexer motor at.
+     * @return runEnd command
+     * @see Command
+     * @see BooleanSupplier
+     */
+    public Command runLowerIndexerTerminate(double speed) {
+        return new FunctionalCommand(
+            () -> {},
+            () -> mLowerMotor.set(speed), 
+            isFinished -> mLowerMotor.stopMotor(),
+            () -> mBreakbeam.get(),
+            this
+        );
     }
 
     /**
@@ -31,12 +53,8 @@ public class Indexer extends SubsystemBase {
      */
     public Command runLowerIndexer(double speed) {
         return runEnd(
-            () -> {
-                mLowerMotor.set(speed);
-            }, 
-            () -> {
-                mLowerMotor.stopMotor();
-            }
+            () -> mLowerMotor.set(speed), 
+            () -> mLowerMotor.stopMotor()
         );
     }
 
@@ -48,23 +66,8 @@ public class Indexer extends SubsystemBase {
      */
     public Command runUpperIndexer(double speed) {
         return runEnd(
-            () -> {
-                mUpperMotor.set(speed);
-            }, 
-            () -> {
-                mUpperMotor.stopMotor();
-            }
-        );
-    }
-
-    public Command runShooterIndexer(double speed) {
-        return runEnd(
-            () -> {
-                mUpperMotor.set(speed);
-            }, 
-            () -> {
-                mUpperMotor.stopMotor();
-            }
+            () -> mUpperMotor.set(speed), 
+            () -> mUpperMotor.stopMotor()
         );
     }
 
@@ -72,7 +75,7 @@ public class Indexer extends SubsystemBase {
      * Runs both indexer motors.
      * @param speed Speed to run both indexer motors at.
      */
-    void runAllMotors(double speed) {
+    private void runAllMotors(double speed) {
         mLowerMotor.set(speed);
         mUpperMotor.set(speed);
     }
@@ -106,11 +109,12 @@ public class Indexer extends SubsystemBase {
      * @return runEnd Command
      */
     public Command runAllIndexer(double speed, BooleanSupplier canRun) {
-        return runEnd(
-            () -> {
-                if (canRun.getAsBoolean()) runAllMotors(speed);
-            }, 
-            this::stopMotors
+        return new FunctionalCommand(
+            () -> {},
+            () -> runAllMotors(speed), 
+            isFinished -> stopMotors(),
+            canRun,
+            this
         );
     }
 }

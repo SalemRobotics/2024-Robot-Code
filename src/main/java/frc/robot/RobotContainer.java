@@ -66,7 +66,6 @@ public class RobotContainer {
     );
 
     // #region Cardinal Direction Commands
-
     new JoystickButton(mDriveController, Button.kY.value).whileTrue(
       mDrivetrain.trackCardinal(Direction.North, 
         -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
@@ -90,7 +89,6 @@ public class RobotContainer {
         -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
         -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
     );
-    
     // #endregion
     
     // #region Operator Controls
@@ -116,7 +114,6 @@ public class RobotContainer {
     new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
       new IntakeOutAndIndex(mIntake, mIndexer)
     );
-    
     // #endregion
   }
 
@@ -124,11 +121,10 @@ public class RobotContainer {
     // #region Named Commands
     NamedCommands.registerCommand("intake", new IntakeInAndIndex(mIntake, mIndexer));
     NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter, mVision));
-    NamedCommands.registerCommand("index to shoot", mIndexer.runShooterIndexer(IndexerConstants.kIndexerSpeedIn));
+    NamedCommands.registerCommand("index to shoot", mIndexer.runUpperIndexer(IndexerConstants.kIndexerSpeedIn));
     NamedCommands.registerCommand("run shooter", mShooter.shootRing());
     NamedCommands.registerCommand("tune shooter", mShooter.shootRing(mVision::getDistance));
     NamedCommands.registerCommand("angle45", mShooter.setShooterAngle(45.0));
-
     //#endregion
   }
 

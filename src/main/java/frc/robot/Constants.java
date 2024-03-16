@@ -39,6 +39,8 @@ public final class Constants {
 
         public static final double kEncoderOffsetDegrees = 231.9;
 
+        public static final double kDefaultPivotDegrees = 53.0;
+
         /** Maps distances in meters to angles in degrees */
         public static final InterpolatingDoubleTreeMap kPivotDistanceAngleMap = new InterpolatingDoubleTreeMap() {{
             put(1.166, 53.0);
@@ -53,15 +55,13 @@ public final class Constants {
     }
     
     public static final class IndexerConstants {
-        public static final double kIndexerSpeed = 1.0;
-
         public static final int kIndexerLowerID = 11;
         public static final int kIndexerUpperID = 12;
+
+        public static final int kBreakbeamID = 0;
+
         public static final double kIndexerSpeedIn = 1.0;
         public static final double kIndexerSpeedOut = -1.0;
-
-        public static final int kIndexerIntakeID = 11;
-        public static final int kIndexerShooterID = 12;
     }
     
     public static final class IntakeConstants {
@@ -268,10 +268,11 @@ public final class Constants {
         public static final double kG = 0.45;
         public static final double kV = 2.34;
 
-        public static final double SAMspeed = 0.5;
+        public static final double SAMspeedIn = 0.5;
+        public static final double SAMspeedOut = -0.5;
 
-        public static final int kPivotMoterID = 10;
-        public static final int kIntakeMoterID = 13;
+        public static final int kPivotMoterID = 17;
+        public static final int kIntakeMoterID = 16;
 
         public static final int kBreakbeamID = 0;
 
