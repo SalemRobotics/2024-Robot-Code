@@ -132,7 +132,12 @@ public class Shooter extends SubsystemBase {
         );
     }
 
-    public Command setShooterAngle(double degrees){
+    /**
+     * Returns a command that sets the shooter to the specified angle
+     * @param degrees angle above the ground to set the shooter to
+     * @return command that runs setShooterAngle to the angle in degrees
+     */
+    public Command setShooterAngle(double degrees) {
         return run(
             () -> {
                 setPivotAngle(degrees);

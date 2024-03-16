@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.IntakeInAndIndex;
 import frc.robot.commands.IntakeOutAndIndex;
 import frc.robot.commands.SpinUpShooterAndIndex;
+import frc.robot.commands.TrackTargetAndShoot;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -25,8 +26,6 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.util.SwerveUtils;
-import frc.util.TriggerButton;
-import frc.robot.commands.*;
 
 public class RobotContainer {
   
