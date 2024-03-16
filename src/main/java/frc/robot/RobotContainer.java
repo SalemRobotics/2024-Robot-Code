@@ -26,10 +26,7 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.util.SwerveUtils;
 import frc.util.TriggerButton;
-import frc.robot.command.IntakeInAndIndex;
-import frc.robot.command.IntakeOutAndIndex;
-import frc.robot.command.SpinUpShooterAndIndex;
-import frc.robot.subsystems.Intake;
+import frc.robot.commands.*;
 
 public class RobotContainer {
   
@@ -63,7 +60,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
+    new JoystickButton(mDriveController, Button.kLeftBumper.value).whileTrue(
       mDrivetrain.setX()
     );
 
@@ -96,10 +93,7 @@ public class RobotContainer {
     // #endregion
     
     // #region Operator Controls
-
-    TriggerButton driverTrigger = new TriggerButton(mDriveController, mDriverController.getRightTriggerAxis());
-    
-    driverTrigger.whileTrue(
+    new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
       new TrackTargetAndShoot(
         mDrivetrain, 
         mVision, 
@@ -128,7 +122,7 @@ public class RobotContainer {
   public void configureNamedCommands(){
     // #region Named Commands
     NamedCommands.registerCommand("intake", new IntakeInAndIndex(mIntake, mIndexer));
-    NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter));
+    NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter, mVision));
     NamedCommands.registerCommand("index to shoot", mIndexer.runShooterIndexer(IndexerConstants.kIndexerSpeedIn));
     NamedCommands.registerCommand("run shooter", mShooter.shootRing());
 

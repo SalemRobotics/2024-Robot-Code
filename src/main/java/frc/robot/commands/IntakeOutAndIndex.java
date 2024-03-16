@@ -6,6 +6,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 
+
 /**
  * Runs the intake and indexer in parallel,intending to fully eject gamepieces from the robot.
  */

@@ -60,10 +60,10 @@ public class Indexer extends SubsystemBase {
     public Command runShooterIndexer(double speed) {
         return runEnd(
             () -> {
-                mIndexShooterMotor.set(speed);
+                mUpperMotor.set(speed);
             }, 
             () -> {
-                mIndexShooterMotor.stopMotor();
+                mUpperMotor.stopMotor();
             }
         );
     }

@@ -9,6 +9,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants.VisionConstants;
@@ -35,7 +36,7 @@ public class VisionCamera {
         if (DriverStation.getAlliance().isEmpty())
             return false;
 
-        var allianceColor = DriverStation.getAlliance().orElseThrow();
+        var allianceColor = DriverStation.getAlliance().get();
         return VisionConstants.kValidFiducialIDs.get(allianceColor).contains(target.getFiducialId());
     }
 
@@ -63,8 +64,13 @@ public class VisionCamera {
     public Optional<Pose3d> getTargetPose() {
         if (getBestTarget().isEmpty())
             return Optional.empty();
+        PhotonTrackedTarget target;
+        try {
+            target = getBestTarget().get();
+        } catch (Exception e) {
+            return Optional.empty();
+        }
 
-        var target = getBestTarget().orElseThrow();
         return mFieldLayout.getTagPose(target.getFiducialId());
     }
 
@@ -92,8 +98,8 @@ public class VisionCamera {
         if (getTargetPitch().isEmpty() || getTargetPose().isEmpty())
             return Optional.empty();
 
-        double targetPitch = getTargetPitch().orElseThrow();
-        double targetHeight = getTargetPose().orElseThrow().getZ();
+        double targetPitch = getTargetPitch().get();
+        double targetHeight = getTargetPose().get().getZ();
 
         return Optional.of(
             PhotonUtils.calculateDistanceToTargetMeters(
@@ -113,7 +119,7 @@ public class VisionCamera {
             return Optional.empty();
 
         double targetPitch = Units.degreesToRadians(
-            getBestTarget().orElseThrow().getPitch());
+            getBestTarget().get().getPitch());
             
         return Optional.of(targetPitch);
     }
@@ -128,7 +134,7 @@ public class VisionCamera {
             return Optional.empty();
 
         double targetYaw = Units.degreesToRadians(
-            getBestTarget().orElseThrow().getYaw());
+            getBestTarget().get().getYaw());
 
         return Optional.of(targetYaw);
     }
