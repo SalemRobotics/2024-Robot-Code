@@ -25,6 +25,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.StrongArmMachine;
 import frc.util.SwerveUtils;
 
 public class RobotContainer {
@@ -35,12 +36,13 @@ public class RobotContainer {
   final XboxController mOperatorController = new XboxController(ControllerConstants.kOperatorPort);
 
   final Drivetrain mDrivetrain = new Drivetrain(true, true);
+  final StrongArmMachine mStrongArmMachine = new StrongArmMachine();
   final Shooter mShooter = new Shooter();
   final Indexer mIndexer = new Indexer();
   final Intake mIntake = new Intake();
   final Vision mVision = new Vision();
   final AutoPicker mAutoPicker = new AutoPicker();
-
+  
   public RobotContainer() {
     configureBindings();
     configureNamedCommands();
