@@ -12,19 +12,25 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class StrongArmMachine extends SubsystemBase {
-    final CANSparkMax mPivotMotor = new CANSparkMax(SAMConstants.SAMPivotMoterId, MotorType.kBrushless);
-    final CANSparkMax mIntakeMotor = new CANSparkMax(SAMConstants.SAMIntakeMoterId, MotorType.kBrushless);
+    final CANSparkMax mPivotMotor = new CANSparkMax(SAMConstants.kPivotMoterID, MotorType.kBrushless);
+    final CANSparkMax mIntakeMotor = new CANSparkMax(SAMConstants.kIntakeMoterID, MotorType.kBrushless);
     final ArmFeedforward mFeedForward = new ArmFeedforward(SAMConstants.kS, SAMConstants.kG, SAMConstants.kV, SAMConstants.kA);
     
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
 
+    final DigitalInput mBreakbeam = new DigitalInput(SAMConstants.kBreakbeamID);
+
     double mCurrentSetpoint;
+
+    //TODO: when intaking from source, run SAM until breakbeam is triggered and then stop the SAM
+    //TODO: when handing off from indexer to SAM, run SAM until breakbeam is triggered and stop running when breakbeam is exited
 
     enum SAMPositions {
         HANDOFF_NOTE(0.0),
@@ -38,8 +44,6 @@ public class StrongArmMachine extends SubsystemBase {
     }
 
     public StrongArmMachine() {
-        mPivotMotor.restoreFactoryDefaults();
-
         mPivotMotor.setIdleMode(IdleMode.kBrake);
 
         mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);

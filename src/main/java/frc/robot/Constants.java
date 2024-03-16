@@ -108,20 +108,22 @@ public final class Constants {
 
         public static final double SAMspeed = 0.5;
 
-        public static final int SAMPivotMoterId = 10;
-        public static final int SAMIntakeMoterId = 13;
+        public static final int kPivotMoterID = 10;
+        public static final int kIntakeMoterID = 13;
 
-        public static final double SAMPivotSpeed = 0.5;
-        public static final double SAMIntakeSpeed = 1;
+        public static final int kBreakbeamID = 0;
 
-        public static final double kPivotPositionConversionFactor = 0;
+        public static final double kPivotSpeed = 0.5;
+        public static final double kIntakeSpeed = 1.0;
+
+        public static final double kPivotPositionConversionFactor = 360.0;
 
         public static final double kPivotP = 0;
         public static final double kPivotI = 0;
         public static final double kPivotD = 0;
         public static final double kPivotFF = 0;
-        public static final double kMaxOutput = 1.0;
-        public static final double kMinOutput = -1.0;
+        public static final double kMaxOutput = 0.5;
+        public static final double kMinOutput = -0.5;
 
         public static final double kUpperAngleLimit = 0.0;
         public static final  double kLowerAngleLimit = 0.0;
