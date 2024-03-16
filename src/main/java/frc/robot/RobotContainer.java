@@ -65,29 +65,33 @@ public class RobotContainer {
       mDrivetrain.setX()
     );
 
+    new JoystickButton(mDriveController, Button.kStart.value).onTrue(
+      mDrivetrain.resetHeading()
+    );
+
     // #region Cardinal Direction Commands
     new JoystickButton(mDriveController, Button.kY.value).whileTrue(
       mDrivetrain.trackCardinal(Direction.North, 
-        -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
-        -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
+        () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+        () -> -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
     );
 
     new JoystickButton(mDriveController, Button.kB.value).whileTrue(
       mDrivetrain.trackCardinal(Direction.East,
-        -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
-        -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
+        () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+        () -> -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
     );
 
     new JoystickButton(mDriveController, Button.kA.value).whileTrue(
       mDrivetrain.trackCardinal(Direction.South,
-        -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
-        -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
+        () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+        () -> -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
     );
 
     new JoystickButton(mDriveController, Button.kX.value).whileTrue(
       mDrivetrain.trackCardinal(Direction.West,
-        -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
-        -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
+        () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+        () -> -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
     );
     // #endregion
     
@@ -98,8 +102,8 @@ public class RobotContainer {
         mVision, 
         mIndexer, 
         mShooter,
-        -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
-        -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband)
+        () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
+        () -> -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband)
       )
     );
 

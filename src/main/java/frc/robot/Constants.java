@@ -6,11 +6,11 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public final class Constants {
     public static final class ShooterConstants {
@@ -73,14 +73,13 @@ public final class Constants {
 
     public static final class VisionConstants {
         /** Camera height in meters relative to where it is mounted on the robot */
-        public static final double kCameraHeightMeters = Units.inchesToMeters(22); //Meters
+        public static final double kCameraHeightMeters = Units.inchesToMeters(22);
         /**  Camera pitch in radians relative to where it is mounted on the robot */
-        public static final double kCameraPitchRadians = Units.degreesToRadians(28); //Radians
+        public static final double kCameraPitchRadians = Units.degreesToRadians(28);
 
-        public static final HashMap<Alliance, List<Integer>> kValidFiducialIDs = new HashMap<>() {{
-            put(Alliance.Red, List.of(3, 4));
-            put(Alliance.Blue, List.of(7, 8));
-        }};
+        public static final double kCameraToRobotOffsetMeters = Units.inchesToMeters(11.75);
+
+        public static final List<Integer> kValidFiducialIDs = List.of(4, 7);
     }
 
     public static final class DriveConstants {
@@ -134,9 +133,9 @@ public final class Constants {
         public static final int kPigeonID = 0;
 
         // misc PID controls
-        public static final double kHeadingP = 0.015;
-        public static final double kHeadingI = 0.0;
-        public static final double kHeadingD = 0.0;
+        public static final double kHeadingP = 0.0125;
+        public static final double kHeadingI = 0.001;
+        public static final double kHeadingD = 0.001;
         
         // SPARK MAX IDs
         public static final int kFrontLeftDrivingCanID = 2;

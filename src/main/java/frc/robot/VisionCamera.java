@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
@@ -10,7 +11,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants.VisionConstants;
 
 /**
@@ -23,21 +23,7 @@ public class VisionCamera {
     public VisionCamera(String cameraName) {
         mCamera = new PhotonCamera(cameraName);
         mFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-    }
-
-    /**
-     * Checks to see if an aquired single Apriltag target has a valid fiducial ID
-     * @param target Valid single Apriltag target
-     * @return True if target is valid (if it exists)
-     * @see PhotonTrackedTarget
-     */
-    public boolean isTargetValid(PhotonTrackedTarget target) {
-        if (DriverStation.getAlliance().isEmpty())
-            return false;
-
-        var allianceColor = DriverStation.getAlliance().get();
-        return VisionConstants.kValidFiducialIDs.get(allianceColor).contains(target.getFiducialId());
-    }
+}
 
     /**
      * Gets the best result of individual Apriltags.
@@ -49,8 +35,15 @@ public class VisionCamera {
         var currentResult = mCamera.getLatestResult();
         if (!currentResult.hasTargets())
             return Optional.empty(); 
+
+        var targets = currentResult.targets.stream()
+        .filter(target -> VisionConstants.kValidFiducialIDs.contains(target.getFiducialId()))
+        .collect(Collectors.toList());
         
-        return Optional.of(currentResult.getBestTarget());
+        if (targets.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(targets.get(0));
     }
 
     /**

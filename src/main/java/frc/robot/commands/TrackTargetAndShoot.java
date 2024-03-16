@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -29,18 +31,23 @@ public class TrackTargetAndShoot extends ParallelCommandGroup {
      * @see Indexer
      * @see Shooter
      */
-    public TrackTargetAndShoot(Drivetrain drivetrain, Vision vision, Indexer indexer, Shooter shooter, double xSpeed, double ySpeed) {
+    public TrackTargetAndShoot(Drivetrain drivetrain, Vision vision, Indexer indexer, Shooter shooter, 
+    DoubleSupplier xSpeed, DoubleSupplier ySpeed) {
         mDrivetrain = drivetrain;
         mVision = vision;
         mShooter = shooter;
         mIndexer = indexer;
         
         addCommands(
-            mDrivetrain.trackTarget(()-> mVision.getYaw(), xSpeed, ySpeed),
+            mDrivetrain.trackTarget(mVision::getDistance, mVision::getYaw, xSpeed, ySpeed),
             mShooter.shootRing(mVision::getDistance),
-            mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn, mShooter::atOutputThreshold)
+            mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn, this::canIndex)
         );
 
         addRequirements(mDrivetrain, mVision, mIndexer, mShooter);
+    }
+
+    boolean canIndex() {
+        return mVision.hasTarget() && mShooter.atOutputThreshold();
     }
 }

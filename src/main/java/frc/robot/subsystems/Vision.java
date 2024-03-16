@@ -48,7 +48,7 @@ public class Vision extends SubsystemBase {
         }
     }
 
-    /*
+    /**
      * Gets the target apriltag yaw.
      * @return Yaw, in degrees, of the target. 0 if target is not found.
      */
@@ -61,7 +61,15 @@ public class Vision extends SubsystemBase {
         } catch (Exception e) {
             return 0;
         }
-        
+    }
 
+    public boolean hasTarget() {
+        try {
+            if (mCamera.getBestTarget().isEmpty()) 
+                return false;
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

@@ -31,6 +31,7 @@ import frc.robot.Direction;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.util.SwerveUtils;
 
 /**
@@ -111,7 +112,14 @@ public class Drivetrain extends SubsystemBase {
       this
     );
 
-    displayShuffleboardPID();
+    // displayShuffleboardPID();
+    SmartDashboard.putNumber("HeadingP", DriveConstants.kHeadingP);
+    SmartDashboard.putNumber("HeadingI", DriveConstants.kHeadingI);
+    SmartDashboard.putNumber("HeadingD", DriveConstants.kHeadingD);
+  }
+
+  public Command resetHeading() {
+    return runOnce(() -> mPigeon.reset());
   }
 
   /**
@@ -277,7 +285,7 @@ public class Drivetrain extends SubsystemBase {
    * @see DoubleSupplier
    * @see PIDCommand
    */
-  Command trackSetpoint(double xSpeed, double ySpeed, double setpoint, DoubleSupplier measurement) {
+  Command trackSetpoint(DoubleSupplier xSpeed, DoubleSupplier ySpeed, double setpoint, DoubleSupplier measurement) {
     return new PIDCommand(
       new PIDController(
         DriveConstants.kHeadingP,
@@ -286,7 +294,7 @@ public class Drivetrain extends SubsystemBase {
       ), 
       measurement, 
       () -> setpoint,
-      (receivedOutput) -> drive(xSpeed, ySpeed, receivedOutput),
+      (receivedOutput) -> drive(xSpeed.getAsDouble(), ySpeed.getAsDouble(), receivedOutput),
       this
     );
   }
@@ -300,8 +308,15 @@ public class Drivetrain extends SubsystemBase {
    * @see DoubleSupplier
    * @see PIDCommand
    */
-  public Command trackTarget(DoubleSupplier yaw, double xSpeed, double ySpeed) {
-    return trackSetpoint(xSpeed, ySpeed, 0.0, yaw);
+  public Command trackTarget(DoubleSupplier distance, DoubleSupplier yaw, DoubleSupplier xSpeed, DoubleSupplier ySpeed) {
+    double angle;
+    if (Double.compare(distance.getAsDouble(), 0) == 0 
+    || Double.compare(yaw.getAsDouble(), 0) == 0) {
+      angle = 0;
+    } else {
+      angle = Math.asin(VisionConstants.kCameraToRobotOffsetMeters / distance.getAsDouble());
+    }
+    return trackSetpoint(xSpeed, ySpeed, -Units.radiansToDegrees(angle), yaw);
   }
 
   /**
@@ -313,7 +328,7 @@ public class Drivetrain extends SubsystemBase {
    * @see Direction
    * @see PIDCommand
    */
-  public Command trackCardinal(Direction direction, double xSpeed, double ySpeed) {
+  public Command trackCardinal(Direction direction, DoubleSupplier xSpeed, DoubleSupplier ySpeed) {
     return trackSetpoint(xSpeed, ySpeed, direction.value, this::getPigeonModulus);
   }
 
