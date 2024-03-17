@@ -37,20 +37,7 @@ public class Shooter extends SubsystemBase {
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
 
-    double mCurrentSetpoint = ShooterPositions.DEFAULT.value;
-    
-    /**
-     * Enum for constant, measured shooter positions
-     */
-    enum ShooterPositions {
-        DEFAULT(0.0),
-        SOURCE(0.0);
-
-        public final double value;
-        private ShooterPositions(double value) {
-            this.value = value;
-        }
-    }
+    double mCurrentSetpoint = ShooterConstants.kDefaultPivotDegrees;
 
     public Shooter() {
         mLeftMotor.setInverted(true);
@@ -133,6 +120,19 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
+     * Returns a command that sets the shooter to the specified angle
+     * @param degrees angle above the ground to set the shooter to
+     * @return command that runs setShooterAngle to the angle in degrees
+     */
+    public Command setShooterAngle(double degrees) {
+        return run(
+            () -> {
+                setPivotAngle(degrees);
+            }
+        );
+    }
+
+    /**
      * Checks if the shooter velocity is within a threshold of its max allowed speed
      * @return True if the shooter is at its output threshold
      */
@@ -180,7 +180,7 @@ public class Shooter extends SubsystemBase {
                 double distance = targetDistance.getAsDouble();
                 setCurrentSetpoint(
                     distance == 0 ? 
-                    ShooterPositions.DEFAULT.value : 
+                    ShooterConstants.kDefaultPivotDegrees : 
                     ShooterConstants.kPivotDistanceAngleMap.get(targetDistance.getAsDouble())
                 );
 
@@ -193,7 +193,7 @@ public class Shooter extends SubsystemBase {
                 );
             },
             () -> {
-                setCurrentSetpoint(ShooterPositions.DEFAULT.value);
+                setCurrentSetpoint(ShooterConstants.kDefaultPivotDegrees);
 
                 mLeftMotor.stopMotor();
                 mRightMotor.stopMotor();

@@ -1,0 +1,67 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.4642586550130365,
+        "y": 7.168516673215683
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.6162826627647557,
+        "y": 6.9346335843668845
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.8150832882862347,
+        "y": 6.6188914144210065
+      },
+      "prevControl": {
+        "x": 1.7098358983042754,
+        "y": 6.805997885500045
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "shoot",
+      "waypointRelativePos": 0.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "index to shoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 46.39718102729637,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "Race Paths",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}

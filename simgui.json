@@ -15,7 +15,9 @@
   },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Reset PID and Odometry": "Command"
     }
   },
   "NetworkTables Info": {

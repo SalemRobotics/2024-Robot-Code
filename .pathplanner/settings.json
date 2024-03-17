@@ -1,0 +1,23 @@
+{
+  "robotWidth": 0.597,
+  "robotLength": 0.597,
+  "holonomicMode": true,
+  "pathFolders": [
+    "Amp Side",
+    "Race Paths",
+    "Non-Amp Side",
+    "Test Paths"
+  ],
+  "autoFolders": [
+    "Amp Side",
+    "Basic Autos",
+    "Race Autos",
+    "Non-Amp Side",
+    "Test Autos"
+  ],
+  "defaultMaxVel": 4.267,
+  "defaultMaxAccel": 5.0,
+  "defaultMaxAngVel": 540.0,
+  "defaultMaxAngAccel": 720.0,
+  "maxModuleSpeed": 4.5
+}

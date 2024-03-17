@@ -110,6 +110,7 @@ public class MAXSwerveModule {
    * Returns the current state of the module.
    *
    * @return The current state of the module.
+   * @see SwerveModuleState
    */
   public SwerveModuleState getState() {
     // Apply chassis angular offset to the encoder position to get the position
@@ -122,6 +123,7 @@ public class MAXSwerveModule {
    * Returns the current position of the module.
    *
    * @return The current position of the module.
+   * @see SwerveModulePosition
    */
   public SwerveModulePosition getPosition() {
     // Apply chassis angular offset to the encoder position to get the position
@@ -135,6 +137,7 @@ public class MAXSwerveModule {
    * Sets the desired state for the module.
    *
    * @param desiredState Desired state with speed and angle.
+   * @see SwerveModuleState
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Apply chassis angular offset to the desired state.
