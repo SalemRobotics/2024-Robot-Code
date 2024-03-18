@@ -215,7 +215,7 @@ public class StrongArmMachine extends SubsystemBase {
                 eject(-.5),
                 new WaitCommand(.3)
             )
-        )
+        );
     }
 
     /**
@@ -240,7 +240,7 @@ public class StrongArmMachine extends SubsystemBase {
     public Command prepSource() {
         return runSAM(0.0, SAMPositions.INTAKE_SOURCE, () -> false);
     }
-    
+
     /**
      * Holds the SAM at the height of the amp, but does not eject the note
      * @return Command to set the SAM to the source position, but not run the SAM
