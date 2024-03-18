@@ -310,13 +310,14 @@ public class Drivetrain extends SubsystemBase {
    */
   public Command trackTarget(DoubleSupplier distance, DoubleSupplier yaw, DoubleSupplier xSpeed, DoubleSupplier ySpeed) {
     double angle;
-    if (Double.compare(distance.getAsDouble(), 0) == 0 
-    || Double.compare(yaw.getAsDouble(), 0) == 0) {
-      angle = 0;
-    } else {
-      angle = Math.asin(VisionConstants.kCameraToRobotOffsetMeters / distance.getAsDouble());
-    }
-    return trackSetpoint(xSpeed, ySpeed, -Units.radiansToDegrees(angle), yaw);
+    // if (Double.compare(distance.getAsDouble(), 0) == 0 
+    // || Double.compare(yaw.getAsDouble(), 0) == 0) {
+    //   angle = 0;
+    // } else {
+    //   angle = Math.asin(VisionConstants.kCameraToRobotOffsetMeters / distance.getAsDouble());
+    // }
+    angle = yaw.getAsDouble();
+    return trackSetpoint(xSpeed, ySpeed, angle, yaw);
   }
 
   /**

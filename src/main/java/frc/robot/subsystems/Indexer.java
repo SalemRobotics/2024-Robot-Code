@@ -109,12 +109,11 @@ public class Indexer extends SubsystemBase {
      * @return runEnd Command
      */
     public Command runAllIndexer(double speed, BooleanSupplier canRun) {
-        return new FunctionalCommand(
-            () -> {},
-            () -> runAllMotors(speed), 
-            isFinished -> stopMotors(),
-            canRun,
-            this
+        return runEnd(
+            () -> {
+                if (canRun.getAsBoolean()) runAllMotors(speed);
+            }, 
+            this::stopMotors
         );
     }
 }

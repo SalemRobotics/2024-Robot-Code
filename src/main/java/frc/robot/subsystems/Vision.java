@@ -56,8 +56,7 @@ public class Vision extends SubsystemBase {
         try {
             if (mCamera.getTargetYaw().isEmpty())
                 return 0;
-
-            return Units.radiansToDegrees(mCamera.getTargetYaw().get());
+            return mCamera.getTargetYaw().get();
         } catch (Exception e) {
             return 0;
         }

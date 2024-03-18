@@ -117,16 +117,15 @@ public class VisionCamera {
     }
 
     /**
-     * Gets the yaw between the camera and target, in radians.
-     * @return Yaw rotation in radians, should it exist.
+     * Gets the yaw between the camera and target, in degrees.
+     * @return Yaw rotation in degrees, should it exist.
      * @see Optional
      */
     public Optional<Double> getTargetYaw() {
         if (getBestTarget().isEmpty())
             return Optional.empty();
 
-        double targetYaw = Units.degreesToRadians(
-            getBestTarget().get().getYaw());
+        double targetYaw = getBestTarget().get().getYaw() + VisionConstants.kCameraOffsetDegrees;
 
         return Optional.of(targetYaw);
     }

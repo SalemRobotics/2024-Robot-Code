@@ -23,10 +23,10 @@ public class IntakeInAndIndex extends ParallelRaceGroup {
     public IntakeInAndIndex(Intake intake, Indexer indexer) {
         mIntake = intake;
         mIndexer = indexer;
-
+        // TODO: make terminate
         addCommands(
             mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn),
-            mIndexer.runLowerIndexerTerminate(IndexerConstants.kIndexerSpeedIn)
+            mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeedIn)
         );
 
         addRequirements(mIntake, mIndexer);

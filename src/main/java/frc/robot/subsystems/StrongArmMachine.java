@@ -19,26 +19,31 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 /** Source Amp Mechanism that can intake game pieces from the source and eject to the Amp */
 public class StrongArmMachine extends SubsystemBase {
     final TalonFX mIntakeMotor = new TalonFX(SAMConstants.kIntakeMoterID);
-    final ArmFeedforward mFeedForward = new ArmFeedforward(SAMConstants.kS, SAMConstants.kG, SAMConstants.kV, SAMConstants.kA);
-    final DigitalInput mBreakbeam = new DigitalInput(SAMConstants.kBreakbeamID);
+    final static ArmFeedforward mFeedForward = new ArmFeedforward(SAMConstants.kS, SAMConstants.kG, SAMConstants.kV, SAMConstants.kA);
+    final DigitalInput mBreakbeam = new DigitalInput(9);
     
     final CANSparkMax mPivotMotor = new CANSparkMax(SAMConstants.kPivotMoterID, MotorType.kBrushless);
     final SparkAbsoluteEncoder mPivotEncoder;
-    final SparkPIDController mPivotPID;
+    static SparkPIDController mPivotPID;
 
-    double mCurrentSetpoint = SAMPositions.HANDOFF_NOTE.value;
+    static double mCurrentSetpoint = SAMPositions.HANDOFF_NOTE.value;
     boolean mIsBeamBroke = false;
 
     /** Enum for valid SAM pivot positions, measured in degrees */
     public enum SAMPositions {
         HANDOFF_NOTE(15.0),
         INTAKE_SOURCE(120.0),
-        EJECT_AMP(100.0);
+        EJECT_AMP(100.0),
+        ARB_VALUE(40.0);
         
         public final double value;
         private SAMPositions(double value) {
@@ -51,7 +56,7 @@ public class StrongArmMachine extends SubsystemBase {
 
         mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
         mPivotEncoder.setPositionConversionFactor(SAMConstants.kPivotPositionConversionFactor);
-
+        mPivotMotor.setInverted(true);
         mPivotPID = mPivotMotor.getPIDController();
         mPivotPID.setFeedbackDevice(mPivotEncoder);
         mPivotPID.setP(SAMConstants.kPivotP);
@@ -61,6 +66,8 @@ public class StrongArmMachine extends SubsystemBase {
         mPivotPID.setOutputRange(SAMConstants.kMinOutput, SAMConstants.kMaxOutput);
 
         mPivotMotor.burnFlash();
+
+        mIntakeMotor.setInverted(true);
         
         SmartDashboard.putNumber("samP", SAMConstants.kPivotP);
         SmartDashboard.putNumber("samI", SAMConstants.kPivotI);
@@ -75,6 +82,8 @@ public class StrongArmMachine extends SubsystemBase {
         setPivotAngle(mCurrentSetpoint);
 
         SmartDashboard.putNumber("SAM Encoder", mPivotEncoder.getPosition());
+        SmartDashboard.putNumber("SAM Setpoint", mCurrentSetpoint);
+        SmartDashboard.putBoolean("Note In SAM", !mBreakbeam.get());
     }
 
     double gP  = SAMConstants.kPivotP,
@@ -139,7 +148,7 @@ public class StrongArmMachine extends SubsystemBase {
             degreesClamped,
             ControlType.kPosition,
             0,
-            mFeedForward.calculate(Units.degreesToRadians(degreesClamped), 0)
+            -mFeedForward.calculate(Units.degreesToRadians(degreesClamped), 0.1)
         );
     }
 
@@ -169,17 +178,23 @@ public class StrongArmMachine extends SubsystemBase {
         );
     }
 
+    public Command eject(double speed) {
+        return new RunCommand(
+            () -> mIntakeMotor.set(speed)
+        );
+    }
+
     /**
      * Checks if a game piece has fully passed by the break beam sensor
      * @return True if the gamepiece has passed the break beam
      */
     boolean hasNotePassedBreakbeam() {
-        if (mBreakbeam.get()) {
+        if (!mBreakbeam.get()) {
             mIsBeamBroke = true;
             return false;
         } 
         
-        if (!mBreakbeam.get() && mIsBeamBroke) {
+        if (mBreakbeam.get() && mIsBeamBroke) {
             mIsBeamBroke = false;
             return true;
         }
@@ -194,7 +209,13 @@ public class StrongArmMachine extends SubsystemBase {
      * @see FunctionalCommand
      */
     public Command handoffFromIndexer() {
-        return runSAM(SAMConstants.SAMspeedIn, SAMPositions.HANDOFF_NOTE, this::hasNotePassedBreakbeam);
+        return new SequentialCommandGroup(
+            runSAM(SAMConstants.SAMspeedIn, SAMPositions.HANDOFF_NOTE, this::hasNotePassedBreakbeam),
+            new ParallelRaceGroup(
+                eject(-.5),
+                new WaitCommand(.3)
+            )
+        )
     }
 
     /**
@@ -216,12 +237,25 @@ public class StrongArmMachine extends SubsystemBase {
         return runSAM(SAMConstants.SAMspeedIn, SAMPositions.INTAKE_SOURCE, () -> mBreakbeam.get());
     }
 
+    public Command prepSource() {
+        return runSAM(0.0, SAMPositions.INTAKE_SOURCE, () -> false);
+    }
+    
     /**
-     * Sets the SAM pivot position to EJECT_AMP and runs the SAM intake outwards
-     * @return Command to set the SAM pivot and run the SAM intake
+     * Holds the SAM at the height of the amp, but does not eject the note
+     * @return Command to set the SAM to the source position, but not run the SAM
      * @see FunctionalCommand
      */
-    public Command ejectAmp() {
-        return runSAM(SAMConstants.SAMspeedOut, SAMPositions.EJECT_AMP, () -> false);
+    public Command holdAtAmp() {
+        return runSAM(0, SAMPositions.EJECT_AMP, () -> false);
+    }
+
+    /**
+     * While holding a note, dunk the note into the amp.
+     * @return Command to dunk the note into the amp.
+     * @see FunctionalCommand
+     */
+    public Command scoreAmp() {
+        return runSAM(1.0, SAMPositions.EJECT_AMP, () -> false);
     }
 }

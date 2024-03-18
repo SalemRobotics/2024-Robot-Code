@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.IntakeInAndIndex;
 import frc.robot.commands.IntakeOutAndIndex;
+import frc.robot.commands.ScoreAmpFromIndexer;
+import frc.robot.commands.SourceIntakeAndIndex;
 import frc.robot.commands.SpinUpShooterAndIndex;
 import frc.robot.commands.TrackTargetAndShoot;
 import frc.robot.Constants.ControllerConstants;
@@ -23,6 +25,7 @@ import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.StrongArmMachine.SAMPositions;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.StrongArmMachine;
@@ -107,9 +110,9 @@ public class RobotContainer {
       )
     );
 
-    new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
-      new SpinUpShooterAndIndex(mIndexer, mShooter, mVision)
-    );
+    // new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
+    //   new SpinUpShooterAndIndex(mIndexer, mShooter, mVision)
+    // );
     
     new JoystickButton(mOperatorController, Button.kRightBumper.value).whileTrue(
       new IntakeInAndIndex(mIntake, mIndexer)
@@ -117,6 +120,14 @@ public class RobotContainer {
     
     new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
       new IntakeOutAndIndex(mIntake, mIndexer)
+    );
+
+    new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
+      new SourceIntakeAndIndex(mIntake, mIndexer, mStrongArmMachine)
+    );
+
+    new JoystickButton(mOperatorController, Button.kY.value).whileTrue(
+      new ScoreAmpFromIndexer(mIntake, mIndexer, mStrongArmMachine)
     );
     // #endregion
   }

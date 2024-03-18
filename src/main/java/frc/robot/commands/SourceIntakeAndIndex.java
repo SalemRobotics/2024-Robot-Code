@@ -17,12 +17,12 @@ public class SourceIntakeAndIndex extends SequentialCommandGroup {
         mIntake = intake;
         mIndexer = indexer;
         mSAM = sam;
-
+        // TODO: make lower indexer work.
         addCommands(
             mSAM.intakeSource(),
             new ParallelRaceGroup(
                 mSAM.handoffToIndexer(),
-                mIndexer.runLowerIndexerTerminate(IndexerConstants.kIndexerSpeedIn),
+                mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeedIn),
                 mIntake.intakeRing(IntakeConstants.kIntakeSpeedOut)
             )
         );

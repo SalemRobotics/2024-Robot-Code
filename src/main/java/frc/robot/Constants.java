@@ -58,7 +58,7 @@ public final class Constants {
         public static final int kIndexerLowerID = 11;
         public static final int kIndexerUpperID = 12;
 
-        public static final int kBreakbeamID = 0;
+        public static final int kBreakbeamID = 8;
 
         public static final double kIndexerSpeedIn = 1.0;
         public static final double kIndexerSpeedOut = -1.0;
@@ -80,6 +80,8 @@ public final class Constants {
         public static final double kCameraToRobotOffsetMeters = Units.inchesToMeters(11.75);
 
         public static final List<Integer> kValidFiducialIDs = List.of(4, 7);
+        
+        public static final double kCameraOffsetDegrees = 11.5;
     }
 
     public static final class DriveConstants {
@@ -262,9 +264,9 @@ public final class Constants {
     }
 
     public static final class SAMConstants {
-        public static final double kA = 0.03;
+        public static final double kA = 0.01;
         public static final double kS = 0.01;
-        public static final double kG = 0.45;
+        public static final double kG = 0.34;
         public static final double kV = 2.34;
 
         public static final double SAMspeedIn = 0.5;
@@ -287,7 +289,7 @@ public final class Constants {
         public static final double kMaxOutput = 0.5;
         public static final double kMinOutput = -0.5;
 
-        public static final double kUpperAngleLimit = 0.0;
-        public static final  double kLowerAngleLimit = 0.0;
+        public static final double kUpperAngleLimit = 160.0;
+        public static final  double kLowerAngleLimit = 10.0;
     }
 }
