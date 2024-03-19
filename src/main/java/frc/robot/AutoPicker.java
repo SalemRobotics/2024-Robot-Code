@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -48,7 +49,7 @@ public class AutoPicker {
      * @see AutoBuilder
      */
     private void createChooserOptions(SendableChooser<Command> chooser, String name) {
-        var command = AutoBuilder.buildAuto(name);
+        var command = new PathPlannerAuto(name);
         mCommandNameLookup.putIfAbsent(command, name);
         chooser.addOption(name, command);
     }

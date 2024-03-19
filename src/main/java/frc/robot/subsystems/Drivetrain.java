@@ -31,7 +31,6 @@ import frc.robot.Direction;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.VisionConstants;
 import frc.util.SwerveUtils;
 
 /**

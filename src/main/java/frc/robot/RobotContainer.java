@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
@@ -13,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.IntakeInAndIndex;
@@ -27,7 +25,6 @@ import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.StrongArmMachine.SAMPositions;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.StrongArmMachine;
@@ -111,10 +108,6 @@ public class RobotContainer {
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband)
       )
     );
-
-    // new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
-    //   new SpinUpShooterAndIndex(mIndexer, mShooter, mVision)
-    // );
     
     new JoystickButton(mOperatorController, Button.kRightBumper.value).whileTrue(
       new IntakeInAndIndex(mIntake, mIndexer)
@@ -135,20 +128,16 @@ public class RobotContainer {
   }
 
   public void configureNamedCommands(){
-    // #region Named Commands
     NamedCommands.registerCommand("intake", new IntakeInAndIndex(mIntake, mIndexer));
     NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter, mVision));
     NamedCommands.registerCommand("index to shoot", mIndexer.runUpperIndexer(IndexerConstants.kIndexerSpeedIn));
     // NamedCommands.registerCommand("run shooter", mShooter.shootRing());
     NamedCommands.registerCommand("tune shooter", mShooter.shootRing(mVision::getDistance));
     NamedCommands.registerCommand("angle45", mShooter.setShooterAngle(45.0));
-
-    //#endregion
   }
 
   public Command getAutonomousCommand() {
-    // return mAutoPicker.getSelected();
-    return new PathPlannerAuto("Shoot + 2");
+    return mAutoPicker.getSelected();
   }
 
 }

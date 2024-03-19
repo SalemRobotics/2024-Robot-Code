@@ -14,7 +14,6 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -212,8 +211,8 @@ public class StrongArmMachine extends SubsystemBase {
         return new SequentialCommandGroup(
             runSAM(SAMConstants.SAMspeedIn, SAMPositions.HANDOFF_NOTE, this::hasNotePassedBreakbeam),
             new ParallelRaceGroup(
-                eject(-.5),
-                new WaitCommand(.3)
+                eject(-0.5),
+                new WaitCommand(0.3)
             )
         );
     }
