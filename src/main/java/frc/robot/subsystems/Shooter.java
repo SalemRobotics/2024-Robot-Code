@@ -174,6 +174,7 @@ public class Shooter extends SubsystemBase {
      * @param targetDistance Distance of target to set the pivot angle to, should the target exist
      * @see FunctionalCommand
      */
+    
     public Command shootRing(DoubleSupplier targetDistance) {
         return runEnd(
             () -> {

@@ -206,15 +206,15 @@ public final class Constants {
     }
 
     public static final class AutoConstants{
-        public static final double kAutoDrivingP = 15;
-        public static final double kAutoDrivingI = 1.5;
-        public static final double kAutoDrivingD = 1;
+        public static final double kAutoDrivingP = 5.5;
+        public static final double kAutoDrivingI = 0;
+        public static final double kAutoDrivingD = 0;
         public static final double kAutoDrivingIZone = 1000;
         
         //TODO: retune constants
-        public static final double kAutoTurningP = 3.5;
-        public static final double kAutoTurningI = 1;
-        public static final double kAutoTurningD = 0.3;
+        public static final double kAutoTurningP = 5;
+        public static final double kAutoTurningI = 0;
+        public static final double kAutoTurningD = 0;
         public static final double kAutoTurningIZone = 1000.0;
 
         /** Map of folder names to lists of auto command names */

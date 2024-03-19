@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "angle45"
+                "name": "shoot"
               }
             }
           ]
@@ -54,14 +54,7 @@
       "command": {
         "type": "parallel",
         "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "index to shoot"
-              }
-            }
-          ]
+          "commands": []
         }
       }
     }

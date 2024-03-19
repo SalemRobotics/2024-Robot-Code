@@ -112,7 +112,7 @@ public class Drivetrain extends SubsystemBase {
       this
     );
 
-    // displayShuffleboardPID();
+    displayShuffleboardPID();
     SmartDashboard.putNumber("HeadingP", DriveConstants.kHeadingP);
     SmartDashboard.putNumber("HeadingI", DriveConstants.kHeadingI);
     SmartDashboard.putNumber("HeadingD", DriveConstants.kHeadingD);

@@ -148,7 +148,7 @@ public class StrongArmMachine extends SubsystemBase {
             degreesClamped,
             ControlType.kPosition,
             0,
-            -mFeedForward.calculate(Units.degreesToRadians(degreesClamped), 0.1)
+            0.0// -mFeedForward.calculate(Units.degreesToRadians(degreesClamped), 0.1)
         );
     }
 

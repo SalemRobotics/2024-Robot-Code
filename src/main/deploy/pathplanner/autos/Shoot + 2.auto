@@ -39,18 +39,6 @@
                 "data": {
                   "pathName": "Shoot + 2 Path"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "run shooter"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
               }
             ]
           }
