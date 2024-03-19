@@ -24,7 +24,7 @@ public class IntakeOutAndIndex extends ParallelCommandGroup {
     public IntakeOutAndIndex(Intake intake, Indexer indexer) {
         mIntake = intake;
         mIndexer = indexer;
-        // TODO: make terminate
+
         addCommands(
             mIntake.intakeRing(IntakeConstants.kIntakeSpeedOut),
             mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeedOut)
