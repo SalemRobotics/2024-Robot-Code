@@ -41,7 +41,7 @@
       "name": "shoot",
       "waypointRelativePos": 0.6,
       "command": {
-        "type": "parallel",
+        "type": "race",
         "data": {
           "commands": [
             {
@@ -49,22 +49,11 @@
               "data": {
                 "name": "index to shoot"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "1st Shoot Angle",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
+            },
             {
-              "type": "named",
+              "type": "wait",
               "data": {
-                "name": "angle45"
+                "waitTime": 0.2
               }
             }
           ]
@@ -72,7 +61,7 @@
       }
     },
     {
-      "name": "2nd Shoot Angle",
+      "name": "intake",
       "waypointRelativePos": 0.85,
       "command": {
         "type": "parallel",
@@ -81,7 +70,7 @@
             {
               "type": "named",
               "data": {
-                "name": "angle45"
+                "name": "close intake"
               }
             }
           ]

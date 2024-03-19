@@ -128,10 +128,11 @@ public class RobotContainer {
   }
 
   public void configureNamedCommands(){
-    NamedCommands.registerCommand("intake", new IntakeInAndIndex(mIntake, mIndexer));
+    NamedCommands.registerCommand("far intake", new IntakeInAndIndex(mIntake, mIndexer));
+    NamedCommands.registerCommand("close intake", new IntakeInAndIndex(mIntake, mIndexer, IndexerConstants.kIndexerSpeedIn, IndexerConstants.kIndexerSpeedIn ));
     NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter, mVision));
     NamedCommands.registerCommand("index to shoot", mIndexer.runUpperIndexer(IndexerConstants.kIndexerSpeedIn));
-    // NamedCommands.registerCommand("run shooter", mShooter.shootRing());
+    NamedCommands.registerCommand("run shooter", mShooter.shootRing(mVision::getDistance));
     NamedCommands.registerCommand("tune shooter", mShooter.shootRing(mVision::getDistance));
     NamedCommands.registerCommand("angle45", mShooter.setShooterAngle(45.0));
   }

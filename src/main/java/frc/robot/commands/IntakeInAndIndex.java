@@ -26,7 +26,30 @@ public class IntakeInAndIndex extends ParallelRaceGroup {
         // TODO: make terminate
         addCommands(
             mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn),
-            mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeedIn)
+            mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeedIn),
+            mIndexer.runUpperIndexer(IndexerConstants.kIndexerSpeedOut)
+        );
+
+        addRequirements(mIntake, mIndexer);
+    }
+
+    /**
+     * Creates a new {@link IntakeInAndIndex} command group with required subsystems and indexer speeds.
+     * @param intake Intake subsystem 
+     * @param indexer Indexer subsystem
+     * @param lowerIndexerSpeed speed to run the lower indexer at(in or out)
+     * @param upperIndexerSpeed speed to run the upper indexer at(in or out)
+     * @see Intake
+     * @see Indexer
+     */
+    public IntakeInAndIndex(Intake intake, Indexer indexer, double lowerIndexerSpeed, double upperIndexerSpeed) {
+        mIntake = intake;
+        mIndexer = indexer;
+        // TODO: make terminate
+        addCommands(
+            mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn),
+            mIndexer.runLowerIndexer(lowerIndexerSpeed),
+            mIndexer.runUpperIndexer(upperIndexerSpeed)
         );
 
         addRequirements(mIntake, mIndexer);

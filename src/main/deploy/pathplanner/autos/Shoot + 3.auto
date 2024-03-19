@@ -16,28 +16,15 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Shoot + 3 Path"
-                      }
-                    }
-                  ]
+                  "pathName": "Shoot + 3 Path"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "run shooter"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
                 }
               }
             ]
