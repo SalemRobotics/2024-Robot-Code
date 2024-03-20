@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 import frc.robot.Constants.SAMConstants;
 
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkAbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
@@ -107,6 +109,10 @@ public class SourceAmpMech extends SubsystemBase {
         return mIsEnabled;
     }
 
+    public void setEnabled(boolean isEnabled) {
+        mIsEnabled = isEnabled;
+    }
+
     /**
      * Gets the current pivot setpoint
      * @return Setpoint, in degrees
@@ -128,7 +134,7 @@ public class SourceAmpMech extends SubsystemBase {
         return run(() -> mPivotMotor.set(axisOutput));
     }
 
-    boolean hasReachedSetpoint() {
+    public boolean hasReachedSetpoint() {
         return Double.compare(mPivotEncoder.getPosition(), mCurrentSetpoint) == 0;
     }
 
@@ -147,22 +153,25 @@ public class SourceAmpMech extends SubsystemBase {
         );
     }
 
-    /**
-     * Template command to run the SAM in various positions and speeds, with an endconditions
-     * @param position Position to set SAM pivot
-     * @param endCondition Condition to end command
-     * @return Command to run the SAM system
-     * @see FunctionalCommand
-     */
     public Command runSAM(SAMPositions position) {
-        return new FunctionalCommand(
-            () -> { // start
+        return runEnd(
+            () -> {
                 mIsEnabled = true;
                 setCurrentSetpoint(position);
-            }, 
-            () -> {},
-            isFinished -> mIsEnabled = false, // end
-            this::hasReachedSetpoint,
+            },
+            () -> mIsEnabled = false
+        );
+    }
+
+    public Command runSAM(SAMPositions position, BooleanSupplier endCondition) {
+        return new FunctionalCommand(
+            () -> { // init
+                mIsEnabled = true;
+                setCurrentSetpoint(position);
+            },
+            () -> {}, // exec
+            isFinished -> mIsEnabled = false,
+            endCondition,
             this
         );
     }

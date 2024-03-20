@@ -26,8 +26,8 @@ public class HandoffFromIndexer extends SequentialCommandGroup {
         mIndexer = indexer;
 
         addCommands(
-            // set SAM to HANDOFF_NOTE position
-            mSourceAmpMech.runSAM(SAMPositions.HANDOFF_NOTE),
+            // set SAM to HANDOFF_NOTE position and end when setpoint is reached
+            mSourceAmpMech.runSAM(SAMPositions.HANDOFF_NOTE, mSourceAmpMech::hasReachedSetpoint),
             new SequentialCommandGroup(
                 // run intake forwards, indexer backwards, and SAM roller forwards 
                 // until note passes break beam
