@@ -158,7 +158,7 @@ public class Shooter extends SubsystemBase {
                 );
 
                 mRightMotor.set(
-                    mRightController.calculate(mleftEncoder.getVelocity())
+                    mRightController.calculate(mRightEncoder.getVelocity())
                 );
             },
             () -> {
@@ -190,7 +190,7 @@ public class Shooter extends SubsystemBase {
                 );
 
                 mRightMotor.set(
-                    mRightController.calculate(mleftEncoder.getVelocity())
+                    mRightController.calculate(mRightEncoder.getVelocity())
                 );
             },
             () -> {

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.7272273347965497,
-        "y": 5.5430292057165325
+        "x": 2.66,
+        "y": 5.65
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3034045117971482,
-        "y": 5.966852028715935
+        "x": 2.2361771770005987,
+        "y": 6.073822822999403
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.7272273347965497,
-        "y": 6.90282881753412
+        "x": 2.66,
+        "y": 7.098351746561043
       },
       "prevControl": {
-        "x": 2.213586170905973,
-        "y": 6.643114526613871
+        "x": 1.9700448878960435,
+        "y": 6.896273424545009
       },
       "nextControl": {
-        "x": 3.1832993580517077,
-        "y": 7.133434209888363
+        "x": 3.1504548381044053,
+        "y": 7.241999194011003
       },
       "isLocked": false,
       "linkedName": null
@@ -47,11 +47,23 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 40.0,
+      "rotationDegrees": 24.852691492948765,
       "rotateFast": true
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.85,
+      "maxWaypointRelativePos": 1.05,
+      "constraints": {
+        "maxVelocity": 0.1,
+        "maxAcceleration": 0.1,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "shoot first note",
@@ -69,41 +81,7 @@
             {
               "type": "wait",
               "data": {
-                "waitTime": 1.0
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "4th shoot angle",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "angle45"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "5th shoot angle",
-      "waypointRelativePos": 1.45,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "angle45"
+                "waitTime": 5.0
               }
             }
           ]

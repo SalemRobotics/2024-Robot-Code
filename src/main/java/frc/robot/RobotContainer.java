@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
@@ -22,6 +23,7 @@ import frc.robot.commands.SpinUpShooterAndIndex;
 import frc.robot.commands.TrackTargetAndShoot;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.IndexerConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
@@ -130,15 +132,16 @@ public class RobotContainer {
   public void configureNamedCommands(){
     NamedCommands.registerCommand("far intake", new IntakeInAndIndex(mIntake, mIndexer));
     NamedCommands.registerCommand("close intake", new IntakeInAndIndex(mIntake, mIndexer, IndexerConstants.kIndexerSpeedIn, IndexerConstants.kIndexerSpeedIn ));
+    NamedCommands.registerCommand("intake without indexing", mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn));
     NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter, mVision));
-    NamedCommands.registerCommand("index to shoot", mIndexer.runUpperIndexer(IndexerConstants.kIndexerSpeedIn));
+    NamedCommands.registerCommand("index to shoot", mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn));
     NamedCommands.registerCommand("run shooter", mShooter.shootRing(mVision::getDistance));
     NamedCommands.registerCommand("tune shooter", mShooter.shootRing(mVision::getDistance));
     NamedCommands.registerCommand("angle45", mShooter.setShooterAngle(45.0));
   }
 
   public Command getAutonomousCommand() {
-    return mAutoPicker.getSelected();
+    return new PathPlannerAuto("Shoot + 1, 2, 3");
   }
 
 }

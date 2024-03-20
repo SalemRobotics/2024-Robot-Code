@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.61,
-        "y": 4.29
+        "x": 2.66,
+        "y": 4.22
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.235787057841922,
-        "y": 5.003343420988837
+        "x": 1.896942369383314,
+        "y": 4.958321483594535
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.7272273347965497,
-        "y": 5.5430292057165325
+        "x": 2.66,
+        "y": 5.65
       },
       "prevControl": {
-        "x": 2.3062377748687117,
-        "y": 5.496252587946771
+        "x": 2.097585328329733,
+        "y": 5.65
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,11 +29,34 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Continue from last",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.15,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 1.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    },
+    {
+      "name": "Next shot slow",
+      "minWaypointRelativePos": 0.65,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 1.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "shoot",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",
         "data": {
@@ -42,23 +65,6 @@
               "type": "named",
               "data": {
                 "name": "index to shoot"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "3rd shoot angle",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "angle45"
               }
             }
           ]
@@ -74,7 +80,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 2.31383472363358,
     "rotateFast": false
   },
   "reversed": false,

@@ -81,6 +81,16 @@ public class Indexer extends SubsystemBase {
     }
 
     /**
+     * Runs both indexer motors in opposite directions.
+     * @param lowerIndexerSpeed Speed to run lower indexer motor at.
+     * @param upperIndexerSpeed Speed to run upper indexer motor at.
+     */
+    private void runAllMotors(double lowerIndexerSpeed, double upperIndexerSpeed) {
+        mLowerMotor.set(lowerIndexerSpeed);
+        mUpperMotor.set(upperIndexerSpeed);
+    }
+
+    /**
      * Stops both indexer motors.
      */
     private void stopMotors() {
@@ -97,6 +107,20 @@ public class Indexer extends SubsystemBase {
     public Command runAllIndexer(double speed) {
         return runEnd(
             () -> runAllMotors(speed), 
+            this::stopMotors
+        );
+    }
+
+    /**
+     * Returns a command that runs both indexer motors in different directions
+     * and stops them when it finishes.
+     * @param lowerIndexerSpeed Speed to run lower indexer motor at.
+     * @param upperIndexerSpeed Speed to run upper indexer motor at.
+     * @return runEnd Command
+     */
+    public Command runAllIndexer(double lowerIndexerSpeed, double upperIndexerSpeed) {
+        return runEnd(
+            () -> runAllMotors(lowerIndexerSpeed, upperIndexerSpeed), 
             this::stopMotors
         );
     }

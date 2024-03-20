@@ -16,9 +16,28 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "Shoot + 3 Path"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Shoot + 3 Path"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp 5 Note Path 2"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp 5 Note Path 3"
+                      }
+                    }
+                  ]
                 }
               },
               {

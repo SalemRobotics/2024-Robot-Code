@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.61028579037215,
-        "y": 4.291754680375458
+        "x": 2.6570624081419103,
+        "y": 4.221589753720818
       },
       "prevControl": {
-        "x": 1.6987573875432644,
-        "y": 4.829685784727696
+        "x": 1.7455340053130246,
+        "y": 4.7595208580730555
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,15 +31,38 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.75,
-      "rotationDegrees": -38.45696201004733,
+      "rotationDegrees": -30.0,
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Slow down to shoot",
+      "minWaypointRelativePos": 0.4,
+      "maxWaypointRelativePos": 0.8,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 1.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    },
+    {
+      "name": "Slow down to be legal",
+      "minWaypointRelativePos": 0.75,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "shoot",
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 0.85,
       "command": {
         "type": "race",
         "data": {
@@ -48,29 +71,6 @@
               "type": "named",
               "data": {
                 "name": "index to shoot"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.2
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "intake",
-      "waypointRelativePos": 0.85,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "close intake"
               }
             }
           ]
@@ -86,7 +86,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -36.027373385103665,
+    "rotation": -26.565051177077915,
     "rotateFast": false
   },
   "reversed": false,
