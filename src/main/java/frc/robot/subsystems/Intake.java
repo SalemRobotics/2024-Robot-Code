@@ -11,7 +11,7 @@ import frc.robot.Constants.IntakeConstants;
  * Intake subsystem with one motor. Brings gamepieces from the field to within the robot.
  */
 public class Intake extends SubsystemBase {
-    final CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.kSparkMaxID, MotorType.kBrushless);
+    final CANSparkMax mIntakeMotor = new CANSparkMax(IntakeConstants.kSparkMaxID, MotorType.kBrushless);
 
     /**
      * Runs the intake motor.
@@ -21,12 +21,8 @@ public class Intake extends SubsystemBase {
      */
     public Command intakeRing(double speed) {
         return runEnd(
-            () -> {
-                intakeMotor.set(speed);
-            }, 
-            () -> {
-                intakeMotor.set(0);
-            }
+            () -> mIntakeMotor.set(speed), 
+            () -> mIntakeMotor.set(0)
         );
     }
 }

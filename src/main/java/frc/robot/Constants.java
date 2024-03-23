@@ -275,7 +275,7 @@ public final class Constants {
         public static final int kPivotMoterID = 17;
         public static final int kIntakeMoterID = 16;
 
-        public static final int kBreakbeamID = 0;
+        public static final int kBreakbeamID = 9;
 
         public static final double kPivotSpeed = 0.5;
         public static final double kIntakeSpeed = 1.0;

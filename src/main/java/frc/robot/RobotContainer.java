@@ -15,21 +15,24 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.HandoffFromIndexer;
+import frc.robot.commands.HandoffToIndexer;
 import frc.robot.commands.IntakeInAndIndex;
 import frc.robot.commands.IntakeOutAndIndex;
-import frc.robot.commands.ScoreAmpFromIndexer;
-import frc.robot.commands.SourceIntakeAndIndex;
 import frc.robot.commands.SpinUpShooterAndIndex;
 import frc.robot.commands.TrackTargetAndShoot;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.SAMConstants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.SourceAmpMech.SAMPositions;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.StrongArmMachine;
+import frc.robot.subsystems.SAMRoller;
+import frc.robot.subsystems.SourceAmpMech;
 import frc.util.SwerveUtils;
 
 public class RobotContainer {
@@ -40,17 +43,19 @@ public class RobotContainer {
   final XboxController mOperatorController = new XboxController(ControllerConstants.kOperatorPort);
 
   final Drivetrain mDrivetrain = new Drivetrain(true, true);
-  final StrongArmMachine mStrongArmMachine = new StrongArmMachine();
-  final Shooter mShooter = new Shooter();
-  final Indexer mIndexer = new Indexer();
   final Intake mIntake = new Intake();
+  final Indexer mIndexer = new Indexer();
+  final Shooter mShooter = new Shooter();
   final Vision mVision = new Vision();
-  final AutoPicker mAutoPicker = new AutoPicker();
+  final SourceAmpMech mSourceAmpMech = new SourceAmpMech();
+  final SAMRoller mSamRoller = new SAMRoller();
+  
+  // final AutoPicker mAutoPicker;
   
   public RobotContainer() {
     configureBindings();
     configureNamedCommands();
-
+    // mAutoPicker = new AutoPicker();
     SmartDashboard.putData("Field", m_field);
 
     // Set default Drivetrain command to a RunCommand containing Drivetrain::drive.
@@ -62,17 +67,13 @@ public class RobotContainer {
           -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband)), 
         mDrivetrain)
     );
+
+    // mSourceAmpMech.setDefaultCommand(
+    //   mSourceAmpMech.runSAM(SAMPositions.HANDOFF_NOTE)
+    // );
   }
 
   private void configureBindings() {
-    new JoystickButton(mDriveController, Button.kLeftBumper.value).whileTrue(
-      mDrivetrain.setX()
-    );
-
-    new JoystickButton(mDriveController, Button.kStart.value).onTrue(
-      mDrivetrain.resetHeading()
-    );
-
     // #region Cardinal Direction Commands
     new JoystickButton(mDriveController, Button.kY.value).whileTrue(
       mDrivetrain.trackCardinal(Direction.North, 
@@ -98,35 +99,56 @@ public class RobotContainer {
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
     );
     // #endregion
-    
-    // #region Operator Controls
+
+    // #region Driver controls
+    new JoystickButton(mDriveController, Button.kLeftBumper.value).whileTrue(
+      mDrivetrain.setX()
+    );
+
+    new JoystickButton(mDriveController, Button.kStart.value).onTrue(
+      mDrivetrain.resetHeading()
+    );
+
     new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
       new TrackTargetAndShoot(
-        mDrivetrain, 
-        mVision, 
-        mIndexer, 
-        mShooter,
+        mDrivetrain, mVision, mIndexer, mShooter,
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband)
       )
     );
+    // #endregion
     
+    // #region Operator Controls
+    
+    // run SAM roller if SAM is active until break beam is hit, otherwise run Intake/Indexer
     new JoystickButton(mOperatorController, Button.kRightBumper.value).whileTrue(
+      // mSourceAmpMech.isEnabled() ? 
+      // mSamRoller.runRoller(SAMConstants.SAMspeedIn, mSamRoller::hasNoteHitBreakbeam) :
       new IntakeInAndIndex(mIntake, mIndexer)
     );
     
+    // run SAM roller if SAM is active, otherwise run Intake/Indexer
     new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
+      // mSourceAmpMech.isEnabled() ?
+      // mSamRoller.runRoller(SAMConstants.SAMspeedOut) :
       new IntakeOutAndIndex(mIntake, mIndexer)
     );
 
-    new JoystickButton(mOperatorController, Button.kX.value).whileTrue(
-      new SourceIntakeAndIndex(mIntake, mIndexer, mStrongArmMachine)
-    );
+    new JoystickButton(mOperatorController, Button.kB.value).whileTrue(mSamRoller.runRoller(SAMConstants.kSAMspeedIn, mSamRoller::hasNoteHitBreakbeam));
 
+    new JoystickButton(mOperatorController, Button.kA.value).whileTrue(mSamRoller.runRoller(SAMConstants.kSAMspeedOut));
+
+    // set sam position to INTAKE_SOURCE, then handoff to indexer on interrupt
+    new JoystickButton(mOperatorController, Button.kX.value).onTrue(
+      mSourceAmpMech.runSAM(SAMPositions.INTAKE_SOURCE, mSamRoller::hasNoteHitBreakbeam)
+    ).onFalse(new HandoffToIndexer(mSourceAmpMech, mSamRoller, mIntake, mIndexer));
+
+    // handoff to SAM, then stay at EJECT_AMP, then handoff to indexer on interrupt
     new JoystickButton(mOperatorController, Button.kY.value).whileTrue(
-      new ScoreAmpFromIndexer(mIntake, mIndexer, mStrongArmMachine)
-    );
+      new HandoffFromIndexer(mSourceAmpMech, mSamRoller, mIntake, mIndexer)
+    ).onFalse(new HandoffToIndexer(mSourceAmpMech, mSamRoller, mIntake, mIndexer));
     // #endregion
+
   }
 
   public void configureNamedCommands(){
@@ -141,7 +163,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Shoot + 1, 2, 3");
+    return new PathPlannerAuto("Shoot + 1, 2, 3, 4"); //mAutoPicker.getSelected();
   }
 
 }
