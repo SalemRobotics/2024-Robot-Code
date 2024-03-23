@@ -21,6 +21,9 @@ public final class Constants {
         public static final double kControllerErrorTolerance = 0.1; // percent
         public static final double kOutputVelocityThreshold = 0.85; // percent
 
+        public static final double kLeftMotorLobSpeed = 0.7; // percent
+        public static final double kRightMotorLobSpeed = 0.5; // percent
+
         public static final int kPivotMotorID = 13;
         public static final int kRightMotorID = 14;
         public static final int kLeftMotorID = 15;
@@ -269,8 +272,8 @@ public final class Constants {
         public static final double kG = 0.34;
         public static final double kV = 2.34;
 
-        public static final double SAMspeedIn = 0.5;
-        public static final double SAMspeedOut = -0.5;
+        public static final double kSAMspeedIn = 0.5;
+        public static final double kSAMspeedOut = -0.5;
 
         public static final int kPivotMoterID = 17;
         public static final int kIntakeMoterID = 16;
@@ -278,18 +281,19 @@ public final class Constants {
         public static final int kBreakbeamID = 9;
 
         public static final double kPivotSpeed = 0.5;
-        public static final double kIntakeSpeed = 1.0;
 
         public static final double kPivotPositionConversionFactor = 360.0;
 
-        public static final double kPivotP = 0;
+        public static final double kPivotP = 0.015;
         public static final double kPivotI = 0;
         public static final double kPivotD = 0;
         public static final double kPivotFF = 0;
         public static final double kMaxOutput = 0.5;
         public static final double kMinOutput = -0.5;
 
-        public static final double kUpperAngleLimit = 160.0;
-        public static final  double kLowerAngleLimit = 10.0;
+        public static final double kUpperAngleLimit = 340.0;
+        public static final  double kLowerAngleLimit = 208.0;
+
+        public static final double kSetpointTolerance = 5.0;
     }
 }

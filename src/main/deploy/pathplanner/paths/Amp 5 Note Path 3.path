@@ -32,11 +32,11 @@
     },
     {
       "anchor": {
-        "x": 8.0,
+        "x": 8.4,
         "y": 7.43
       },
       "prevControl": {
-        "x": 5.810887620881966,
+        "x": 6.210887620881967,
         "y": 7.3032531431808705
       },
       "nextControl": null,
@@ -53,11 +53,11 @@
   ],
   "constraintZones": [
     {
-      "name": "New Constraints Zone",
-      "minWaypointRelativePos": 0.85,
-      "maxWaypointRelativePos": 1.05,
+      "name": "Slow Shooting zone",
+      "minWaypointRelativePos": 1.0,
+      "maxWaypointRelativePos": 1.15,
       "constraints": {
-        "maxVelocity": 0.1,
+        "maxVelocity": 0.25,
         "maxAcceleration": 0.1,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -81,7 +81,30 @@
             {
               "type": "wait",
               "data": {
-                "waitTime": 5.0
+                "waitTime": 4.0
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "just index",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "index to shoot"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 1.0
               }
             }
           ]

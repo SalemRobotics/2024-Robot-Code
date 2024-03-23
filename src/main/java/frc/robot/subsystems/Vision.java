@@ -55,7 +55,7 @@ public class Vision extends SubsystemBase {
         try {
             if (mCamera.getTargetYaw().isEmpty())
                 return 0;
-            return mCamera.getTargetYaw().get();
+            return mCamera.getTargetYaw().get() - 11.5;
         } catch (Exception e) {
             return 0;
         }

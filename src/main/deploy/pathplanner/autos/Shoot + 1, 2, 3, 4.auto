@@ -36,6 +36,12 @@
                       "data": {
                         "pathName": "Amp 5 Note Path 3"
                       }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp 5 Note Path 4"
+                      }
                     }
                   ]
                 }

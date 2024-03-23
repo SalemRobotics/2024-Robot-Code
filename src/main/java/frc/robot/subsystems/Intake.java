@@ -1,9 +1,13 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -11,7 +15,12 @@ import frc.robot.Constants.IntakeConstants;
  * Intake subsystem with one motor. Brings gamepieces from the field to within the robot.
  */
 public class Intake extends SubsystemBase {
-    final CANSparkMax mIntakeMotor = new CANSparkMax(IntakeConstants.kSparkMaxID, MotorType.kBrushless);
+    final CANSparkMax mIntakeMotor = new CANSparkMax(IntakeConstants.kSparkMaxID, MotorType.kBrushless); 
+    final DigitalInput mBreakbeam = new DigitalInput(0);
+
+    public boolean hasHitBreakbeam() {
+        return !mBreakbeam.get();
+    }
 
     /**
      * Runs the intake motor.
@@ -23,6 +32,23 @@ public class Intake extends SubsystemBase {
         return runEnd(
             () -> mIntakeMotor.set(speed), 
             () -> mIntakeMotor.set(0)
+        );
+    }
+
+    /**
+     * Runs the intake motor.
+     * @param speed Speed to run intake motor at.
+     * @param endCondition Boolean function reference to determine when to end the command
+     * @return runEnd command
+     * @see Command
+     */
+    public Command intakeRing(double speed, BooleanSupplier endCondition) {
+        return new FunctionalCommand(
+            () -> {}, // init
+            () -> mIntakeMotor.set(speed), // exec
+            isFinished -> mIntakeMotor.set(0), // end
+            endCondition, // isFinished
+            this
         );
     }
 }

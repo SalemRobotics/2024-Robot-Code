@@ -13,6 +13,7 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -32,10 +33,9 @@ public class SourceAmpMech extends SubsystemBase {
 
     /** Enum for valid SAM pivot positions, measured in degrees */
     public enum SAMPositions {
-        HANDOFF_NOTE(15.0),
-        INTAKE_SOURCE(120.0),
-        EJECT_AMP(100.0),
-        ARB_VALUE(40.0);
+        HANDOFF_NOTE(211.0),
+        INTAKE_SOURCE(290.0),
+        EJECT_AMP(280.0);
         
         public final double value;
         private SAMPositions(double value) {
@@ -48,8 +48,8 @@ public class SourceAmpMech extends SubsystemBase {
 
         mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
         mPivotEncoder.setPositionConversionFactor(SAMConstants.kPivotPositionConversionFactor);
-        mPivotMotor.setInverted(true);
         mPivotPID = mPivotMotor.getPIDController();
+        mPivotMotor.setInverted(true);
         mPivotPID.setFeedbackDevice(mPivotEncoder);
         mPivotPID.setP(SAMConstants.kPivotP);
         mPivotPID.setI(SAMConstants.kPivotI);
@@ -70,7 +70,8 @@ public class SourceAmpMech extends SubsystemBase {
         setShuffleboardPID();
 
         setPivotAngle(mCurrentSetpoint);
-
+        
+        SmartDashboard.putBoolean("SAM Is At Setpoint", hasReachedSetpoint());
         SmartDashboard.putNumber("SAM Encoder", mPivotEncoder.getPosition());
         SmartDashboard.putNumber("SAM Setpoint", mCurrentSetpoint);
     }
@@ -135,7 +136,7 @@ public class SourceAmpMech extends SubsystemBase {
     }
 
     public boolean hasReachedSetpoint() {
-        return Double.compare(mPivotEncoder.getPosition(), mCurrentSetpoint) == 0;
+        return Math.abs(mPivotEncoder.getPosition() - mCurrentSetpoint) <= SAMConstants.kSetpointTolerance;
     }
 
     /**
@@ -149,7 +150,7 @@ public class SourceAmpMech extends SubsystemBase {
             degreesClamped,
             ControlType.kPosition,
             0,
-            0.0// -mFeedForward.calculate(Units.degreesToRadians(degreesClamped), 0.1)
+            0.0//mFeedForward.calculate(Units.degreesToRadians(degreesClamped), 0.1)
         );
     }
 

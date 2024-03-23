@@ -1,7 +1,8 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.SAMConstants;
@@ -27,10 +28,11 @@ public class HandoffToIndexer extends SequentialCommandGroup {
             // set SAM to HANDOFF_NOTE position and end when setpoint is reached
             mSourceAmpMech.runSAM(SAMPositions.HANDOFF_NOTE, mSourceAmpMech::hasReachedSetpoint),
             // run intake backwards, indexer forwards, and SAM roller backwards 
-            new ParallelRaceGroup(
-                mIntake.intakeRing(IntakeConstants.kIntakeSpeedOut),
+            new ParallelDeadlineGroup(
+                new WaitCommand(.5),
+                mIntake.intakeRing(IntakeConstants.kIntakeSpeedOut, mIntake::hasHitBreakbeam),
                 mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeedIn),
-                mSamRoller.runRoller(SAMConstants.SAMspeedOut)
+                mSamRoller.runRoller(SAMConstants.kSAMspeedOut)
             )
         );
 

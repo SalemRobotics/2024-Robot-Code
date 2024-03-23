@@ -169,6 +169,24 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
+     * Lobs the game piece out of the robot at a lower speed, to act as a sort of "handoff" to other robots
+     * @return runEnd command
+     * @see FunctionalCommand
+     */
+    public Command lobRing() {
+        return runEnd(
+            () -> {
+                mLeftMotor.set(ShooterConstants.kLeftMotorLobSpeed);
+                mRightMotor.set(ShooterConstants.kRightMotorLobSpeed);
+            }, 
+            () -> {
+                mLeftMotor.stopMotor();
+                mRightMotor.stopMotor();
+            }
+        );
+    }
+
+    /**
      * Sets both motors to a constant speed, intened to fire the gamepiece.
      * @return runEnd command
      * @param targetDistance Distance of target to set the pivot angle to, should the target exist

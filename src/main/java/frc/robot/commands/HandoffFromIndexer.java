@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.IndexerConstants;
@@ -31,15 +30,15 @@ public class HandoffFromIndexer extends SequentialCommandGroup {
             new SequentialCommandGroup(
                 // run intake forwards, indexer backwards, and SAM roller forwards 
                 // until note passes break beam
-                new ParallelRaceGroup(
+                new ParallelDeadlineGroup(
+                    mSamRoller.runRoller(SAMConstants.kSAMspeedIn, mSamRoller::hasNotePassedBreakbeam),
                     mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn),
-                    mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeedOut),
-                    mSamRoller.runRoller(SAMConstants.SAMspeedIn, mSamRoller::hasNotePassedBreakbeam)
+                    mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeedOut)
                 ),
                 // run SAM roller back a little bit to prevent note from slipping out
                 new ParallelDeadlineGroup(
                     new WaitCommand(0.3),
-                    mSamRoller.runRoller(SAMConstants.SAMspeedOut) 
+                    mSamRoller.runRoller(SAMConstants.kSAMspeedOut) 
                 )
             ),
             // set SAM to EJECT_AMP position until button is let go
