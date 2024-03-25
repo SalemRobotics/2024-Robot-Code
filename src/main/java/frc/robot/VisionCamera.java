@@ -19,10 +19,12 @@ import frc.robot.Constants.VisionConstants;
 public class VisionCamera {
     final PhotonCamera mCamera;
     final AprilTagFieldLayout mFieldLayout;
+
     public VisionCamera(String cameraName) {
         mCamera = new PhotonCamera(cameraName);
+        mCamera.setDriverMode(false);
         mFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-}
+    }
 
     /**
      * Gets the best result of individual Apriltags.
@@ -124,7 +126,7 @@ public class VisionCamera {
         if (getBestTarget().isEmpty())
             return Optional.empty();
 
-        double targetYaw = getBestTarget().get().getYaw() - VisionConstants.kCameraOffsetDegrees;
+        double targetYaw = getBestTarget().get().getYaw();
 
         return Optional.of(targetYaw);
     }

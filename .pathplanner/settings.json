@@ -4,8 +4,9 @@
   "holonomicMode": true,
   "pathFolders": [
     "Amp Side",
-    "Race Paths",
+    "Partner Paths",
     "Non-Amp Side",
+    "Race Paths",
     "Test Paths"
   ],
   "autoFolders": [

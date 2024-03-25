@@ -6,27 +6,25 @@ import frc.robot.VisionCamera;
 import frc.robot.Constants.ShooterConstants;
 
 public class Vision extends SubsystemBase {
-    final VisionCamera mCamera;
+    final VisionCamera mApriltagCamera;
 
     public Vision() {
-        mCamera = new VisionCamera("Arducam_OV9281_USB_Camera");
+        mApriltagCamera = new VisionCamera("Arducam_OV9281_USB_Camera");
     }
 
     @Override
-    public void periodic() {
-        printDebug();
-    }
+    public void periodic() {}
 
     /**
      * Sends various values from the camera to Shuffleboard for debugging.
      */
-    private void printDebug() {
+    void printDebug() {
         SmartDashboard.putNumber("Target distance", getDistance());
         SmartDashboard.putNumber("Target Angle", ShooterConstants.kPivotDistanceAngleMap.get(getDistance()));
         
         try {
-            SmartDashboard.putNumber("Target ID", mCamera.getBestTarget().get().getFiducialId());
-            SmartDashboard.putString("Target Pose", mCamera.getTargetPose().get().toString());
+            SmartDashboard.putNumber("Target ID", mApriltagCamera.getBestTarget().get().getFiducialId());
+            SmartDashboard.putString("Target Pose", mApriltagCamera.getTargetPose().get().toString());
         } catch (Exception e) {
             return;
         }
@@ -38,10 +36,10 @@ public class Vision extends SubsystemBase {
      */
     public double getDistance() {
         try {
-            if (mCamera.getTargetDistance().isEmpty())
+            if (mApriltagCamera.getTargetDistance().isEmpty())
                 return 0;
 
-            return mCamera.getTargetDistance().get();
+            return mApriltagCamera.getTargetDistance().get();
         } catch (Exception e) {
             return 0;
         }
@@ -53,9 +51,9 @@ public class Vision extends SubsystemBase {
      */
     public double getYaw() {
         try {
-            if (mCamera.getTargetYaw().isEmpty())
+            if (mApriltagCamera.getTargetYaw().isEmpty())
                 return 0;
-            return mCamera.getTargetYaw().get() - 11.5;
+            return mApriltagCamera.getTargetYaw().get();
         } catch (Exception e) {
             return 0;
         }
@@ -63,7 +61,7 @@ public class Vision extends SubsystemBase {
 
     public boolean hasTarget() {
         try {
-            if (mCamera.getBestTarget().isEmpty()) 
+            if (mApriltagCamera.getBestTarget().isEmpty()) 
                 return false;
             return true;
         } catch (Exception e) {

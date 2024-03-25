@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -10,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SAMConstants;
+import frc.robot.subsystems.SourceAmpMech.SAMPositions;
 
 public class SAMRoller extends SubsystemBase {
     final TalonFX mIntakeMotor = new TalonFX(SAMConstants.kIntakeMoterID);
@@ -18,7 +20,9 @@ public class SAMRoller extends SubsystemBase {
     boolean mIsBeamBroke = false;
 
     @Override
-    public void periodic() {
+    public void periodic() {}
+
+    void printDebug() {
         SmartDashboard.putBoolean("SAM Has Note", !mBreakbeam.get());
     }
 
@@ -59,20 +63,21 @@ public class SAMRoller extends SubsystemBase {
      * @return True if the gamepiece has passed the break beam
      */
     public boolean hasNotePassedBreakbeam() {
-        if (!mBreakbeam.get()) {
-            mIsBeamBroke = true;
-            return false;
-        } 
         
-        if (mBreakbeam.get() && mIsBeamBroke) {
+        if (!mBreakbeam.get() && mIsBeamBroke) {
             mIsBeamBroke = false;
             return true;
         }
-
+        
+        if (!mBreakbeam.get()) {
+            mIsBeamBroke = true;
+            return false;
+        }
+         
         return false;
     }
 
-    public boolean hasNoteHitBreakbeam() {
-        return !mBreakbeam.get();
+    public boolean hasNoteHitBreakbeam(DoubleSupplier setpoint) {
+        return !mBreakbeam.get() && Double.compare(setpoint.getAsDouble(), SAMPositions.EJECT_AMP.value) != 0;
     }
 }

@@ -4,10 +4,6 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -23,7 +19,6 @@ import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -110,11 +105,6 @@ public class Drivetrain extends SubsystemBase {
       }, 
       this
     );
-
-    displayShuffleboardPID();
-    SmartDashboard.putNumber("HeadingP", DriveConstants.kHeadingP);
-    SmartDashboard.putNumber("HeadingI", DriveConstants.kHeadingI);
-    SmartDashboard.putNumber("HeadingD", DriveConstants.kHeadingD);
   }
 
   public Command resetHeading() {
@@ -124,7 +114,7 @@ public class Drivetrain extends SubsystemBase {
   /**
    * Debug method to display driving and turning PID gains
    */
-  private void displayShuffleboardPID() {
+  void displayShuffleboardPID() {
     SmartDashboard.putNumber("Driving P", AutoConstants.kAutoDrivingP);
     SmartDashboard.putNumber("Driving I", AutoConstants.kAutoDrivingI);
     SmartDashboard.putNumber("Driving D", AutoConstants.kAutoDrivingD);
@@ -135,7 +125,9 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Turning D", AutoConstants.kAutoTurningD);
     SmartDashboard.putNumber("Turning IZone", AutoConstants.kAutoTurningIZone);
 
-    SmartDashboard.putData("Reset PID and Odometry", setPIDAndReset());
+    SmartDashboard.putNumber("HeadingP", DriveConstants.kHeadingP);
+    SmartDashboard.putNumber("HeadingI", DriveConstants.kHeadingI);
+    SmartDashboard.putNumber("HeadingD", DriveConstants.kHeadingD);
   }
 
   @Override
@@ -284,7 +276,7 @@ public class Drivetrain extends SubsystemBase {
    * @see DoubleSupplier
    * @see PIDCommand
    */
-  Command trackSetpoint(DoubleSupplier xSpeed, DoubleSupplier ySpeed, double setpoint, DoubleSupplier measurement) {
+  Command trackSetpoint(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier setpoint, DoubleSupplier measurement) {
     return new PIDCommand(
       new PIDController(
         DriveConstants.kHeadingP,
@@ -292,10 +284,18 @@ public class Drivetrain extends SubsystemBase {
         DriveConstants.kHeadingD
       ), 
       measurement, 
-      () -> setpoint,
+      setpoint,
       (receivedOutput) -> drive(xSpeed.getAsDouble(), ySpeed.getAsDouble(), receivedOutput),
       this
     );
+  }
+
+  double getSetpoint(DoubleSupplier distance) {
+    if (Double.compare(distance.getAsDouble(), 0) == 0) {
+      return 0.0;
+    }
+    
+    return DriveConstants.kTrackingYawOffset;
   }
 
   /**
@@ -308,15 +308,7 @@ public class Drivetrain extends SubsystemBase {
    * @see PIDCommand
    */
   public Command trackTarget(DoubleSupplier distance, DoubleSupplier yaw, DoubleSupplier xSpeed, DoubleSupplier ySpeed) {
-    double angle;
-    // if (Double.compare(distance.getAsDouble(), 0) == 0 
-    // || Double.compare(yaw.getAsDouble(), 0) == 0) {
-    //   angle = 0;
-    // } else {
-    //   angle = Math.asin(VisionConstants.kCameraToRobotOffsetMeters / distance.getAsDouble());
-    // }
-    angle = yaw.getAsDouble();
-    return trackSetpoint(xSpeed, ySpeed, angle, yaw);
+    return trackSetpoint(xSpeed, ySpeed, () -> getSetpoint(distance), yaw);
   }
 
   /**
@@ -329,7 +321,7 @@ public class Drivetrain extends SubsystemBase {
    * @see PIDCommand
    */
   public Command trackCardinal(Direction direction, DoubleSupplier xSpeed, DoubleSupplier ySpeed) {
-    return trackSetpoint(xSpeed, ySpeed, direction.value, this::getPigeonModulus);
+    return trackSetpoint(xSpeed, ySpeed, () -> direction.value, this::getPigeonModulus);
   }
 
   /**
@@ -369,52 +361,5 @@ public class Drivetrain extends SubsystemBase {
     mRearLeft.resetEncoders();
     mFrontRight.resetEncoders();
     mRearRight.resetEncoders();
-  }
-
-  /**
-   * Chris's messy suggestion for how to test pid quickly
-   * Essentially we reset all of drivetrain just like the constructor
-   * @return Command to set the PID config
-   * @see InstantCommand
-   */
-  public Command setPIDAndReset() {
-    return runOnce(() -> {
-      HolonomicPathFollowerConfig pathConfig = new HolonomicPathFollowerConfig(
-        new PIDConstants(
-          SmartDashboard.getNumber("Driving P", AutoConstants.kAutoDrivingP),
-          SmartDashboard.getNumber("Driving I", AutoConstants.kAutoDrivingI),
-          SmartDashboard.getNumber("Driving D", AutoConstants.kAutoDrivingD),
-          SmartDashboard.getNumber("Driving IZone", AutoConstants.kAutoDrivingIZone)
-        ), 
-        new PIDConstants(
-          SmartDashboard.getNumber("Turning P", AutoConstants.kAutoTurningP),
-          SmartDashboard.getNumber("Turning I", AutoConstants.kAutoTurningI),
-          SmartDashboard.getNumber("Turning D", AutoConstants.kAutoTurningD),
-          SmartDashboard.getNumber("Turning IZone", AutoConstants.kAutoTurningIZone)
-        ), 
-        DriveConstants.kMaxSpeedMetersPerSecond, 
-        DriveConstants.kDriveBaseRadiusMeters, 
-        new ReplanningConfig(true, true)
-      );
-      
-      resetEncoders();
-      mPigeon.reset();
-
-      AutoBuilder.configureHolonomic(
-        () -> mOdometry.getPoseMeters(), 
-        this::resetOdometry, 
-        this::getSpeeds, 
-        this::setRobotRelativeStates, 
-        pathConfig, 
-        () -> {
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        }, 
-        this
-      );
-    });
   }
 }

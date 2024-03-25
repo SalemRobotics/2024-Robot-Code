@@ -35,62 +35,23 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
-  "eventMarkers": [
+  "constraintZones": [
     {
-      "name": "1st shoot angle",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "angle45"
-              }
-            }
-          ]
-        }
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.4,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 1080.0,
+        "maxAngularAcceleration": 2160.0
       }
-    },
+    }
+  ],
+  "eventMarkers": [
     {
       "name": "shoot",
       "waypointRelativePos": 0.6,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "index to shoot"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "2nd shoot angle",
-      "waypointRelativePos": 0.75,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "angle45"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "shoot",
-      "waypointRelativePos": 0.9,
       "command": {
         "type": "parallel",
         "data": {
@@ -114,7 +75,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 41.71380080595016,
+    "rotation": 38.100339200677865,
     "rotateFast": false
   },
   "reversed": false,

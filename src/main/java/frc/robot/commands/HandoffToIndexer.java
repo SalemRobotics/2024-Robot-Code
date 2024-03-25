@@ -29,7 +29,7 @@ public class HandoffToIndexer extends SequentialCommandGroup {
             mSourceAmpMech.runSAM(SAMPositions.HANDOFF_NOTE, mSourceAmpMech::hasReachedSetpoint),
             // run intake backwards, indexer forwards, and SAM roller backwards 
             new ParallelDeadlineGroup(
-                new WaitCommand(.5),
+                new WaitCommand(0.5),
                 mIntake.intakeRing(IntakeConstants.kIntakeSpeedOut, mIntake::hasHitBreakbeam),
                 mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeedIn),
                 mSamRoller.runRoller(SAMConstants.kSAMspeedOut)

@@ -67,7 +67,7 @@
   "eventMarkers": [
     {
       "name": "shoot first note",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "race",
         "data": {
@@ -90,7 +90,7 @@
     },
     {
       "name": "just index",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 1.55,
       "command": {
         "type": "parallel",
         "data": {
@@ -98,13 +98,7 @@
             {
               "type": "named",
               "data": {
-                "name": "index to shoot"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 1.0
+                "name": "index without shooting"
               }
             }
           ]

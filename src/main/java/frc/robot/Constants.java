@@ -21,8 +21,8 @@ public final class Constants {
         public static final double kControllerErrorTolerance = 0.1; // percent
         public static final double kOutputVelocityThreshold = 0.85; // percent
 
-        public static final double kLeftMotorLobSpeed = 0.7; // percent
-        public static final double kRightMotorLobSpeed = 0.5; // percent
+        public static final double kLobSpeed = 0.75; // percent
+        public static final double kLobSetpointDegrees = 28.0;
 
         public static final int kPivotMotorID = 13;
         public static final int kRightMotorID = 14;
@@ -40,28 +40,27 @@ public final class Constants {
         public static final double kUpperAngleLimitDegrees = 53.0;
         public static final double kLowerAngleLimitDegrees = 24.0;
 
-        public static final double kEncoderOffsetDegrees = 231.9;
+        public static final double kEncoderOffsetDegrees = 201.0;
 
         public static final double kDefaultPivotDegrees = 53.0;
 
+        static final double kDistOffset = -0.4;
+
         /** Maps distances in meters to angles in degrees */
         public static final InterpolatingDoubleTreeMap kPivotDistanceAngleMap = new InterpolatingDoubleTreeMap() {{
-            put(1.166, 53.0);
-            put(1.273, 51.0);
-            put(1.567, 47.5);
-            put(2.028, 41.0);
-            put(2.854, 35.0);
-            put(3.3798, 30.0);
-            put(4.280, 25.0);
-            put(4.721, 24.0);
+            put(1.351 + kDistOffset, 52.5);
+            put(1.666 + kDistOffset, 47.5);
+            put(2.252 + kDistOffset, 42.0);
+            put(2.765 + kDistOffset, 38.0);
+            put(3.440 + kDistOffset, 33.0);
+            put(4.001 + kDistOffset, 30.0);
+            put(4.666 + kDistOffset, 28.0);
         }};
     }
     
     public static final class IndexerConstants {
         public static final int kIndexerLowerID = 11;
         public static final int kIndexerUpperID = 12;
-
-        public static final int kBreakbeamID = 8;
 
         public static final double kIndexerSpeedIn = 1.0;
         public static final double kIndexerSpeedOut = -1.0;
@@ -72,6 +71,7 @@ public final class Constants {
         public static final double kIntakeSpeedOut = -0.5;
 
         public static final int kSparkMaxID = 10;
+        public static final int kBreakbeamID = 0;
     }
 
     public static final class VisionConstants {
@@ -137,10 +137,12 @@ public final class Constants {
 
         public static final int kPigeonID = 0;
 
-        // misc PID controls
+        // tracking PID controls
         public static final double kHeadingP = 0.0125;
         public static final double kHeadingI = 0.001;
         public static final double kHeadingD = 0.001;
+
+        public static final double kTrackingYawOffset = -12.2;
         
         // SPARK MAX IDs
         public static final int kFrontLeftDrivingCanID = 2;
@@ -222,46 +224,51 @@ public final class Constants {
 
         /** Map of folder names to lists of auto command names */
         public static final HashMap<String, List<String>> kAutoFolders = new HashMap<>() {{
-            put("Test Autos", List.of(
-                "Test Auto",
-                "Test Auto 2",       
-                "Speed Test Auto",   
-                "Test 2 piece auto",
-                "Test Auto 3",       
-                "Test Error Auto",   
-                "Test Error Auto 2",
-                "Test Error Auto 3",
-                "Test Pickup Auto",  
-                "Test Tumble Auto",  
-                "Test Turn Auto" 
-            ));
+            // put("Test Autos", List.of(
+            //     "Test Auto",
+            //      "Test Auto 2",       
+            //     "Speed Test Auto",   
+            //     "Test 2 piece auto",
+            //     "Test Auto 3",       
+            //     "Test Error Auto",   
+            //     "Test Error Auto 2",
+            //     "Test Error Auto 3",
+            //     "Test Pickup Auto",  
+            //     "Test Tumble Auto",  
+            //     "Test Turn Auto" 
+            // ));
+
             put("Basic Autos", List.of(
                 "Do Nothing",
-                "Shoot + 1",            
-                "Shoot + 2",            
-                "Shoot + 3",            
+                "Mobility",
+                "Shoot + Taxi",
+                "Shoot + 1",                       
+                "Shoot + 3", 
+                "Shoot + 1, 2",
+                "Shoot + 1, 2, 3, 4",         
                 "Shoot and Do Nothing"
             ));
-            put("Ampside Autos", List.of(
-                "Amp 5 Note Auto",
-                "Amp 6 Note Auto",
-                "Amp 7 Note Auto"
-            ));
+            
+            // put("Ampside Autos", List.of(
+            //     "Amp 5 Note Auto",
+            //     "Amp 6 Note Auto",
+            //     "Amp 7 Note Auto"
+            // ));
 
-            put("Non-Ampside Autos", List.of(
-                "Non-Amp 5 Note",     
-                "Non-Amp 6 Note Auto"
-            ));
+            // put("Non-Ampside Autos", List.of(
+            //     "Non-Amp 5 Note",     
+            //     "Non-Amp 6 Note Auto"
+            // ));
 
-            put("Race Autos", List.of(
-                "Amp Side Counterrace Auto",
-                "Non-Amp Counterrace Auto",  
-                "Amp Side Race Auto",        
-                "Non-Amp Race Auto"
-            ));
+            // put("Race Autos", List.of(
+            //     "Amp Side Counterrace Auto",
+            //     "Non-Amp Counterrace Auto",  
+            //     "Amp Side Race Auto",        
+            //     "Non-Amp Race Auto"
+            // ));
 
             put("Partner Autos", List.of(
-                "Partner Auto"
+                //"Partner Auto"
             ));
         }};
     }
@@ -294,6 +301,6 @@ public final class Constants {
         public static final double kUpperAngleLimit = 340.0;
         public static final  double kLowerAngleLimit = 208.0;
 
-        public static final double kSetpointTolerance = 5.0;
+        public static final double kSetpointTolerance = 0.5;
     }
 }

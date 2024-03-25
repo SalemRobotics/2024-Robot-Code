@@ -16,7 +16,7 @@ import frc.robot.Constants.IntakeConstants;
  */
 public class Intake extends SubsystemBase {
     final CANSparkMax mIntakeMotor = new CANSparkMax(IntakeConstants.kSparkMaxID, MotorType.kBrushless); 
-    final DigitalInput mBreakbeam = new DigitalInput(0);
+    final DigitalInput mBreakbeam = new DigitalInput(IntakeConstants.kBreakbeamID);
 
     public boolean hasHitBreakbeam() {
         return !mBreakbeam.get();
@@ -31,7 +31,7 @@ public class Intake extends SubsystemBase {
     public Command intakeRing(double speed) {
         return runEnd(
             () -> mIntakeMotor.set(speed), 
-            () -> mIntakeMotor.set(0)
+            () -> mIntakeMotor.stopMotor()
         );
     }
 
@@ -46,7 +46,7 @@ public class Intake extends SubsystemBase {
         return new FunctionalCommand(
             () -> {}, // init
             () -> mIntakeMotor.set(speed), // exec
-            isFinished -> mIntakeMotor.set(0), // end
+            isFinished -> mIntakeMotor.stopMotor(), // end
             endCondition, // isFinished
             this
         );

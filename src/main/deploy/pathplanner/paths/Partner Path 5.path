@@ -61,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Partner Paths",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

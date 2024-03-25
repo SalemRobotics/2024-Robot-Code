@@ -13,7 +13,6 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -33,9 +32,9 @@ public class SourceAmpMech extends SubsystemBase {
 
     /** Enum for valid SAM pivot positions, measured in degrees */
     public enum SAMPositions {
-        HANDOFF_NOTE(211.0),
+        HANDOFF_NOTE(214.0),
         INTAKE_SOURCE(290.0),
-        EJECT_AMP(280.0);
+        EJECT_AMP(307.5);
         
         public final double value;
         private SAMPositions(double value) {
@@ -59,18 +58,19 @@ public class SourceAmpMech extends SubsystemBase {
 
         mPivotMotor.burnFlash();
 
-        SmartDashboard.putNumber("samP", SAMConstants.kPivotP);
-        SmartDashboard.putNumber("samI", SAMConstants.kPivotI);
-        SmartDashboard.putNumber("samD", SAMConstants.kPivotD);
-        SmartDashboard.putNumber("samFF", SAMConstants.kPivotFF);
+        // SmartDashboard.putNumber("samP", SAMConstants.kPivotP);
+        // SmartDashboard.putNumber("samI", SAMConstants.kPivotI);
+        // SmartDashboard.putNumber("samD", SAMConstants.kPivotD);
+        // SmartDashboard.putNumber("samFF", SAMConstants.kPivotFF);
     }
 
     @Override
     public void periodic() {
-        setShuffleboardPID();
-
         setPivotAngle(mCurrentSetpoint);
-        
+    }
+
+    void printDebug() {
+        SmartDashboard.putBoolean("SAM enabled", mIsEnabled);
         SmartDashboard.putBoolean("SAM Is At Setpoint", hasReachedSetpoint());
         SmartDashboard.putNumber("SAM Encoder", mPivotEncoder.getPosition());
         SmartDashboard.putNumber("SAM Setpoint", mCurrentSetpoint);
@@ -130,11 +130,6 @@ public class SourceAmpMech extends SubsystemBase {
         mCurrentSetpoint = setpoint.value;
     }
 
-    /** Intended for debug/testing only */
-    public Command movePivotManual(double axisOutput) {
-        return run(() -> mPivotMotor.set(axisOutput));
-    }
-
     public boolean hasReachedSetpoint() {
         return Math.abs(mPivotEncoder.getPosition() - mCurrentSetpoint) <= SAMConstants.kSetpointTolerance;
     }
@@ -160,7 +155,7 @@ public class SourceAmpMech extends SubsystemBase {
                 mIsEnabled = true;
                 setCurrentSetpoint(position);
             },
-            () -> mIsEnabled = false
+            () -> {}
         );
     }
 

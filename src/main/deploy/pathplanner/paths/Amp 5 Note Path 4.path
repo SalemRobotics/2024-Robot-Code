@@ -29,11 +29,23 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.9,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
       "name": "shoot",
-      "waypointRelativePos": 0.85,
+      "waypointRelativePos": 0.95,
       "command": {
         "type": "parallel",
         "data": {
@@ -43,11 +55,28 @@
               "data": {
                 "name": "index to shoot"
               }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "keep indexing",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "race",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "index without shooting"
+              }
             },
             {
               "type": "wait",
               "data": {
-                "waitTime": 4.0
+                "waitTime": 0.5
               }
             }
           ]

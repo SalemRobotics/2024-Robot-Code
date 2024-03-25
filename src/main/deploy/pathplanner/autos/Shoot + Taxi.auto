@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2,
-      "y": 5.55
+      "x": 0.81,
+      "y": 4.54
     },
-    "rotation": 0
+    "rotation": -57.70175521947081
   },
   "command": {
     "type": "sequential",
@@ -24,23 +24,16 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 4.0
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Shoot + 2 Path"
-                }
-              }
-            ]
+            "pathName": "shoot + taxi path"
           }
         }
       ]

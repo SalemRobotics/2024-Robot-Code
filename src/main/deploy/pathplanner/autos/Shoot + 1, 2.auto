@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.38,
-      "y": 7.0
+      "x": 0.4,
+      "y": 4.09
     },
-    "rotation": 0.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -16,21 +16,34 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "Shoot + 1 Path"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake without indexing"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Shoot + 3 Path"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp 5 Note Path 2"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "run shooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake without indexing"
                 }
               }
             ]

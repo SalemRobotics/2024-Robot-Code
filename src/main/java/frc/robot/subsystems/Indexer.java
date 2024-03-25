@@ -5,9 +5,7 @@ import java.util.function.BooleanSupplier;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IndexerConstants;
 
@@ -18,31 +16,12 @@ public class Indexer extends SubsystemBase {
     final TalonFX mUpperMotor = new TalonFX(IndexerConstants.kIndexerUpperID);
     final TalonFX mLowerMotor = new TalonFX(IndexerConstants.kIndexerLowerID);
 
-    final DigitalInput mBreakbeam = new DigitalInput(IndexerConstants.kBreakbeamID);
-
     public Indexer() {
         mUpperMotor.setInverted(true);
         mUpperMotor.setNeutralMode(NeutralModeValue.Coast);
         
         mLowerMotor.setInverted(true);
         mLowerMotor.setNeutralMode(NeutralModeValue.Coast);
-    }
-
-    /**
-     * Runs the lower indexer motor until the breakbeam is hit
-     * @param speed Speed to run lower indexer motor at.
-     * @return runEnd command
-     * @see Command
-     * @see BooleanSupplier
-     */
-    public Command runLowerIndexerTerminate(double speed) {
-        return new FunctionalCommand(
-            () -> {},
-            () -> mLowerMotor.set(speed), 
-            isFinished -> mLowerMotor.stopMotor(),
-            () -> mBreakbeam.get(),
-            this
-        );
     }
 
     /**

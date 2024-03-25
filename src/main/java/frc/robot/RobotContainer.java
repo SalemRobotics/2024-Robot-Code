@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
@@ -13,12 +12,14 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.HandoffFromIndexer;
 import frc.robot.commands.HandoffToIndexer;
 import frc.robot.commands.IntakeInAndIndex;
 import frc.robot.commands.IntakeOutAndIndex;
+import frc.robot.commands.LobNote;
 import frc.robot.commands.SpinUpShooterAndIndex;
 import frc.robot.commands.TrackTargetAndShoot;
 import frc.robot.Constants.ControllerConstants;
@@ -49,13 +50,14 @@ public class RobotContainer {
   final Vision mVision = new Vision();
   final SourceAmpMech mSourceAmpMech = new SourceAmpMech();
   final SAMRoller mSamRoller = new SAMRoller();
-  
-  // final AutoPicker mAutoPicker;
+
+  final AutoPicker mAutoPicker;
   
   public RobotContainer() {
     configureBindings();
     configureNamedCommands();
-    // mAutoPicker = new AutoPicker();
+
+    mAutoPicker = new AutoPicker();
     SmartDashboard.putData("Field", m_field);
 
     // Set default Drivetrain command to a RunCommand containing Drivetrain::drive.
@@ -105,15 +107,24 @@ public class RobotContainer {
       mDrivetrain.setX()
     );
 
+    // resets heading
     new JoystickButton(mDriveController, Button.kStart.value).onTrue(
       mDrivetrain.resetHeading()
     );
 
+    // standard control for tracking and targeting with an apriltag 
     new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
       new TrackTargetAndShoot(
         mDrivetrain, mVision, mIndexer, mShooter,
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband)
+      )
+    );
+    
+    // Failsafe for shooting without a target
+    new JoystickButton(mDriveController, Button.kBack.value).whileTrue(
+      new SpinUpShooterAndIndex(
+        mIndexer, mShooter, mVision
       )
     );
     // #endregion
@@ -122,31 +133,35 @@ public class RobotContainer {
     
     // run SAM roller if SAM is active until break beam is hit, otherwise run Intake/Indexer
     new JoystickButton(mOperatorController, Button.kRightBumper.value).whileTrue(
-      // mSourceAmpMech.isEnabled() ? 
-      // mSamRoller.runRoller(SAMConstants.SAMspeedIn, mSamRoller::hasNoteHitBreakbeam) :
-      new IntakeInAndIndex(mIntake, mIndexer)
+      new ConditionalCommand(
+        mSamRoller.runRoller(SAMConstants.kSAMspeedOut, 
+          () -> mSamRoller.hasNoteHitBreakbeam(mSourceAmpMech::getCurrentSetpoint)),
+        new IntakeInAndIndex(mIntake, mIndexer), 
+        mSourceAmpMech::isEnabled)
     );
     
     // run SAM roller if SAM is active, otherwise run Intake/Indexer
     new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
-      // mSourceAmpMech.isEnabled() ?
-      // mSamRoller.runRoller(SAMConstants.SAMspeedOut) :
-      new IntakeOutAndIndex(mIntake, mIndexer)
+      new ConditionalCommand(
+        mSamRoller.runRoller(SAMConstants.kSAMspeedIn), 
+        new IntakeOutAndIndex(mIntake, mIndexer), 
+        mSourceAmpMech::isEnabled)
     );
 
-    new JoystickButton(mOperatorController, Button.kB.value).whileTrue(mSamRoller.runRoller(SAMConstants.kSAMspeedIn, mSamRoller::hasNoteHitBreakbeam));
-
-    new JoystickButton(mOperatorController, Button.kA.value).whileTrue(mSamRoller.runRoller(SAMConstants.kSAMspeedOut));
-
     // set sam position to INTAKE_SOURCE, then handoff to indexer on interrupt
-    new JoystickButton(mOperatorController, Button.kX.value).onTrue(
-      mSourceAmpMech.runSAM(SAMPositions.INTAKE_SOURCE, mSamRoller::hasNoteHitBreakbeam)
+    new JoystickButton(mOperatorController, Button.kY.value).whileTrue(
+      mSourceAmpMech.runSAM(SAMPositions.INTAKE_SOURCE, 
+      () -> mSamRoller.hasNoteHitBreakbeam(mSourceAmpMech::getCurrentSetpoint))
     ).onFalse(new HandoffToIndexer(mSourceAmpMech, mSamRoller, mIntake, mIndexer));
 
     // handoff to SAM, then stay at EJECT_AMP, then handoff to indexer on interrupt
-    new JoystickButton(mOperatorController, Button.kY.value).whileTrue(
+    new JoystickButton(mOperatorController, Button.kX.value).onTrue(
       new HandoffFromIndexer(mSourceAmpMech, mSamRoller, mIntake, mIndexer)
     ).onFalse(new HandoffToIndexer(mSourceAmpMech, mSamRoller, mIntake, mIndexer));
+
+    new JoystickButton(mOperatorController, Button.kB.value).whileTrue(
+      new LobNote(mIndexer, mShooter)
+    );
     // #endregion
 
   }
@@ -156,6 +171,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("close intake", new IntakeInAndIndex(mIntake, mIndexer, IndexerConstants.kIndexerSpeedIn, IndexerConstants.kIndexerSpeedIn ));
     NamedCommands.registerCommand("intake without indexing", mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn));
     NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter, mVision));
+    NamedCommands.registerCommand("index without shooting", mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn, IndexerConstants.kIndexerSpeedOut));
     NamedCommands.registerCommand("index to shoot", mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn));
     NamedCommands.registerCommand("run shooter", mShooter.shootRing(mVision::getDistance));
     NamedCommands.registerCommand("tune shooter", mShooter.shootRing(mVision::getDistance));
@@ -163,7 +179,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Shoot + 1, 2, 3, 4"); //mAutoPicker.getSelected();
+    return mAutoPicker.getSelected();
   }
 
 }

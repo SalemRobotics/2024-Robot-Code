@@ -73,15 +73,13 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         // continously set pivot reference
         setPivotAngle(mCurrentSetpoint);
-        
-        printDebug();
     }
 
     /**
      * Prints various values regarding the shooter pivot to shuffleboard for debugging
      */
-    private void printDebug() {
-        SmartDashboard.putNumber("Current setpoint", mCurrentSetpoint);
+    void printDebug() {
+        // SmartDashboard.putNumber("Current setpoint", mCurrentSetpoint);
         SmartDashboard.putNumber("Current encoder angle", mPivotEncoder.getPosition());
         SmartDashboard.putNumber("Current floor angle", getFloorRelativeAngle());
         SmartDashboard.putNumber("Encoder zero", mPivotEncoder.getZeroOffset());
@@ -176,10 +174,14 @@ public class Shooter extends SubsystemBase {
     public Command lobRing() {
         return runEnd(
             () -> {
-                mLeftMotor.set(ShooterConstants.kLeftMotorLobSpeed);
-                mRightMotor.set(ShooterConstants.kRightMotorLobSpeed);
+                setCurrentSetpoint(ShooterConstants.kLobSetpointDegrees);
+                
+                mLeftMotor.set(ShooterConstants.kLobSpeed);
+                mRightMotor.set(ShooterConstants.kLobSpeed);
             }, 
             () -> {
+                setCurrentSetpoint(ShooterConstants.kDefaultPivotDegrees);
+
                 mLeftMotor.stopMotor();
                 mRightMotor.stopMotor();
             }
