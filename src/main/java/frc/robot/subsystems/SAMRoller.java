@@ -20,9 +20,7 @@ public class SAMRoller extends SubsystemBase {
     boolean mIsBeamBroke = false;
 
     @Override
-    public void periodic() {}
-
-    void printDebug() {
+    public void periodic() {
         SmartDashboard.putBoolean("SAM Has Note", !mBreakbeam.get());
     }
 
@@ -63,15 +61,16 @@ public class SAMRoller extends SubsystemBase {
      * @return True if the gamepiece has passed the break beam
      */
     public boolean hasNotePassedBreakbeam() {
-        
-        if (!mBreakbeam.get() && mIsBeamBroke) {
-            mIsBeamBroke = false;
-            return true;
-        }
-        
+        // if beam is broken
         if (!mBreakbeam.get()) {
             mIsBeamBroke = true;
             return false;
+        }
+
+        // if beam is unbroken and was previously broken
+        if (mBreakbeam.get() && mIsBeamBroke) {
+            mIsBeamBroke = false;
+            return true;
         }
          
         return false;

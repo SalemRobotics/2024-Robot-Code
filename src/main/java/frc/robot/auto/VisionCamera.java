@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.auto;
 
 import java.util.Optional;
 import java.util.stream.Collectors;

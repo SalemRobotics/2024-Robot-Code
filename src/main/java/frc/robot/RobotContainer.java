@@ -7,14 +7,12 @@ package frc.robot;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.HandoffFromIndexer;
 import frc.robot.commands.HandoffToIndexer;
 import frc.robot.commands.IntakeInAndIndex;
@@ -26,6 +24,7 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.SAMConstants;
+import frc.robot.auto.AutoPicker;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
@@ -40,8 +39,8 @@ public class RobotContainer {
   
   public static final Field2d m_field = new Field2d();
 
-  final XboxController mDriveController = new XboxController(ControllerConstants.kDriverPort); 
-  final XboxController mOperatorController = new XboxController(ControllerConstants.kOperatorPort);
+  final CommandXboxController mDriveController = new CommandXboxController(ControllerConstants.kDriverPort); 
+  final CommandXboxController mOperatorController = new CommandXboxController(ControllerConstants.kOperatorPort);
 
   final Drivetrain mDrivetrain = new Drivetrain(true, true);
   final Intake mIntake = new Intake();
@@ -77,25 +76,25 @@ public class RobotContainer {
 
   private void configureBindings() {
     // #region Cardinal Direction Commands
-    new JoystickButton(mDriveController, Button.kY.value).whileTrue(
+    mDriveController.y().whileTrue(
       mDrivetrain.trackCardinal(Direction.North, 
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
     );
 
-    new JoystickButton(mDriveController, Button.kB.value).whileTrue(
+    mDriveController.b().whileTrue(
       mDrivetrain.trackCardinal(Direction.East,
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
     );
 
-    new JoystickButton(mDriveController, Button.kA.value).whileTrue(
+    mDriveController.a().whileTrue(
       mDrivetrain.trackCardinal(Direction.South,
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
     );
 
-    new JoystickButton(mDriveController, Button.kX.value).whileTrue(
+    mDriveController.x().whileTrue(
       mDrivetrain.trackCardinal(Direction.West,
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftX(), ControllerConstants.kDriveDeadband))
@@ -103,17 +102,17 @@ public class RobotContainer {
     // #endregion
 
     // #region Driver controls
-    new JoystickButton(mDriveController, Button.kLeftBumper.value).whileTrue(
+    mDriveController.leftBumper().whileTrue(
       mDrivetrain.setX()
     );
 
     // resets heading
-    new JoystickButton(mDriveController, Button.kStart.value).onTrue(
+    mDriveController.start().whileTrue(
       mDrivetrain.resetHeading()
     );
 
     // standard control for tracking and targeting with an apriltag 
-    new JoystickButton(mDriveController, Button.kRightBumper.value).whileTrue(
+    mDriveController.rightBumper().whileTrue(
       new TrackTargetAndShoot(
         mDrivetrain, mVision, mIndexer, mShooter,
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
@@ -122,7 +121,7 @@ public class RobotContainer {
     );
     
     // Failsafe for shooting without a target
-    new JoystickButton(mDriveController, Button.kBack.value).whileTrue(
+    mDriveController.leftTrigger().whileTrue(
       new SpinUpShooterAndIndex(
         mIndexer, mShooter, mVision
       )
@@ -132,7 +131,7 @@ public class RobotContainer {
     // #region Operator Controls
     
     // run SAM roller if SAM is active until break beam is hit, otherwise run Intake/Indexer
-    new JoystickButton(mOperatorController, Button.kRightBumper.value).whileTrue(
+    mOperatorController.rightBumper().whileTrue(
       new ConditionalCommand(
         mSamRoller.runRoller(SAMConstants.kSAMspeedOut, 
           () -> mSamRoller.hasNoteHitBreakbeam(mSourceAmpMech::getCurrentSetpoint)),
@@ -141,7 +140,7 @@ public class RobotContainer {
     );
     
     // run SAM roller if SAM is active, otherwise run Intake/Indexer
-    new JoystickButton(mOperatorController, Button.kLeftBumper.value).whileTrue(
+    mOperatorController.leftBumper().whileTrue(
       new ConditionalCommand(
         mSamRoller.runRoller(SAMConstants.kSAMspeedIn), 
         new IntakeOutAndIndex(mIntake, mIndexer), 
@@ -149,17 +148,17 @@ public class RobotContainer {
     );
 
     // set sam position to INTAKE_SOURCE, then handoff to indexer on interrupt
-    new JoystickButton(mOperatorController, Button.kY.value).whileTrue(
+    mOperatorController.y().whileTrue(
       mSourceAmpMech.runSAM(SAMPositions.INTAKE_SOURCE, 
       () -> mSamRoller.hasNoteHitBreakbeam(mSourceAmpMech::getCurrentSetpoint))
     ).onFalse(new HandoffToIndexer(mSourceAmpMech, mSamRoller, mIntake, mIndexer));
 
     // handoff to SAM, then stay at EJECT_AMP, then handoff to indexer on interrupt
-    new JoystickButton(mOperatorController, Button.kX.value).onTrue(
+    mOperatorController.x().whileTrue(
       new HandoffFromIndexer(mSourceAmpMech, mSamRoller, mIntake, mIndexer)
     ).onFalse(new HandoffToIndexer(mSourceAmpMech, mSamRoller, mIntake, mIndexer));
 
-    new JoystickButton(mOperatorController, Button.kB.value).whileTrue(
+    mOperatorController.b().whileTrue(
       new LobNote(mIndexer, mShooter)
     );
     // #endregion

@@ -150,12 +150,11 @@ public class SourceAmpMech extends SubsystemBase {
     }
 
     public Command runSAM(SAMPositions position) {
-        return runEnd(
+        return run(
             () -> {
                 mIsEnabled = true;
                 setCurrentSetpoint(position);
-            },
-            () -> {}
+            }
         );
     }
 
@@ -166,7 +165,7 @@ public class SourceAmpMech extends SubsystemBase {
                 setCurrentSetpoint(position);
             },
             () -> {}, // exec
-            isFinished -> mIsEnabled = false,
+            isFinished -> mIsEnabled = false, // end
             endCondition,
             this
         );

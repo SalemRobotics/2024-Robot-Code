@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,6 +18,11 @@ import frc.robot.Constants.IntakeConstants;
 public class Intake extends SubsystemBase {
     final CANSparkMax mIntakeMotor = new CANSparkMax(IntakeConstants.kSparkMaxID, MotorType.kBrushless); 
     final DigitalInput mBreakbeam = new DigitalInput(IntakeConstants.kBreakbeamID);
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putBoolean("Intake Has Note", hasHitBreakbeam());
+    }
 
     public boolean hasHitBreakbeam() {
         return !mBreakbeam.get();

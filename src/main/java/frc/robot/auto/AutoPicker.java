@@ -1,14 +1,14 @@
-package frc.robot;
+package frc.robot.auto;
 
 import java.util.HashMap;
 import java.util.List;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.AutoConstants;
 
 /** Class to pick an auto from a multitude of 'folders' from Shuffleboard */
@@ -31,8 +31,8 @@ public class AutoPicker {
         var chooser = new SendableChooser<Command>();
 
         // creates default option, to avoid issues with folders containing only one command
-        chooser.setDefaultOption("None", null);
-        mCommandNameLookup.putIfAbsent(null, "None");
+        chooser.setDefaultOption("None", new InstantCommand());
+        mCommandNameLookup.putIfAbsent(new InstantCommand(), "None");
         
         names.forEach((name) -> createChooserOptions(chooser, name));
         chooser.onChange((command) -> setCurrentCommand(chooser));
@@ -46,10 +46,12 @@ public class AutoPicker {
      * @param name Name of the command option 
      * @see SendableChooser
      * @see Command
-     * @see AutoBuilder
+     * @see PathPlannerAuto
      */
     private void createChooserOptions(SendableChooser<Command> chooser, String name) {
         var command = new PathPlannerAuto(name);
+
+        
         mCommandNameLookup.putIfAbsent(command, name);
         chooser.addOption(name, command);
     }

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -19,9 +20,12 @@ import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Direction;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
@@ -75,7 +79,7 @@ public class Drivetrain extends SubsystemBase {
         mRearRight.getPosition()
       });
 
-  final boolean mIsFieldRelative, mIsRateLimited;
+  boolean mIsFieldRelative, mIsRateLimited;
 
   /**
    * Constructs a drivetrain subsystem
@@ -322,6 +326,24 @@ public class Drivetrain extends SubsystemBase {
    */
   public Command trackCardinal(Direction direction, DoubleSupplier xSpeed, DoubleSupplier ySpeed) {
     return trackSetpoint(xSpeed, ySpeed, () -> direction.value, this::getPigeonModulus);
+  }
+
+  public Command chaseTarget(DoubleSupplier distance, DoubleSupplier yaw, BooleanSupplier isAtTarget) {
+    return new SequentialCommandGroup(
+      // make driving robot relative for this command
+      new InstantCommand( () -> mIsFieldRelative = false ),
+      new WaitUntilCommand(isAtTarget),
+      // run track target with a fed X speed to chase a target, 
+      // and end when target is aquired in indexer, or otherwise cancelled
+      trackTarget(distance, yaw,
+        () -> MathUtil.clamp(
+          -distance.getAsDouble() * Math.cos( Units.degreesToRadians( yaw.getAsDouble() )),
+          -1.0, 1.0),
+        () -> 0.0
+      ).until(isAtTarget),
+      // set back to field relative
+      new InstantCommand( () -> mIsFieldRelative = true )
+    );
   }
 
   /**

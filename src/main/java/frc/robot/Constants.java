@@ -71,7 +71,7 @@ public final class Constants {
         public static final double kIntakeSpeedOut = -0.5;
 
         public static final int kSparkMaxID = 10;
-        public static final int kBreakbeamID = 0;
+        public static final int kBreakbeamID = 7;
     }
 
     public static final class VisionConstants {
