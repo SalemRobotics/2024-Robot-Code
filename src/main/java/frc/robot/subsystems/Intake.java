@@ -2,8 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,7 +15,7 @@ import frc.robot.Constants.IntakeConstants;
  * Intake subsystem with one motor. Brings gamepieces from the field to within the robot.
  */
 public class Intake extends SubsystemBase {
-    final CANSparkMax mIntakeMotor = new CANSparkMax(IntakeConstants.kSparkMaxID, MotorType.kBrushless); 
+    final TalonFX mIntakeMotor = new TalonFX(IntakeConstants.kSparkMaxID);
     final DigitalInput mBreakbeam = new DigitalInput(IntakeConstants.kBreakbeamID);
 
     @Override

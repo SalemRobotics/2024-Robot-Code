@@ -17,7 +17,6 @@ public class Indexer extends SubsystemBase {
     final TalonFX mLowerMotor = new TalonFX(IndexerConstants.kIndexerLowerID);
 
     public Indexer() {
-        mUpperMotor.setInverted(true);
         mUpperMotor.setNeutralMode(NeutralModeValue.Coast);
         
         mLowerMotor.setInverted(true);
