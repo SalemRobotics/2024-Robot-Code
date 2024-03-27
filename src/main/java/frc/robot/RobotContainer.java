@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,10 +32,11 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.SAMRoller;
 import frc.robot.subsystems.SourceAmpMech;
+import frc.robot.subsystems.StatusLED;
 import frc.util.SwerveUtils;
 
 public class RobotContainer {
-  
+
   public static final Field2d m_field = new Field2d();
 
   final CommandXboxController mDriveController = new CommandXboxController(ControllerConstants.kDriverPort); 
@@ -51,6 +51,7 @@ public class RobotContainer {
   final SAMRoller mSamRoller = new SAMRoller();
 
   final AutoPicker mAutoPicker;
+  final StatusLED mLED = new StatusLED();
   
   public RobotContainer() {
     configureBindings();

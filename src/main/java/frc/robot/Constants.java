@@ -303,4 +303,10 @@ public final class Constants {
 
         public static final double kSetpointTolerance = 0.5;
     }
+
+    public static final class LEDconstants {
+        public static final int ledPort = 0;
+        public static final int ledLength = 120;
+        public static final int ledChaserLength = 10;
+    }
 }
