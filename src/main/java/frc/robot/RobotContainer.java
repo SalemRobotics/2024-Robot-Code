@@ -36,8 +36,8 @@ import frc.robot.subsystems.StatusLED;
 import frc.util.SwerveUtils;
 
 public class RobotContainer {
-
-  public static final Field2d m_field = new Field2d();
+  
+  public static final Field2d mField = new Field2d();
 
   final CommandXboxController mDriveController = new CommandXboxController(ControllerConstants.kDriverPort); 
   final CommandXboxController mOperatorController = new CommandXboxController(ControllerConstants.kOperatorPort);
@@ -58,7 +58,7 @@ public class RobotContainer {
     configureNamedCommands();
 
     mAutoPicker = new AutoPicker();
-    SmartDashboard.putData("Field", m_field);
+    SmartDashboard.putData("Field", mField);
 
     // Set default Drivetrain command to a RunCommand containing Drivetrain::drive.
     mDrivetrain.setDefaultCommand(
@@ -69,10 +69,6 @@ public class RobotContainer {
           -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband)), 
         mDrivetrain)
     );
-
-    // mSourceAmpMech.setDefaultCommand(
-    //   mSourceAmpMech.runSAM(SAMPositions.HANDOFF_NOTE)
-    // );
   }
 
   private void configureBindings() {
@@ -122,7 +118,7 @@ public class RobotContainer {
     );
     
     // Failsafe for shooting without a target
-    mDriveController.leftTrigger().whileTrue(
+    mDriveController.rightTrigger().whileTrue(
       new SpinUpShooterAndIndex(
         mIndexer, mShooter, mVision
       )
@@ -159,11 +155,10 @@ public class RobotContainer {
       new HandoffFromIndexer(mSourceAmpMech, mSamRoller, mIntake, mIndexer)
     ).onFalse(new HandoffToIndexer(mSourceAmpMech, mSamRoller, mIntake, mIndexer));
 
-    mOperatorController.b().whileTrue(
+    mOperatorController.rightTrigger().whileTrue(
       new LobNote(mIndexer, mShooter)
     );
     // #endregion
-
   }
 
   public void configureNamedCommands(){
@@ -182,4 +177,7 @@ public class RobotContainer {
     return mAutoPicker.getSelected();
   }
 
+  public Command getDisabledCommand() {
+    return mLED.getDisabledCommand();
+  }
 }

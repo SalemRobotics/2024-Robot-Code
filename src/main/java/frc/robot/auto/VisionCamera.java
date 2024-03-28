@@ -58,6 +58,7 @@ public class VisionCamera {
         if (getBestTarget().isEmpty())
             return Optional.empty();
         PhotonTrackedTarget target;
+        
         try {
             target = getBestTarget().get();
         } catch (Exception e) {

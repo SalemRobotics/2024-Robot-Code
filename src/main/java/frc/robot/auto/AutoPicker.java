@@ -50,7 +50,6 @@ public class AutoPicker {
      */
     private void createChooserOptions(SendableChooser<Command> chooser, String name) {
         var command = new PathPlannerAuto(name);
-
         
         mCommandNameLookup.putIfAbsent(command, name);
         chooser.addOption(name, command);

@@ -21,7 +21,7 @@ public class SAMRoller extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putBoolean("SAM Has Note", !mBreakbeam.get());
+        SmartDashboard.putBoolean("SAM Has Note", mBreakbeam.get());
     }
 
     /**
@@ -62,13 +62,13 @@ public class SAMRoller extends SubsystemBase {
      */
     public boolean hasNotePassedBreakbeam() {
         // if beam is broken
-        if (!mBreakbeam.get()) {
+        if (mBreakbeam.get()) {
             mIsBeamBroke = true;
             return false;
         }
 
         // if beam is unbroken and was previously broken
-        if (mBreakbeam.get() && mIsBeamBroke) {
+        if (!mBreakbeam.get() && mIsBeamBroke) {
             mIsBeamBroke = false;
             return true;
         }
@@ -77,6 +77,6 @@ public class SAMRoller extends SubsystemBase {
     }
 
     public boolean hasNoteHitBreakbeam(DoubleSupplier setpoint) {
-        return !mBreakbeam.get() && Double.compare(setpoint.getAsDouble(), SAMPositions.EJECT_AMP.value) != 0;
+        return mBreakbeam.get() && Double.compare(setpoint.getAsDouble(), SAMPositions.EJECT_AMP.value) != 0;
     }
 }

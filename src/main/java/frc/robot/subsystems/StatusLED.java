@@ -3,10 +3,14 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDconstants;
@@ -25,6 +29,46 @@ public class StatusLED extends SubsystemBase {
         led.setData(ledBuffer);
         led.start();
     }
+
+    @Override
+    public Command getDefaultCommand() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isEmpty()) return new InstantCommand();
+
+        var colorWrapper = new Object() { LEDColor color = new LEDColor(Color.kRed); };
+
+        return new RunCommand(() -> {
+            if (alliance.get() == Alliance.Red) {
+                colorWrapper.color = new LEDColor(Color.kRed);
+            } else {
+                colorWrapper.color = new LEDColor(Color.kBlue);
+            }
+        }).alongWith(
+            new RunCommand(() -> setStripColorHSV(colorWrapper.color))
+        );
+    }
+
+    public Command getDisabledCommand() {
+        var alliance = DriverStation.getAlliance();
+        var colorWrapper = new Object() { LEDColor color = new LEDColor(Color.kRed); };
+        return new ConditionalCommand(
+            new RunCommand(() -> {
+                if (alliance.get() == Alliance.Red) {
+                    colorWrapper.color = new LEDColor(Color.kRed);
+                } else {
+                    colorWrapper.color = new LEDColor(Color.kBlue);
+                }
+            }).alongWith(
+                breathStripColor(colorWrapper.color, 1.0).ignoringDisable(true)
+            ), 
+            staggeredBlinkStripColor(
+                new LEDColor(Color.kRed), 
+                new LEDColor(Color.kBlack), 
+                1.0, 1.0, 2
+            ).ignoringDisable(true), 
+            () -> alliance.isPresent() && DriverStation.isDSAttached()
+        );
+    }    
 
     /**
      * Linearly interpolates back and forth between two colors, at a set speed
@@ -182,44 +226,43 @@ public class StatusLED extends SubsystemBase {
     public Command raceColorsUpStrip(LEDColor raceColor, LEDColor backColor, double interval){
         LEDColor[] colorArray = makeRaceArray(backColor, raceColor);
         ArrayList<LEDColor> colorArrayList = new ArrayList<LEDColor>();
-        var positionWrapper = new Object() { int LEDPosition = 0;}; 
         for(int i = 0; i < colorArray.length; i++){
             colorArrayList.add(colorArray[i]);
         }
+        var positionWrapper = new Object() { int LEDPosition = 0; };
+        
         return new FunctionalCommand(
             () -> { // init
-                
                 for (int j = 0; j < LEDconstants.ledLength; j++) {
                     setHSV(j, colorArrayList.get(j));
                 }
+                
                 timer.reset();
                 timer.start();
             }, 
             () -> { // exec
-                if(timer.hasElapsed(interval))
-                {
-                    if(positionWrapper.LEDPosition <= LEDconstants.ledLength- LEDconstants.ledChaserLength)
-                    {
-                        colorArrayList.add(0, backColor);
-                    }
-                    else
-                    {
-                        colorArrayList.add(0, raceColor);
-                    }
-                    positionWrapper.LEDPosition++;
-                    colorArrayList.remove(colorArrayList.size()-1);
-                    for (int j = 0; j < LEDconstants.ledLength; j++) {
-                        setHSV(j, colorArrayList.get(j));
-                    }
-                    if(positionWrapper.LEDPosition > LEDconstants.ledLength)
-                    {
-                        positionWrapper.LEDPosition = 0;
-                    }
-                    timer.restart();
+                if(!timer.hasElapsed(interval)) { 
+                    return;
                 }
-                
-                
-                
+
+                if(positionWrapper.LEDPosition <= LEDconstants.ledLength- LEDconstants.ledChaserLength) {
+                    colorArrayList.add(0, backColor);
+                } else {
+                    colorArrayList.add(0, raceColor);
+                }
+
+                positionWrapper.LEDPosition++;
+                colorArrayList.remove(colorArrayList.size()-1);
+
+                for (int j = 0; j < LEDconstants.ledLength; j++) {
+                    setHSV(j, colorArrayList.get(j));
+                }
+
+                if(positionWrapper.LEDPosition > LEDconstants.ledLength) {
+                    positionWrapper.LEDPosition = 0;
+                }
+
+                timer.restart();
             }, 
             isFinished -> timer.stop(), // end 
             () -> false, // isFinished
@@ -306,23 +349,30 @@ public class StatusLED extends SubsystemBase {
 
     LEDColor[] makeRaceArray(LEDColor backColor, LEDColor raceColor) {
         LEDColor[] colorArray = new LEDColor[ledBuffer.getLength()];
-        for(int i = LEDconstants.ledChaserLength; i < (ledBuffer.getLength() - LEDconstants.ledChaserLength); i++)
+        for(int i = LEDconstants.ledChaserLength; i < (ledBuffer.getLength() - LEDconstants.ledChaserLength); i++) {
             colorArray[i] = backColor;
+        }
 
-        for(int i = 0; i < LEDconstants.ledChaserLength; i++)
+        for(int i = 0; i < LEDconstants.ledChaserLength; i++) {
             colorArray[i] = raceColor;
+        }
         
         return colorArray;
     }
 
     void setPartsOfStripColors(LEDColor... colors) {
-        for (int i = 0; i < colors.length; i++)
+        for (int i = 0; i < colors.length; i++) {
             setPartOfStripColor(colors[i], i, colors.length);
+        }
     }
 
     void setPartOfStripColor(LEDColor color, int part, int length){
-        for (int i = (int)((ledBuffer.getLength() / length) * part); i < (int)((ledBuffer.getLength() / length) * (part + 1)); i++) 
+        for (int i = (int)((ledBuffer.getLength() / length) * part); 
+        i < (int)((ledBuffer.getLength() / length) * (part + 1)); 
+        i++) {
             setHSV(i, color);
+        }
+
         led.setData(ledBuffer);
     }
     

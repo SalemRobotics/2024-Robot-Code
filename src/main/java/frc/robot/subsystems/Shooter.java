@@ -15,7 +15,6 @@ import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -26,7 +25,7 @@ public class Shooter extends SubsystemBase {
     final CANSparkMax mLeftMotor = new CANSparkMax(ShooterConstants.kLeftMotorID, MotorType.kBrushless);
     final CANSparkMax mRightMotor = new CANSparkMax(ShooterConstants.kRightMotorID, MotorType.kBrushless);
 
-    final RelativeEncoder mleftEncoder;
+    final RelativeEncoder mLeftEncoder;
     final RelativeEncoder mRightEncoder;
 
     final BangBangController mLeftController = new BangBangController(ShooterConstants.kControllerErrorTolerance);
@@ -43,7 +42,7 @@ public class Shooter extends SubsystemBase {
         mLeftMotor.setInverted(true);
         mRightMotor.setInverted(true);
 
-        mleftEncoder = mLeftMotor.getEncoder();
+        mLeftEncoder = mLeftMotor.getEncoder();
         mRightEncoder = mRightMotor.getEncoder();
 
         mLeftMotor.burnFlash();
@@ -57,7 +56,9 @@ public class Shooter extends SubsystemBase {
 
         mPivotEncoder = mPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
         mPivotEncoder.setPositionConversionFactor(ShooterConstants.kPivotPositionDegreesConversionFactor);
+        mPivotEncoder.setZeroOffset(ShooterConstants.kPivotEncoderZero);
         mPivotEncoder.setInverted(true);
+        
         mPivotPID = mPivotMotor.getPIDController();
         mPivotPID.setFeedbackDevice(mPivotEncoder);
         mPivotPID.setP(ShooterConstants.kPivotP);
@@ -79,7 +80,8 @@ public class Shooter extends SubsystemBase {
      * Prints various values regarding the shooter pivot to shuffleboard for debugging
      */
     void printDebug() {
-        // SmartDashboard.putNumber("Current setpoint", mCurrentSetpoint);
+        SmartDashboard.putNumber("Motor Output", mPivotMotor.getAppliedOutput());
+        SmartDashboard.putNumber("Current setpoint", mCurrentSetpoint);
         SmartDashboard.putNumber("Current encoder angle", mPivotEncoder.getPosition());
         SmartDashboard.putNumber("Current floor angle", getFloorRelativeAngle());
         SmartDashboard.putNumber("Encoder zero", mPivotEncoder.getZeroOffset());
@@ -104,12 +106,11 @@ public class Shooter extends SubsystemBase {
     /**
      * Sets the angle of the pivot.
      * @param degrees Desired angle setpoint, in degrees
-     * @return runOnce command
-     * @see InstantCommand
      */
     private void setPivotAngle(double degrees) {
         // clamp input between lower and upper limits
-        double degreesClamped = MathUtil.clamp(degrees, ShooterConstants.kLowerAngleLimitDegrees, ShooterConstants.kUpperAngleLimitDegrees);
+        double degreesClamped = MathUtil.clamp(degrees, 
+        ShooterConstants.kLowerAngleLimitDegrees, ShooterConstants.kUpperAngleLimitDegrees);
 
         mPivotPID.setReference(
             getEncoderRelativeAngle(degreesClamped), 
@@ -135,8 +136,10 @@ public class Shooter extends SubsystemBase {
      * @return True if the shooter is at its output threshold
      */
     public boolean atOutputThreshold() {
+        SmartDashboard.putNumber("leftVel", mLeftEncoder.getVelocity());
+        SmartDashboard.putNumber("rightVel", mRightEncoder.getVelocity());
         return Double.compare(
-            mleftEncoder.getVelocity(), 
+            mLeftEncoder.getVelocity(), 
             ShooterConstants.kLeftMotorSpeedSetpoint * ShooterConstants.kOutputVelocityThreshold) >= 0
         && Double.compare(
             mRightEncoder.getVelocity(), 
@@ -152,7 +155,7 @@ public class Shooter extends SubsystemBase {
         return runEnd(
             () -> {
                 mLeftMotor.set(
-                    mLeftController.calculate(mleftEncoder.getVelocity())
+                    mLeftController.calculate(mLeftEncoder.getVelocity())
                 );
 
                 mRightMotor.set(
@@ -206,7 +209,7 @@ public class Shooter extends SubsystemBase {
                 );
 
                 mLeftMotor.set(
-                    mLeftController.calculate(mleftEncoder.getVelocity())
+                    mLeftController.calculate(mLeftEncoder.getVelocity())
                 );
 
                 mRightMotor.set(

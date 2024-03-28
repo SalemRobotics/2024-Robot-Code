@@ -36,11 +36,13 @@ public final class Constants {
         public static final double kPivotMinOutput = -0.25;
 
         public static final double kPivotPositionDegreesConversionFactor = 360.0;
+        public static final double kPivotEncoderZero = 70.0;
 
         public static final double kUpperAngleLimitDegrees = 53.0;
-        public static final double kLowerAngleLimitDegrees = 24.0;
+        public static final double kLowerAngleLimitDegrees = 21.0;
 
-        public static final double kEncoderOffsetDegrees = 201.0;
+        /** Lowest outputted encoder position minus real position from floor in degrees */
+        public static final double kEncoderOffsetDegrees = 201.8;
 
         public static final double kDefaultPivotDegrees = 53.0;
 
@@ -305,8 +307,8 @@ public final class Constants {
     }
 
     public static final class LEDconstants {
-        public static final int ledPort = 0;
-        public static final int ledLength = 120;
+        public static final int ledPort = 9;
+        public static final int ledLength = 6;
         public static final int ledChaserLength = 10;
     }
 }
