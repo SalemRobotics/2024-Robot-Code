@@ -15,10 +15,17 @@ import frc.robot.Constants.AutoConstants;
 public class AutoPicker {
     Command mCurrentCommand;
     String mCurrentName;
-    final HashMap<Command, String> mCommandNameLookup = new HashMap<>();
+    HashMap<String, SendableChooser<Command>> mChoosers;
 
     public AutoPicker() {
         AutoConstants.kAutoFolders.forEach(this::setupChooser);
+    }
+
+    /** Initializes any manually user entered commands */
+    public void initializeCommands(String folder, Command... commands) {
+        for (Command command : commands) {
+            mChoosers.get(folder).addOption(command.getName(), command);
+        }
     }
 
     /**
@@ -29,10 +36,12 @@ public class AutoPicker {
      */
     private void setupChooser(String folderName, List<String> names) {
         var chooser = new SendableChooser<Command>();
+        mChoosers.putIfAbsent(folderName, chooser);
 
         // creates default option, to avoid issues with folders containing only one command
-        chooser.setDefaultOption("None", new InstantCommand());
-        mCommandNameLookup.putIfAbsent(new InstantCommand(), "None");
+        var noneCommand = new InstantCommand();
+        noneCommand.setName("None");
+        chooser.setDefaultOption("None", noneCommand);
         
         names.forEach((name) -> createChooserOptions(chooser, name));
         chooser.onChange((command) -> setCurrentCommand(chooser));
@@ -50,8 +59,8 @@ public class AutoPicker {
      */
     private void createChooserOptions(SendableChooser<Command> chooser, String name) {
         var command = new PathPlannerAuto(name);
+        command.setName(name);
         
-        mCommandNameLookup.putIfAbsent(command, name);
         chooser.addOption(name, command);
     }
 
@@ -63,7 +72,7 @@ public class AutoPicker {
      */
     private void setCurrentCommand(SendableChooser<Command> chooser) {
         mCurrentCommand = chooser.getSelected();
-        SmartDashboard.putString("Current Auto", mCommandNameLookup.get(mCurrentCommand));
+        SmartDashboard.putString("Current Auto", mCurrentCommand.getName());
     }
 
     /**

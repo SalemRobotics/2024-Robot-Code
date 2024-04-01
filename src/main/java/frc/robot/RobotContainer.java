@@ -24,6 +24,7 @@ import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.SAMConstants;
 import frc.robot.auto.AutoPicker;
+import frc.robot.auto.NonAmpRaceAuto;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
@@ -58,6 +59,10 @@ public class RobotContainer {
     configureNamedCommands();
 
     mAutoPicker = new AutoPicker();
+    mAutoPicker.initializeCommands("Race Autos", 
+      new NonAmpRaceAuto(mDrivetrain, mIntake, mIndexer, mShooter, mVision)
+		);
+
     SmartDashboard.putData("Field", mField);
 
     // Set default Drivetrain command to a RunCommand containing Drivetrain::drive.
@@ -161,18 +166,13 @@ public class RobotContainer {
   }
 
   public void configureNamedCommands(){
-    NamedCommands.registerCommand("far intake", new IntakeInAndIndex(mIntake, mIndexer));
-    NamedCommands.registerCommand("close intake", new IntakeInAndIndex(mIntake, mIndexer));
     NamedCommands.registerCommand("intake without indexing", mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn));
     NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter, mVision));
     NamedCommands.registerCommand("index without shooting", mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeedIn));
     NamedCommands.registerCommand("index to shoot", mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn));
     NamedCommands.registerCommand("run shooter", mShooter.shootRing(() -> mVision.getDistance()));
-    NamedCommands.registerCommand("tune shooter", mShooter.shootRing(mVision::getDistance));
     NamedCommands.registerCommand("track target", 
       mDrivetrain.trackTarget(mVision::getYaw, () -> 0, () -> 0, mVision::getDistance));
-      
-    NamedCommands.registerCommand("angle45", mShooter.setShooterAngle(45.0));
   }
 
   public Command getAutonomousCommand() {

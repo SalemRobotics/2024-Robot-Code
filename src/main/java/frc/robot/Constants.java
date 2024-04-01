@@ -94,7 +94,9 @@ public final class Constants {
         // Driving Parameters - Note that these are not the maximum capable speeds of
         // the robot, rather the allowed maximum speeds
         public static final double kMaxSpeedMetersPerSecond = 4.8;
+        public static final double kMaxAccelerationMetersPerSecond = 4.8;
         public static final double kMaxAngularSpeedRadiansPerSec = 2 * Math.PI;
+        public static final double kMaxAngularAccelerationRadiansPerSec = 2 * Math.PI;
 
         public static final double kDirectionSlewRateRadiansPerSec = 1.2; 
         public static final double kMagnitudeSlewRatePercentPerSec = 2.5; 
@@ -272,11 +274,6 @@ public final class Constants {
             //     "Amp Side Race Auto",        
                 "Non-Amp Race Auto Copy"
             ));
-
-            // put("Partner Autos", List.of(
-                //"Partner Auto"
-                // "Partner Auto Wout SWM"
-            // ));
         }};
     }
 
