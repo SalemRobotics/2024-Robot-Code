@@ -75,21 +75,14 @@ public class RobotContainer {
           -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband)), 
         mDrivetrain)
     );
-<<<<<<< Updated upstream
-=======
 
     mIntake.breakbeamTrigger().whileTrue(
       new RunCommand(
         () -> {
           mDriveController.getHID().setRumble(RumbleType.kBothRumble, 1); 
           mOperatorController.getHID().setRumble(RumbleType.kBothRumble, 1);
-        }
-      )
+        })
     );
-    // mSourceAmpMech.setDefaultCommand(
-    //   mSourceAmpMech.runSAM(SAMPositions.HANDOFF_NOTE)
-    // );
->>>>>>> Stashed changes
   }
 
   private void configureBindings() {
