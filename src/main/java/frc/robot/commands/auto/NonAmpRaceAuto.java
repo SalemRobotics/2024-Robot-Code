@@ -1,4 +1,4 @@
-package frc.robot.auto;
+package frc.robot.commands.auto;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.commands.PathPlannerSkipPath;
 import frc.robot.commands.SpinUpShooterAndIndex;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Indexer;

@@ -1,7 +1,9 @@
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
@@ -27,6 +29,36 @@ public class VisionCamera {
     }
 
     /**
+     * Get targets sorted by distance
+     * @return
+     */
+    public List<PhotonTrackedTarget> getTargetsSorted() {
+        var currentResult = mCamera.getLatestResult();
+        if (!currentResult.hasTargets()) {
+            return new ArrayList<>();
+        }
+
+        return currentResult.targets.stream()
+        .sorted(new Comparator<PhotonTrackedTarget>() {
+            double getDistance(PhotonTrackedTarget target) {
+                return PhotonUtils.calculateDistanceToTargetMeters(
+                    VisionConstants.kCameraHeightMeters,
+                    target.getBestCameraToTarget().getZ(), 
+                    VisionConstants.kCameraPitchRadians, 
+                    target.getPitch()
+                );
+            }
+
+            @Override
+            public int compare(PhotonTrackedTarget o1, PhotonTrackedTarget o2) {
+                return Double.compare(
+                    getDistance(o1), 
+                    getDistance(o2));
+            }
+        }).toList();
+    }
+
+    /**
      * Gets the best result of individual Apriltags.
      * @return The best Apriltag target, should it exist.
      * @see Optional
@@ -39,7 +71,7 @@ public class VisionCamera {
 
         var targets = currentResult.targets.stream()
         .filter(target -> VisionConstants.kValidFiducialIDs.contains(target.getFiducialId()))
-        .collect(Collectors.toList());
+        .toList();
         
         if (targets.isEmpty())
             return Optional.empty();
