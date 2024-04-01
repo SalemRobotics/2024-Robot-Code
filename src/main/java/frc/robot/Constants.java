@@ -315,13 +315,6 @@ public final class Constants {
         public static final int ledChaserLength = 10;
     }
 
-    public static final class SAMConstants {
-        public static final double kS = 0;
-        public static final double kV = 0;
-        public static final double kG = 0;
-        public static final double kA = 0;
-    }
-
     public static final class ClimberConstants{
         public static final double speed = 0.6;
         public static final int kClimberMotor1CanID = 0;

@@ -223,18 +223,15 @@ public class Drivetrain extends SubsystemBase {
       if (angleDif < 0.45*Math.PI) {
         mCurrentTranslationDir = SwerveUtils.StepTowardsCircular(mCurrentTranslationDir, inputTranslationDir, directionSlewRate * elapsedTime);
         mCurrentTranslationMag = mMagLimiter.calculate(inputTranslationMag);
-      }
-      else if (angleDif > 0.85*Math.PI) {
+      } else if (angleDif > 0.85*Math.PI) {
         if (mCurrentTranslationMag > 1e-4) { //some small number to avoid floating-point errors with equality checking
           // keep currentTranslationDir unchanged
           mCurrentTranslationMag = mMagLimiter.calculate(0.0);
-        }
-        else {
+        } else {
           mCurrentTranslationDir = SwerveUtils.WrapAngle(mCurrentTranslationDir + Math.PI);
           mCurrentTranslationMag = mMagLimiter.calculate(inputTranslationMag);
         }
-      }
-      else {
+      } else {
         mCurrentTranslationDir = SwerveUtils.StepTowardsCircular(mCurrentTranslationDir, inputTranslationDir, directionSlewRate * elapsedTime);
         mCurrentTranslationMag = mMagLimiter.calculate(0.0);
       }
@@ -261,6 +258,24 @@ public class Drivetrain extends SubsystemBase {
               : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
 
     setModuleStates(swerveStates);
+  }
+
+  /** Get current translation magnitude */
+  double getTranslationMag(double xSpeed, double ySpeed) {
+    if (mIsRateLimited) {
+      return mCurrentTranslationMag;
+    }
+
+    return Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2));
+  }
+
+  /** Get current tranlsation direction */
+  double getTranslationDir(double xSpeed, double ySpeed) {
+    if (mIsRateLimited) {
+      return mCurrentTranslationDir;
+    }
+
+    return Math.atan2(ySpeed, xSpeed);
   }
 
   /**
