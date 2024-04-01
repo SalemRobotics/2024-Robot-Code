@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.37,
-        "y": 1.59
+        "x": 0.79769185179396,
+        "y": 6.712444649960525
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8902400775171926,
-        "y": 1.3795052200360811
+        "x": 1.7098358983042754,
+        "y": 7.191904982100564
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.0,
-        "y": 0.7718141932010376
+        "x": 2.895,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 6.650765945406534,
-        "y": 0.7775114752508734
+        "x": 2.072354686019913,
+        "y": 6.303149244475128
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,11 +29,23 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.4,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 0.5,
+        "maxAngularVelocity": 1080.0,
+        "maxAngularAcceleration": 2160.0
+      }
+    }
+  ],
   "eventMarkers": [
     {
-      "name": "Intake First Note",
-      "waypointRelativePos": 0.75,
+      "name": "shoot",
+      "waypointRelativePos": 0.1,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +53,7 @@
             {
               "type": "named",
               "data": {
-                "name": "index without shooting"
+                "name": "index to shoot"
               }
             }
           ]
@@ -50,18 +62,18 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.267,
+    "maxVelocity": 5.0,
     "maxAcceleration": 5.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularVelocity": 1080.0,
+    "maxAngularAcceleration": 2160.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 38.100339200677865,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Race Paths",
+  "folder": "Non-Amp Side",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

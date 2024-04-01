@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.37,
-        "y": 1.59
+        "x": 2.66,
+        "y": 5.65
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8902400775171926,
-        "y": 1.3795052200360811
+        "x": 2.2361771770005987,
+        "y": 6.073822822999403
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.0,
-        "y": 0.7718141932010376
+        "x": 2.66,
+        "y": 7.098351746561043
       },
       "prevControl": {
-        "x": 6.650765945406534,
-        "y": 0.7775114752508734
+        "x": 1.969604130094076,
+        "y": 6.897784431766129
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Intake First Note",
-      "waypointRelativePos": 0.75,
+      "name": "index note",
+      "waypointRelativePos": 0.7,
       "command": {
         "type": "parallel",
         "data": {
@@ -50,18 +50,18 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.267,
+    "maxVelocity": 5.0,
     "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 39.112487291685405,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Race Paths",
+  "folder": "Amp Side",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

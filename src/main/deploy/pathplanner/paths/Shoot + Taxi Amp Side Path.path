@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.281950694955519,
-        "y": 2.408995815142628
+        "x": 0.79769185179396,
+        "y": 6.712444649960525
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.183991165703127,
-        "y": 1.0641680542620333
+        "x": 1.8033891338437944,
+        "y": 6.747527113287845
       },
       "isLocked": false,
-      "linkedName": "Non-Amp 6 Note Path 6 End"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.300240902476107,
-        "y": 2.6662672128763063
+        "x": 2.68045071702679,
+        "y": 6.829386194384925
       },
       "prevControl": {
-        "x": 5.346717929903097,
-        "y": 0.5613194132371174
+        "x": 1.9788014504803937,
+        "y": 6.770915422172724
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Non-Amp 5 Note Path 5 End"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -41.82016988013589,
+    "rotation": -1.3322198538695988,
     "rotateFast": false
   },
   "reversed": false,

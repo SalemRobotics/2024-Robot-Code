@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -95,7 +96,7 @@ public class Drivetrain extends SubsystemBase {
 
     // configures holonomic drivetrain for auto 
     AutoBuilder.configureHolonomic(
-      () -> mOdometry.getPoseMeters(), 
+      mOdometry::getPoseMeters, 
       this::resetOdometry, 
       this::getSpeeds, 
       this::setRobotRelativeStates, 
@@ -146,6 +147,9 @@ public class Drivetrain extends SubsystemBase {
             mRearRight.getPosition()
         });
 
+    SmartDashboard.putNumber("odometry X", mOdometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("odometry Y", mOdometry.getPoseMeters().getY());
+    SmartDashboard.putNumber("odometry rot", mOdometry.getPoseMeters().getRotation().getDegrees());
     RobotContainer.mField.setRobotPose(mOdometry.getPoseMeters());
   }
 

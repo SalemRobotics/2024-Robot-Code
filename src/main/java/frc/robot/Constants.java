@@ -21,42 +21,43 @@ public final class Constants {
         public static final double kControllerErrorTolerance = 0.1; // percent
         public static final double kOutputVelocityThreshold = 0.85; // percent
 
-        public static final double kLobSpeed = 0.75; // percent
+        public static final double kLobSpeed = 0.5; // percent
         public static final double kLobSetpointDegrees = 28.0;
 
         public static final int kPivotMotorID = 13;
         public static final int kRightMotorID = 14;
         public static final int kLeftMotorID = 15;
 
-        public static final double kPivotP = 0.035;
+        public static final double kPivotP = 0.055;
         public static final double kPivotI = 0.0;
         public static final double kPivotD = 0.0;
         public static final double kPivotFF = 0.0;
-        public static final double kPivotMaxOutput = 0.25;
-        public static final double kPivotMinOutput = -0.25;
+        public static final double kPivotMaxOutput = 0.75;
+        public static final double kPivotMinOutput = -0.75;
 
         public static final double kPivotPositionDegreesConversionFactor = 360.0;
         public static final double kPivotEncoderZero = 70.0;
 
         public static final double kUpperAngleLimitDegrees = 53.0;
-        public static final double kLowerAngleLimitDegrees = 21.0;
+        public static final double kLowerAngleLimitDegrees = 25.0;
 
         /** Lowest outputted encoder position minus real position from floor in degrees */
         public static final double kEncoderOffsetDegrees = 201.8;
 
         public static final double kDefaultPivotDegrees = 53.0;
 
-        static final double kDistOffset = -0.4;
+        static final double kDistOffset = 0.0;
 
         /** Maps distances in meters to angles in degrees */
         public static final InterpolatingDoubleTreeMap kPivotDistanceAngleMap = new InterpolatingDoubleTreeMap() {{
-            put(1.351 + kDistOffset, 52.5);
-            put(1.666 + kDistOffset, 47.5);
-            put(2.252 + kDistOffset, 42.0);
-            put(2.765 + kDistOffset, 38.0);
-            put(3.440 + kDistOffset, 33.0);
-            put(4.001 + kDistOffset, 30.0);
-            put(4.666 + kDistOffset, 28.0);
+            put(1.364 + kDistOffset, 53.0);
+            put(1.668 + kDistOffset, 47.5);
+            put(2.280 + kDistOffset, 42.0);
+            put(2.770 + kDistOffset, 38.0);
+            put(3.445 + kDistOffset, 33.0);
+            put(4.101 + kDistOffset, 30.0);
+            put(4.661 + kDistOffset, 27.5);
+            put(5.959 + kDistOffset, 25.0);
         }};
     }
     
@@ -102,11 +103,11 @@ public final class Constants {
         // Chassis configuration
         public static final boolean kGyroReversed = false;
         // Distance between centers of right and left wheels on robot
-        public static final double kTrackWidthMeters = Units.inchesToMeters(23.5);
+        public static final double kTrackWidthMeters = Units.inchesToMeters(23.55);
         // Distance between front and back wheels on robot
-        public static final double kWheelBaseMeters = Units.inchesToMeters(23.5);
+        public static final double kWheelBaseMeters = Units.inchesToMeters(23.55);
         // Radius of drive base. Equal to distance from center of robot to center of module.
-        public static final double kDriveBaseRadiusMeters = Units.inchesToMeters(16.6);
+        public static final double kDriveBaseRadiusMeters = Units.inchesToMeters(12.125); // 12.0 inches more accurate, 16.6 inches has been tuned
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
             new Translation2d(kWheelBaseMeters / 2, kTrackWidthMeters / 2),
             new Translation2d(kWheelBaseMeters / 2, -kTrackWidthMeters / 2),
@@ -170,7 +171,7 @@ public final class Constants {
 
         // Calculations required for driving motor conversion factors and feed forward
         public static final double kDrivingMotorFreeSpeedRps = 5676.0 / 60;
-        public static final double kWheelDiameterMeters = 0.0762;
+        public static final double kWheelDiameterMeters = Units.inchesToMeters(2.9);
         public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
         // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
         public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
@@ -213,28 +214,28 @@ public final class Constants {
     }
 
     public static final class AutoConstants{
-        public static final double kAutoDrivingP = 5.5;
+        public static final double kAutoDrivingP = 10.0;
         public static final double kAutoDrivingI = 0;
         public static final double kAutoDrivingD = 0;
-        public static final double kAutoDrivingIZone = 1000;
+        public static final double kAutoDrivingIZone = 1000.0;
         
         //TODO: retune constants
-        public static final double kAutoTurningP = 5;
-        public static final double kAutoTurningI = 0;
-        public static final double kAutoTurningD = 0;
+        public static final double kAutoTurningP = 7.0;
+        public static final double kAutoTurningI = 0.0;
+        public static final double kAutoTurningD = 2.0;
         public static final double kAutoTurningIZone = 1000.0;
 
         /** Map of folder names to lists of auto command names */
         public static final HashMap<String, List<String>> kAutoFolders = new HashMap<>() {{
             // put("Test Autos", List.of(
             //     "Test Auto",
-            //      "Test Auto 2",       
+            //     "Test Auto 2",       
             //     "Speed Test Auto",   
             //     "Test 2 piece auto",
             //     "Test Auto 3",       
-            //     "Test Error Auto",   
+                // "Test Error Auto",   
             //     "Test Error Auto 2",
-            //     "Test Error Auto 3",
+                // "Test Error Auto 3",
             //     "Test Pickup Auto",  
             //     "Test Tumble Auto",  
             //     "Test Turn Auto" 
@@ -244,10 +245,13 @@ public final class Constants {
                 "Do Nothing",
                 "Mobility",
                 "Shoot + Taxi",
-                "Shoot + 1",                       
+                "Shoot + Taxi Amp Side",
+                "Shoot + 1", 
+                "Copy of Shoot + 1",                    
                 "Shoot + 3", 
                 "Shoot + 1, 2",
-                "Shoot + 1, 2, 3, 4",         
+                // "Shoot + 1, 2, 3, 4",         
+                "Copy of Shoot + 1, 2, 3, 4",
                 "Shoot and Do Nothing"
             ));
             
@@ -262,16 +266,17 @@ public final class Constants {
             //     "Non-Amp 6 Note Auto"
             // ));
 
-            // put("Race Autos", List.of(
+            put("Race Autos", List.of(
             //     "Amp Side Counterrace Auto",
             //     "Non-Amp Counterrace Auto",  
             //     "Amp Side Race Auto",        
-            //     "Non-Amp Race Auto"
-            // ));
-
-            put("Partner Autos", List.of(
-                //"Partner Auto"
+                "Non-Amp Race Auto Copy"
             ));
+
+            // put("Partner Autos", List.of(
+                //"Partner Auto"
+                // "Partner Auto Wout SWM"
+            // ));
         }};
     }
 
@@ -281,6 +286,7 @@ public final class Constants {
         public static final double kG = 0.34;
         public static final double kV = 2.34;
 
+        public static final double kSAMspeedEject = 1.0;
         public static final double kSAMspeedIn = 0.5;
         public static final double kSAMspeedOut = -0.5;
 

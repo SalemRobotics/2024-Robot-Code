@@ -3,37 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.5865978911445,
-        "y": 1.7541231663659906
+        "x": 3.300240902476107,
+        "y": 2.6662672128763063
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.095143814219252,
-        "y": 2.058171181869431
+        "x": 5.463659474327495,
+        "y": 0.2923538610609994
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Non-Amp 5 Note Path 5 End"
     },
     {
       "anchor": {
-        "x": 8.0,
-        "y": 2.4323841240275086
+        "x": 8.281950694955519,
+        "y": 2.408995815142628
       },
       "prevControl": {
-        "x": 6.808487235208089,
-        "y": 2.2101951896211496
+        "x": 7.0189820151720035,
+        "y": 0.5145427954673581
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Non-Amp 6 Note Path 6 End"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "6th shoot angle",
-      "waypointRelativePos": 0.25,
+      "name": "intake 6th note",
+      "waypointRelativePos": 0.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "angle45"
+                "name": "index without shooting"
               }
             }
           ]
@@ -57,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 35.3947958449871,
     "rotateFast": true
   },
   "reversed": false,

@@ -20,12 +20,12 @@
         "y": 7.098351746561043
       },
       "prevControl": {
-        "x": 1.9700448878960435,
-        "y": 6.896273424545009
+        "x": 1.969604130094076,
+        "y": 6.897784431766129
       },
       "nextControl": {
-        "x": 3.1504548381044053,
-        "y": 7.241999194011003
+        "x": 3.1832993580517077,
+        "y": 7.2503757543127625
       },
       "isLocked": false,
       "linkedName": null
@@ -47,17 +47,17 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 24.852691492948765,
+      "rotationDegrees": 34.27465494994468,
       "rotateFast": true
     }
   ],
   "constraintZones": [
     {
-      "name": "Slow Shooting zone",
-      "minWaypointRelativePos": 1.0,
-      "maxWaypointRelativePos": 1.15,
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.9,
+      "maxWaypointRelativePos": 1.05,
       "constraints": {
-        "maxVelocity": 0.25,
+        "maxVelocity": 0.1,
         "maxAcceleration": 0.1,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -66,31 +66,8 @@
   ],
   "eventMarkers": [
     {
-      "name": "shoot first note",
-      "waypointRelativePos": 0.0,
-      "command": {
-        "type": "race",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "index to shoot"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 4.0
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "just index",
-      "waypointRelativePos": 1.55,
+      "name": "shoot",
+      "waypointRelativePos": 0.9,
       "command": {
         "type": "parallel",
         "data": {
@@ -98,7 +75,7 @@
             {
               "type": "named",
               "data": {
-                "name": "index without shooting"
+                "name": "index to shoot"
               }
             }
           ]

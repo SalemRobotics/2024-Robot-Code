@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.0,
-        "y": 0.7718141932010376
+        "x": 8.281950694955519,
+        "y": 0.7367317298737166
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.527827528589529,
-        "y": 0.725037575431277
+        "x": 6.785098926323209,
+        "y": 0.877061583182996
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Non-Amp Race Path 1 End"
     },
     {
       "anchor": {
-        "x": 4.5865978911445,
-        "y": 1.7541231663659906
+        "x": 3.300240902476107,
+        "y": 2.6662672128763063
       },
       "prevControl": {
-        "x": 5.4051887021152965,
-        "y": 0.877061583182996
+        "x": 4.832175134435738,
+        "y": 0.8302849654132366
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "shoot",
-      "waypointRelativePos": 0.9,
+      "name": "keep intaking",
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "index to shoot"
+                "name": "index without shooting"
               }
             }
           ]
@@ -57,7 +57,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -39.80557109226519,
+    "rotation": -35.67640822186194,
     "rotateFast": false
   },
   "reversed": false,

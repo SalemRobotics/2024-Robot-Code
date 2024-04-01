@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.4,
-        "y": 4.092954054853979
+        "x": 0.5638087629451612,
+        "y": 4.13
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.171904793952038,
-        "y": 4.584108541436456
+        "x": 1.3707054194735169,
+        "y": 4.420390379242297
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.6570624081419103,
-        "y": 4.221589753720818
+        "x": 2.5401208637175103,
+        "y": 4.244978062605699
       },
       "prevControl": {
-        "x": 1.7455340053130246,
-        "y": 4.7595208580730555
+        "x": 1.6285924608886246,
+        "y": 4.782909166957936
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,27 +33,21 @@
       "waypointRelativePos": 0.75,
       "rotationDegrees": -30.0,
       "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.0,
+      "rotationDegrees": 0,
+      "rotateFast": false
     }
   ],
   "constraintZones": [
     {
-      "name": "Slow down to shoot",
-      "minWaypointRelativePos": 0.4,
-      "maxWaypointRelativePos": 0.8,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 1.5,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
-      }
-    },
-    {
-      "name": "Slow down to be legal",
-      "minWaypointRelativePos": 0.75,
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.9,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 0.7,
-        "maxAcceleration": 0.7,
+        "maxVelocity": 0.2,
+        "maxAcceleration": 0.2,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
       }

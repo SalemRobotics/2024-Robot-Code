@@ -13,7 +13,9 @@ public class Vision extends SubsystemBase {
     }
 
     @Override
-    public void periodic() {}
+    public void periodic() {
+
+    }
 
     /**
      * Sends various values from the camera to Shuffleboard for debugging.

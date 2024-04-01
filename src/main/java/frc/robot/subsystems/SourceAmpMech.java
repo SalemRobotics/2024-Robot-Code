@@ -12,7 +12,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -20,8 +19,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Source Amp Mechanism that can intake game pieces from the source and eject to the Amp */
 public class SourceAmpMech extends SubsystemBase {
-    final ArmFeedforward mFeedForward = new ArmFeedforward(SAMConstants.kS, SAMConstants.kG, SAMConstants.kV, SAMConstants.kA);
-    
     final CANSparkMax mPivotMotor = new CANSparkMax(SAMConstants.kPivotMoterID, MotorType.kBrushless);
     final SparkAbsoluteEncoder mPivotEncoder;
     final SparkPIDController mPivotPID;
@@ -34,7 +31,7 @@ public class SourceAmpMech extends SubsystemBase {
     public enum SAMPositions {
         HANDOFF_NOTE(214.0),
         INTAKE_SOURCE(290.0),
-        EJECT_AMP(307.5);
+        EJECT_AMP(287.5);
         
         public final double value;
         private SAMPositions(double value) {
@@ -58,10 +55,10 @@ public class SourceAmpMech extends SubsystemBase {
 
         mPivotMotor.burnFlash();
 
-        // SmartDashboard.putNumber("samP", SAMConstants.kPivotP);
-        // SmartDashboard.putNumber("samI", SAMConstants.kPivotI);
-        // SmartDashboard.putNumber("samD", SAMConstants.kPivotD);
-        // SmartDashboard.putNumber("samFF", SAMConstants.kPivotFF);
+        SmartDashboard.putNumber("samP", SAMConstants.kPivotP);
+        SmartDashboard.putNumber("samI", SAMConstants.kPivotI);
+        SmartDashboard.putNumber("samD", SAMConstants.kPivotD);
+        SmartDashboard.putNumber("samFF", SAMConstants.kPivotFF);
     }
 
     @Override
@@ -143,29 +140,28 @@ public class SourceAmpMech extends SubsystemBase {
 
         mPivotPID.setReference(
             degreesClamped,
-            ControlType.kPosition,
-            0,
-            0.0//mFeedForward.calculate(Units.degreesToRadians(degreesClamped), 0.1)
+            ControlType.kPosition
         );
     }
 
     public Command runSAM(SAMPositions position) {
-        return run(
+        return runEnd(
             () -> {
-                mIsEnabled = true;
+                setEnabled(true);
                 setCurrentSetpoint(position);
-            }
+            },
+            () -> setEnabled(true)
         );
     }
 
     public Command runSAM(SAMPositions position, BooleanSupplier endCondition) {
         return new FunctionalCommand(
-            () -> { // init
-                mIsEnabled = true;
+            () -> {}, // init
+            () -> {
+                setEnabled(true);
                 setCurrentSetpoint(position);
-            },
-            () -> {}, // exec
-            isFinished -> mIsEnabled = false, // end
+            }, // exec
+            isFinished -> setEnabled(false), // end
             endCondition,
             this
         );

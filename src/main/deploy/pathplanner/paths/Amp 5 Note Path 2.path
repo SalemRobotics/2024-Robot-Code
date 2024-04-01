@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.66,
-        "y": 4.22
+        "x": 2.54,
+        "y": 4.24
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.896942369383314,
-        "y": 4.958321483594535
+        "x": 1.776942369383314,
+        "y": 4.978321483594535
       },
       "isLocked": false,
       "linkedName": null
@@ -29,34 +29,11 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Continue from last",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.15,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 1.5,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
-      }
-    },
-    {
-      "name": "Next shot slow",
-      "minWaypointRelativePos": 0.65,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 1.5,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0
-      }
-    }
-  ],
+  "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "shoot",
-      "waypointRelativePos": 0.0,
+      "name": "index note",
+      "waypointRelativePos": 0.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -64,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "index to shoot"
+                "name": "index without shooting"
               }
             }
           ]

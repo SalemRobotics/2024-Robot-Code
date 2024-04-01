@@ -3,37 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.37,
-        "y": 1.59
+        "x": 0.79769185179396,
+        "y": 4.408696224799858
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8902400775171926,
-        "y": 1.3795052200360811
+        "x": 1.4642586550130365,
+        "y": 0.9940031276073951
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.0,
-        "y": 0.7718141932010376
+        "x": 8.281950694955519,
+        "y": 0.7367317298737166
       },
       "prevControl": {
-        "x": 6.650765945406534,
-        "y": 0.7775114752508734
+        "x": 5.616974470416174,
+        "y": 0.6431784943341955
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Non-Amp Race Path 1 End"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "Intake First Note",
-      "waypointRelativePos": 0.75,
+      "waypointRelativePos": 0.8,
       "command": {
         "type": "parallel",
         "data": {
@@ -50,7 +56,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.267,
+    "maxVelocity": 5.0,
     "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0

@@ -19,6 +19,7 @@
       "/SmartDashboard/Basic Autos": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Partner Autos": "String Chooser",
+      "/SmartDashboard/Race Autos": "String Chooser",
       "/SmartDashboard/Reset PID and Odometry": "Command"
     }
   },

@@ -130,8 +130,8 @@ public class RobotContainer {
     // run SAM roller if SAM is active until break beam is hit, otherwise run Intake/Indexer
     mOperatorController.rightBumper().whileTrue(
       new ConditionalCommand(
-        mSamRoller.runRoller(SAMConstants.kSAMspeedOut, 
-          () -> mSamRoller.hasNoteHitBreakbeam(mSourceAmpMech::getCurrentSetpoint)),
+        mSamRoller.runRoller(SAMConstants.kSAMspeedOut),
+          // () -> mSamRoller.hasNoteHitBreakbeam(mSourceAmpMech::getCurrentSetpoint)),
         new IntakeInAndIndex(mIntake, mIndexer), 
         mSourceAmpMech::isEnabled)
     );
@@ -139,15 +139,14 @@ public class RobotContainer {
     // run SAM roller if SAM is active, otherwise run Intake/Indexer
     mOperatorController.leftBumper().whileTrue(
       new ConditionalCommand(
-        mSamRoller.runRoller(SAMConstants.kSAMspeedIn), 
+        mSamRoller.runRoller(SAMConstants.kSAMspeedEject), 
         new IntakeOutAndIndex(mIntake, mIndexer), 
         mSourceAmpMech::isEnabled)
     );
 
     // set sam position to INTAKE_SOURCE, then handoff to indexer on interrupt
     mOperatorController.y().whileTrue(
-      mSourceAmpMech.runSAM(SAMPositions.INTAKE_SOURCE, 
-      () -> mSamRoller.hasNoteHitBreakbeam(mSourceAmpMech::getCurrentSetpoint))
+      mSourceAmpMech.runSAM(SAMPositions.INTAKE_SOURCE)
     ).onFalse(new HandoffToIndexer(mSourceAmpMech, mSamRoller, mIntake, mIndexer));
 
     // handoff to SAM, then stay at EJECT_AMP, then handoff to indexer on interrupt
@@ -163,13 +162,16 @@ public class RobotContainer {
 
   public void configureNamedCommands(){
     NamedCommands.registerCommand("far intake", new IntakeInAndIndex(mIntake, mIndexer));
-    NamedCommands.registerCommand("close intake", new IntakeInAndIndex(mIntake, mIndexer, IndexerConstants.kIndexerSpeedIn, IndexerConstants.kIndexerSpeedIn ));
+    NamedCommands.registerCommand("close intake", new IntakeInAndIndex(mIntake, mIndexer));
     NamedCommands.registerCommand("intake without indexing", mIntake.intakeRing(IntakeConstants.kIntakeSpeedIn));
     NamedCommands.registerCommand("shoot", new SpinUpShooterAndIndex(mIndexer, mShooter, mVision));
-    NamedCommands.registerCommand("index without shooting", mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn, IndexerConstants.kIndexerSpeedOut));
+    NamedCommands.registerCommand("index without shooting", mIndexer.runLowerIndexer(IndexerConstants.kIndexerSpeedIn));
     NamedCommands.registerCommand("index to shoot", mIndexer.runAllIndexer(IndexerConstants.kIndexerSpeedIn));
-    NamedCommands.registerCommand("run shooter", mShooter.shootRing(mVision::getDistance));
+    NamedCommands.registerCommand("run shooter", mShooter.shootRing(() -> mVision.getDistance()));
     NamedCommands.registerCommand("tune shooter", mShooter.shootRing(mVision::getDistance));
+    NamedCommands.registerCommand("track target", 
+      mDrivetrain.trackTarget(mVision::getYaw, () -> 0, () -> 0, mVision::getDistance));
+      
     NamedCommands.registerCommand("angle45", mShooter.setShooterAngle(45.0));
   }
 

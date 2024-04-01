@@ -73,6 +73,7 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         // continously set pivot reference
+        // mCurrentSetpoint = SmartDashboard.getNumber("Current setpoint", ShooterConstants.kDefaultPivotDegrees);
         setPivotAngle(mCurrentSetpoint);
     }
 
@@ -85,6 +86,40 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Current encoder angle", mPivotEncoder.getPosition());
         SmartDashboard.putNumber("Current floor angle", getFloorRelativeAngle());
         SmartDashboard.putNumber("Encoder zero", mPivotEncoder.getZeroOffset());
+    }
+
+    double gP  = ShooterConstants.kPivotP,
+           gI  = ShooterConstants.kPivotI,
+           gD  = ShooterConstants.kPivotD,
+           gFF = ShooterConstants.kPivotFF;
+    void setShuffleboardPID() {
+        double p  = SmartDashboard.getNumber("Pivot P", gP),
+               i  = SmartDashboard.getNumber("Pivot I", gI),
+               d  = SmartDashboard.getNumber("Pivot D", gD),
+               ff = SmartDashboard.getNumber("Pivot FF", gFF);
+        if (Double.compare(p, gP) != 0) {
+            gP = p;
+            mPivotPID.setP(gP);
+            SmartDashboard.putNumber("Pivot P", gP);
+        }
+
+        if (Double.compare(i, gI) != 0) {
+            gI = i;
+            mPivotPID.setI(gI);
+            SmartDashboard.putNumber("Pivot I", gI);
+        }
+
+        if (Double.compare(d, gD) != 0) {
+            gD = d;
+            mPivotPID.setD(gD);
+            SmartDashboard.putNumber("Pivot D", gD);
+        }
+
+        if (Double.compare(ff, gFF) != 0) {
+            gFF = ff;
+            mPivotPID.setFF(gFF);
+            SmartDashboard.putNumber("Pivot FF", gFF);
+        }
     }
 
     /**
@@ -136,8 +171,6 @@ public class Shooter extends SubsystemBase {
      * @return True if the shooter is at its output threshold
      */
     public boolean atOutputThreshold() {
-        SmartDashboard.putNumber("leftVel", mLeftEncoder.getVelocity());
-        SmartDashboard.putNumber("rightVel", mRightEncoder.getVelocity());
         return Double.compare(
             mLeftEncoder.getVelocity(), 
             ShooterConstants.kLeftMotorSpeedSetpoint * ShooterConstants.kOutputVelocityThreshold) >= 0
