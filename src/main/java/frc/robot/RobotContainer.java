@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -74,6 +75,21 @@ public class RobotContainer {
           -MathUtil.applyDeadband(mDriveController.getRightX(), ControllerConstants.kDriveDeadband)), 
         mDrivetrain)
     );
+<<<<<<< Updated upstream
+=======
+
+    mIntake.breakbeamTrigger().whileTrue(
+      new RunCommand(
+        () -> {
+          mDriveController.getHID().setRumble(RumbleType.kBothRumble, 1); 
+          mOperatorController.getHID().setRumble(RumbleType.kBothRumble, 1);
+        }
+      )
+    );
+    // mSourceAmpMech.setDefaultCommand(
+    //   mSourceAmpMech.runSAM(SAMPositions.HANDOFF_NOTE)
+    // );
+>>>>>>> Stashed changes
   }
 
   private void configureBindings() {
