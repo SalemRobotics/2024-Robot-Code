@@ -18,6 +18,7 @@ public class AutoPicker {
     HashMap<String, SendableChooser<Command>> mChoosers;
 
     public AutoPicker() {
+        mChoosers = new HashMap<>();
         AutoConstants.kAutoFolders.forEach(this::setupChooser);
     }
 

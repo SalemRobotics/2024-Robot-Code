@@ -20,7 +20,7 @@ import frc.robot.commands.IntakeOutAndIndex;
 import frc.robot.commands.LobNote;
 import frc.robot.commands.SpinUpShooterAndIndex;
 import frc.robot.commands.TrackTargetAndShoot;
-import frc.robot.commands.auto.NonAmpRaceAuto;
+//import frc.robot.commands.auto.NonAmpRaceAuto;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -59,9 +59,9 @@ public class RobotContainer {
     configureNamedCommands();
 
     mAutoPicker = new AutoPicker();
-    mAutoPicker.initializeCommands("Race Autos", 
+    /*mAutoPicker.initializeCommands("Race Autos", 
       new NonAmpRaceAuto(mDrivetrain, mIntake, mIndexer, mShooter, mVision)
-		);
+		);*/
 
     SmartDashboard.putData("Field", mField);
 
