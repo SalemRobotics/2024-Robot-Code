@@ -50,9 +50,8 @@ public class RobotContainer {
   final Vision mVision = new Vision();
   final SourceAmpMech mSourceAmpMech = new SourceAmpMech();
   final SAMRoller mSamRoller = new SAMRoller();
-
+  final StatusLED mStatusLED = new StatusLED();
   final AutoPicker mAutoPicker;
-  final StatusLED mLED = new StatusLED();
   
   public RobotContainer() {
     configureBindings();
@@ -171,6 +170,9 @@ public class RobotContainer {
       new LobNote(mIndexer, mShooter)
     );
     // #endregion
+    mOperatorController.a().whileTrue(
+       mStatusLED.setHalfSolidColor(new LEDColor(255,0,0),new LEDColor(0,255,0))
+    );
   }
 
   public void configureNamedCommands(){
@@ -188,6 +190,6 @@ public class RobotContainer {
   }
 
   public Command getDisabledCommand() {
-    return mLED.getDisabledCommand();
+    return mStatusLED.getDisabledCommand();
   }
 }
