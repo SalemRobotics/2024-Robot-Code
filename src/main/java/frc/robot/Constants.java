@@ -310,8 +310,8 @@ public final class Constants {
     }
 
     public static final class LEDconstants {
-        public static final int ledPort = 3;
-        public static final int ledLength = 282;
+        public static final int ledPort = 9;
+        public static final int ledLength = 18;
         public static final int ledChaserLength = 10;
     }
 

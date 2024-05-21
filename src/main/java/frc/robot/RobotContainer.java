@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -171,8 +172,9 @@ public class RobotContainer {
     );
     // #endregion
     mOperatorController.a().whileTrue(
-       mStatusLED.setHalfSolidColor(new LEDColor(255,0,0),new LEDColor(0,255,0))
-    );
+       //mStatusLED.setHalfSolidColor(new LEDColor(255,0,0),new LEDColor(0,255,0))
+       mStatusLED.setSolidColor(new LEDColor(Color.kGoldenrod))
+    ).onFalse(mStatusLED.setSolidColor(new LEDColor(0,0,0)));
   }
 
   public void configureNamedCommands(){
