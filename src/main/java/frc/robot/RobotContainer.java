@@ -75,13 +75,13 @@ public class RobotContainer {
         mDrivetrain)
     );
 
-    mIntake.breakbeamTrigger().whileTrue(
+    /*mIntake.breakbeamTrigger().whileTrue(
       new RunCommand(
         () -> {
           mDriveController.getHID().setRumble(RumbleType.kBothRumble, 1); 
           mOperatorController.getHID().setRumble(RumbleType.kBothRumble, 1);
         })
-    );
+    );*/
   }
 
   private void configureBindings() {
