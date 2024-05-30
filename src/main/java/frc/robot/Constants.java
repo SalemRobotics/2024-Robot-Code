@@ -254,7 +254,9 @@ public final class Constants {
                 "Shoot + 1, 2",
                 // "Shoot + 1, 2, 3, 4",         
                 "Copy of Shoot + 1, 2, 3, 4",
-                "Shoot and Do Nothing"
+                "Shoot and Do Nothing",
+                "Close Notes at Mid Auto",
+                "Close Notes at Mid Auto Tester"
             ));
             
             // put("Ampside Autos", List.of(
