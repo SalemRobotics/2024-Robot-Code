@@ -11,13 +11,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public final class Constants {
     public static final class ShooterConstants {
         public static final double kFreeSpinVelocity = 5880; // RPM
-
-        public static final double kLeftMotorSpeedSetpoint = 0.9 * kFreeSpinVelocity; // RPM
-        public static final double kRightMotorSpeedSetpoint = 0.7 * kFreeSpinVelocity; // RPM
+        
+        public static final double kLeftMotorSpeedSetpoint = DriverStation.isTestEnabled()? 0.9 * kFreeSpinVelocity: 0.9 * kFreeSpinVelocity; // RPM
+        public static final double kRightMotorSpeedSetpoint = DriverStation.isTestEnabled()? 0.7 * kFreeSpinVelocity: 0.7 * kFreeSpinVelocity; // RPM
         public static final double kControllerErrorTolerance = 0.1; // percent
         public static final double kOutputVelocityThreshold = 0.85; // percent
 
@@ -93,10 +94,10 @@ public final class Constants {
     public static final class DriveConstants {
         // Driving Parameters - Note that these are not the maximum capable speeds of
         // the robot, rather the allowed maximum speeds
-        public static final double kMaxSpeedMetersPerSecond = 4.8;
-        public static final double kMaxAccelerationMetersPerSecond = 4.8;
-        public static final double kMaxAngularSpeedRadiansPerSec = 2 * Math.PI;
-        public static final double kMaxAngularAccelerationRadiansPerSec = 2 * Math.PI;
+        public static final double kMaxSpeedMetersPerSecond = DriverStation.isTestEnabled()? 2.4: 4.8;
+        public static final double kMaxAccelerationMetersPerSecond = DriverStation.isTestEnabled()? 2.4: 4.8;
+        public static final double kMaxAngularSpeedRadiansPerSec = DriverStation.isTestEnabled()? Math.PI: 2 * Math.PI;
+        public static final double kMaxAngularAccelerationRadiansPerSec = DriverStation.isTestEnabled()? Math.PI: 2 * Math.PI;
 
         public static final double kDirectionSlewRateRadiansPerSec = 1.2; 
         public static final double kMagnitudeSlewRatePercentPerSec = 2.5; 

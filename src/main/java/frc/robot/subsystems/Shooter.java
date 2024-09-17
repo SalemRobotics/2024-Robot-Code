@@ -180,7 +180,7 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
-     * Sets both motors to a constant speed, intened to fire the gamepiece.
+     * Sets both motors to a constant speed, intended to fire the gamepiece.
      * @return runEnd command
      * @see FunctionalCommand
      */

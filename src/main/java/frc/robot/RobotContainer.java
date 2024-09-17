@@ -6,12 +6,14 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.HandoffFromIndexer;
@@ -113,7 +115,9 @@ public class RobotContainer {
 
     // #region Driver controls
     mDriveController.leftBumper().whileTrue(
-      mDrivetrain.setX()
+      DriverStation.isTestEnabled()?
+        new LobNote(mIndexer, mShooter):
+        mDrivetrain.setX()
     );
 
     // resets heading
@@ -123,6 +127,13 @@ public class RobotContainer {
 
     // standard control for tracking and targeting with an apriltag 
     mDriveController.rightBumper().whileTrue(
+      DriverStation.isTestEnabled()?
+      new ParallelCommandGroup(
+          mShooter.setShooterAngle(50),
+          new SpinUpShooterAndIndex(
+            mIndexer, mShooter, mVision
+          )
+        ):
       new TrackTargetAndShoot(
         mDrivetrain, mVision, mIndexer, mShooter,
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),
@@ -132,10 +143,18 @@ public class RobotContainer {
     
     // Failsafe for shooting without a target
     mDriveController.rightTrigger().whileTrue(
+      DriverStation.isTestEnabled()? 
+      new IntakeInAndIndex(mIntake, mIndexer):
       new SpinUpShooterAndIndex(
         mIndexer, mShooter, mVision
       )
     );
+
+    if(DriverStation.isTestEnabled()){
+      mDriveController.leftTrigger().whileTrue(
+        new IntakeOutAndIndex(mIntake, mIndexer)
+      );
+    }
     // #endregion
     
     // #region Operator Controls
