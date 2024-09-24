@@ -60,6 +60,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.configureBindings();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -73,7 +74,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void testInit() {
-    CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.configureBindings();
   }
 
   @Override

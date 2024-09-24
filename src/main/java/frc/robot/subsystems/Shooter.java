@@ -12,6 +12,7 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.BangBangController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -48,8 +49,8 @@ public class Shooter extends SubsystemBase {
         mLeftMotor.burnFlash();
         mRightMotor.burnFlash();
 
-        mLeftController.setSetpoint(ShooterConstants.kLeftMotorSpeedSetpoint);
-        mRightController.setSetpoint(ShooterConstants.kRightMotorSpeedSetpoint);
+        mLeftController.setSetpoint(DriverStation.isTestEnabled()? ShooterConstants.kLeftMotorSpeedSetpoint: ShooterConstants.kLeftMotorSpeedSetpoint);
+        mRightController.setSetpoint(DriverStation.isTestEnabled()? ShooterConstants.kRightMotorSpeedSetpoint: ShooterConstants.kRightMotorSpeedSetpoint);
 
         mPivotMotor.setIdleMode(IdleMode.kBrake);
         mPivotMotor.setInverted(true);
@@ -210,10 +211,10 @@ public class Shooter extends SubsystemBase {
     public Command lobRing() {
         return runEnd(
             () -> {
-                setCurrentSetpoint(ShooterConstants.kLobSetpointDegrees);
+                setCurrentSetpoint(DriverStation.isTestEnabled()? ShooterConstants.kLobSetpointDegrees + 25:ShooterConstants.kLobSetpointDegrees);
                 
-                mLeftMotor.set(ShooterConstants.kLobSpeed);
-                mRightMotor.set(ShooterConstants.kLobSpeed);
+                mLeftMotor.set(DriverStation.isTestEnabled()? ShooterConstants.kLobSpeed: ShooterConstants.kLobSpeed);
+                mRightMotor.set(DriverStation.isTestEnabled()? ShooterConstants.kLobSpeed: ShooterConstants.kLobSpeed);
             }, 
             () -> {
                 setCurrentSetpoint(ShooterConstants.kDefaultPivotDegrees);

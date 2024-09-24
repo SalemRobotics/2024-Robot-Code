@@ -13,8 +13,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.HandoffFromIndexer;
 import frc.robot.commands.HandoffToIndexer;
@@ -57,7 +59,6 @@ public class RobotContainer {
   final AutoPicker mAutoPicker;
   
   public RobotContainer() {
-    configureBindings();
     configureNamedCommands();
 
     mAutoPicker = new AutoPicker();
@@ -86,7 +87,7 @@ public class RobotContainer {
     );*/
   }
 
-  private void configureBindings() {
+  public void configureBindings() {
     // #region Cardinal Direction Commands
     mDriveController.y().whileTrue(
       mDrivetrain.trackCardinal(Direction.North, 
@@ -128,12 +129,14 @@ public class RobotContainer {
     // standard control for tracking and targeting with an apriltag 
     mDriveController.rightBumper().whileTrue(
       DriverStation.isTestEnabled()?
-      new ParallelCommandGroup(
-          mShooter.setShooterAngle(50),
+      new SequentialCommandGroup(
+          new InstantCommand(
+            () -> {mShooter.setCurrentSetpoint(40);})
+          ,
           new SpinUpShooterAndIndex(
             mIndexer, mShooter, mVision
           )
-        ):
+        ) :
       new TrackTargetAndShoot(
         mDrivetrain, mVision, mIndexer, mShooter,
         () -> -SwerveUtils.squareInputs(mDriveController.getLeftY(), ControllerConstants.kDriveDeadband),

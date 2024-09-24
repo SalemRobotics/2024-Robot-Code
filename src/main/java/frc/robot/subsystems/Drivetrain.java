@@ -202,6 +202,11 @@ public class Drivetrain extends SubsystemBase {
 
     double xSpeedCommanded;
     double ySpeedCommanded;
+    if(DriverStation.isTestEnabled())
+    {
+      xSpeed /= 2;
+      ySpeed /= 2;
+    }
 
     if (mIsRateLimited) {
       // Convert XY to polar for rate limiting
