@@ -131,7 +131,7 @@ public class RobotContainer {
       DriverStation.isTestEnabled()?
       new SequentialCommandGroup(
           new InstantCommand(
-            () -> {mShooter.setCurrentSetpoint(40);})
+            () -> {mShooter.setCurrentSetpoint(45);})
           ,
           new SpinUpShooterAndIndex(
             mIndexer, mShooter, mVision

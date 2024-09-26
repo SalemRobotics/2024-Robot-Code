@@ -204,8 +204,8 @@ public class Drivetrain extends SubsystemBase {
     double ySpeedCommanded;
     if(DriverStation.isTestEnabled())
     {
-      xSpeed /= 2;
-      ySpeed /= 2;
+      xSpeed /= 4;
+      ySpeed /= 4;
     }
 
     if (mIsRateLimited) {
